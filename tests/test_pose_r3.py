@@ -15,10 +15,6 @@ class TestPoseR3(unittest.TestCase):
 
     """
 
-    def setUp(self):
-        # TODO
-        pass
-
     def test_constructor(self):
         """Test that a ``PoseR3`` instance can be created.
 

@@ -13,10 +13,6 @@ class TestGraph(unittest.TestCase):
 
     """
 
-    def setUp(self):
-        # TODO
-        pass
-
     def test_optimize(self):
         """Test that a ``Graph`` can be optimized.
 
