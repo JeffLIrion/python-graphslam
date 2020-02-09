@@ -78,7 +78,7 @@ class TestPoseR3(unittest.TestCase):
         r3b = PoseR3([3, 4, 5])
 
         expected = PoseR3([4, 6, 8])
-        self.assertAlmostEqual(np.linalg.norm((r3a + r3b).position - expected), 0.)
+        self.assertAlmostEqual(np.linalg.norm((r3a + r3b).to_array() - expected), 0.)
 
     def test_sub(self):
         """Test that the overloaded ``__sub__`` method works as expected.
@@ -88,7 +88,7 @@ class TestPoseR3(unittest.TestCase):
         r3b = PoseR3([3, 4, 5])
 
         expected = PoseR3([2, 2, 2])
-        self.assertAlmostEqual(np.linalg.norm((r3b - r3a).position - expected), 0.)
+        self.assertAlmostEqual(np.linalg.norm((r3b - r3a).to_array() - expected), 0.)
 
 
 if __name__ == '__main__':
