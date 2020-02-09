@@ -44,6 +44,11 @@ class PoseSE2(BasePose):
         """
         return np.array(self)
 
+    # ======================================================================= #
+    #                                                                         #
+    #                                Properties                               #
+    #                                                                         #
+    # ======================================================================= #
     @property
     def position(self):
         """Return the pose's position.

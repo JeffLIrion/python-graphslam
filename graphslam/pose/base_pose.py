@@ -2,17 +2,14 @@ r"""A base class for poses.
 
 """
 
-from abc import ABC, abstractmethod
-
 import numpy as np
 
 
-class BasePose(ABC, np.ndarray):
+class BasePose(np.ndarray):
     """A base class for poses.
 
     """
 
-    @abstractmethod
     def to_array(self):
         """Return the pose as a numpy array.
 
@@ -22,8 +19,8 @@ class BasePose(ABC, np.ndarray):
             The pose as a numpy array
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def to_compact(self):
         """Return the pose as a compact numpy array.
 
@@ -33,9 +30,14 @@ class BasePose(ABC, np.ndarray):
             The pose as a compact numpy array
 
         """
+        raise NotImplementedError
 
+    # ======================================================================= #
+    #                                                                         #
+    #                                Properties                               #
+    #                                                                         #
+    # ======================================================================= #
     @property
-    @abstractmethod
     def position(self):
         """Return the pose's position.
 
@@ -45,9 +47,9 @@ class BasePose(ABC, np.ndarray):
             The pose's position
 
         """
+        raise NotImplementedError
 
     @property
-    @abstractmethod
     def orientation(self):
         """Return the pose's orientation.
 
@@ -57,13 +59,13 @@ class BasePose(ABC, np.ndarray):
             The pose's orientation
 
         """
+        raise NotImplementedError
 
     # ======================================================================= #
     #                                                                         #
     #                              Magic Methods                              #
     #                                                                         #
     # ======================================================================= #
-    @abstractmethod
     def __add__(self, other):
         """Add poses (i.e., pose composition).
 
@@ -78,8 +80,8 @@ class BasePose(ABC, np.ndarray):
             The result of pose composition
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def __sub__(self, other):
         """Subtract poses (i.e., inverse pose composition).
 
@@ -94,3 +96,4 @@ class BasePose(ABC, np.ndarray):
             The result of inverse pose composition
 
         """
+        raise NotImplementedError
