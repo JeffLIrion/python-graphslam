@@ -1,0 +1,18 @@
+# Python / IDE files
+*.idea
+*.pyc
+**/__pycache__/
+graphslam.egg-info
+.vscode/settings.json
+
+# Build files
+build/
+dist/
+
+# Documentation
+docs/build/
+docs/html/
+
+# Coverage
+.coverage
+htmlcov/
