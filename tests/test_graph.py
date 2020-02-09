@@ -1,11 +1,9 @@
-"""Unit tests for the graph.py module
+"""Unit tests for the graph.py module.
 
 """
 
 
 import unittest
-
-# sys.path.insert(0, '..')
 
 from graphslam.graph import Graph
 

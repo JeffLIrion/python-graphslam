@@ -1,3 +1,8 @@
+"""Setup information for the ``graphslam`` package.
+
+"""
+
+
 from setuptools import setup
 
 with open('README.rst') as f:
@@ -13,7 +18,7 @@ setup(
     license='MIT',
     author='Jeff Irion',
     author_email='jefflirion@users.noreply.github.com',
-    packages=['graphslam'],
+    packages=['graphslam', 'graphslam.pose'],
     install_requires=['numpy', 'scipy'],
     # tests_require=[],
     classifiers=['License :: OSI Approved :: MIT License',
