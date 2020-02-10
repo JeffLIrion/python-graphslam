@@ -7,7 +7,10 @@ import unittest
 
 import numpy as np
 
+from graphslam.vertex import Vertex
 from graphslam.pose.r3 import PoseR3
+from graphslam.edge.base_edge import BaseEdge
+from .edge_oplus_ominus import EdgeOMinus, EdgeOPlus
 
 
 class TestPoseR3(unittest.TestCase):
@@ -56,6 +59,11 @@ class TestPoseR3(unittest.TestCase):
         self.assertNotIsInstance(arr, PoseR3)
         self.assertAlmostEqual(np.linalg.norm(arr - np.array([1, 2, 3])), 0.)
 
+    # ======================================================================= #
+    #                                                                         #
+    #                                Properties                               #
+    #                                                                         #
+    # ======================================================================= #
     def test_position(self):
         """Test that the ``position`` property works as expected.
 
@@ -86,6 +94,11 @@ class TestPoseR3(unittest.TestCase):
 
         self.assertAlmostEqual(np.linalg.norm(r3.inverse.to_array() - true_inv), 0.)
 
+    # ======================================================================= #
+    #                                                                         #
+    #                              Magic Methods                              #
+    #                                                                         #
+    # ======================================================================= #
     def test_add(self):
         """Test that the overloaded ``__add__`` method works as expected.
 
@@ -105,6 +118,57 @@ class TestPoseR3(unittest.TestCase):
 
         expected = PoseR3([2, 2, 2])
         self.assertAlmostEqual(np.linalg.norm((r3b - r3a).to_array() - expected), 0.)
+
+    # ======================================================================= #
+    #                                                                         #
+    #                                Jacobians                                #
+    #                                                                         #
+    # ======================================================================= #
+    def test_jacobian_self_oplus_other(self):
+        """Test that the ``jacobian_self_oplus_other_wrt_self`` and ``jacobian_self_oplus_other_wrt_other`` methods are correctly implemented.
+
+        """
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseR3(np.random.random_sample(3))
+            p2 = PoseR3(np.random.random_sample(3))
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeOPlus([v1, v2], np.eye(3), np.zeros(3))
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.)
+
+    def test_jacobian_self_ominus_other(self):
+        """Test that the ``jacobian_self_ominus_other_wrt_self`` and ``jacobian_self_ominus_other_wrt_other`` methods are correctly implemented.
+
+        """
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseR3(np.random.random_sample(3))
+            p2 = PoseR3(np.random.random_sample(3))
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeOMinus([v1, v2], np.eye(3), np.zeros(3))
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.)
 
 
 if __name__ == '__main__':

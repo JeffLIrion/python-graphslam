@@ -130,3 +130,83 @@ class PoseR2(BasePose):
 
         """
         return PoseR2(np.subtract(self, other))
+
+    # ======================================================================= #
+    #                                                                         #
+    #                                Jacobians                                #
+    #                                                                         #
+    # ======================================================================= #
+    def jacobian_self_oplus_other_wrt_self(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        """
+        return np.eye(2)
+
+    def jacobian_self_oplus_other_wrt_other(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        """
+        return np.eye(2)
+
+    def jacobian_self_ominus_other_wrt_self(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being subtracted from ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+
+        """
+        return np.eye(2)
+
+    def jacobian_self_ominus_other_wrt_other(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being subtracted from ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+
+        """
+        return -np.eye(2)
+
+    def jacobian_boxplus(self):
+        r"""Compute the Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`.
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`
+
+        """
+        return np.eye(2)

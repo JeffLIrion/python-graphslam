@@ -40,6 +40,11 @@ class TestBasePose(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             p.copy()
 
+    # ======================================================================= #
+    #                                                                         #
+    #                                Properties                               #
+    #                                                                         #
+    # ======================================================================= #
     def test_position(self):
         """Test that the ``position`` property is not implemented.
 
@@ -67,6 +72,11 @@ class TestBasePose(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             _ = p.inverse
 
+    # ======================================================================= #
+    #                                                                         #
+    #                              Magic Methods                              #
+    #                                                                         #
+    # ======================================================================= #
     def test_add(self):
         """Test that the overloaded ``__add__`` method is not implemented.
 
@@ -86,6 +96,60 @@ class TestBasePose(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             _ = p2 - p1
+
+    # ======================================================================= #
+    #                                                                         #
+    #                                Jacobians                                #
+    #                                                                         #
+    # ======================================================================= #
+    def test_jacobian_self_oplus_other_wrt_self(self):
+        """Test that the ``jacobian_self_oplus_other_wrt_self`` method is not implemented.
+
+        """
+        p1 = BasePose([])
+        p2 = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_self_oplus_other_wrt_self(p2)
+
+    def test_jacobian_self_oplus_other_wrt_other(self):
+        """Test that the ``jacobian_self_oplus_other_wrt_other`` method is not implemented.
+
+        """
+        p1 = BasePose([])
+        p2 = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_self_oplus_other_wrt_other(p2)
+
+    def test_jacobian_self_ominus_other_wrt_self(self):
+        """Test that the ``jacobian_self_ominus_other_wrt_self`` method is not implemented.
+
+        """
+        p1 = BasePose([])
+        p2 = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_self_ominus_other_wrt_self(p2)
+
+    def test_jacobian_self_ominus_other_wrt_other(self):
+        """Test that the ``jacobian_self_ominus_other_wrt_other`` method is not implemented.
+
+        """
+        p1 = BasePose([])
+        p2 = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_self_ominus_other_wrt_other(p2)
+
+    def test_jacobian_boxplus(self):
+        """Test that the ``jacobian_boxplus`` method is not implemented.
+
+        """
+        p1 = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_boxplus()
 
 
 if __name__ == '__main__':
