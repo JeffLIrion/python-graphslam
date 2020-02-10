@@ -10,6 +10,17 @@ class BasePose(np.ndarray):
 
     """
 
+    def copy(self):
+        """Return a copy of the pose.
+
+        Returns
+        -------
+        BasePose
+            A copy of the pose
+
+        """
+        raise NotImplementedError
+
     def to_array(self):
         """Return the pose as a numpy array.
 

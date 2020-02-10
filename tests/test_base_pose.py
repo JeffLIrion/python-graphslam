@@ -31,6 +31,15 @@ class TestBasePose(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             p.to_compact()
 
+    def test_copy(self):
+        """Test that the ``copy`` method is not implemented.
+
+        """
+        p = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            p.copy()
+
     def test_position(self):
         """Test that the ``position`` property is not implemented.
 

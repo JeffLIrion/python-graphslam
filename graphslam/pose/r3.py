@@ -20,6 +20,17 @@ class PoseR3(BasePose):
         obj = np.asarray(position, dtype=np.float64).view(cls)
         return obj
 
+    def copy(self):
+        """Return a copy of the pose.
+
+        Returns
+        -------
+        PoseR3
+            A copy of the pose
+
+        """
+        return PoseR3([self[0], self[1], self[2]])
+
     def to_array(self):
         """Return the pose as a numpy array.
 

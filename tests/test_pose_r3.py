@@ -24,6 +24,16 @@ class TestPoseR3(unittest.TestCase):
         self.assertIsInstance(r3a, PoseR3)
         self.assertIsInstance(r3b, PoseR3)
 
+    def test_copy(self):
+        """Test that the ``copy`` method works as expected.
+
+        """
+        p1 = PoseR3([1, 2, 3])
+        p2 = p1.copy()
+
+        p2[0] = 0
+        self.assertEqual(p1[0], 1)
+
     def test_to_array(self):
         """Test that the ``to_array`` method works as expected.
 

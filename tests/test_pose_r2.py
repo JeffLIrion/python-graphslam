@@ -24,6 +24,16 @@ class TestPoseR2(unittest.TestCase):
         self.assertIsInstance(r2a, PoseR2)
         self.assertIsInstance(r2b, PoseR2)
 
+    def test_copy(self):
+        """Test that the ``copy`` method works as expected.
+
+        """
+        p1 = PoseR2([1, 2])
+        p2 = p1.copy()
+
+        p2[0] = 0
+        self.assertEqual(p1[0], 1)
+
     def test_to_array(self):
         """Test that the ``to_array`` method works as expected.
 
@@ -85,6 +95,9 @@ class TestPoseR2(unittest.TestCase):
 
         expected = PoseR2([4, 6])
         self.assertAlmostEqual(np.linalg.norm((r2a + r2b).to_array() - expected), 0.)
+
+        r2a += r2b
+        self.assertAlmostEqual(np.linalg.norm(r2a.to_array() - expected), 0.)
 
     def test_sub(self):
         """Test that the overloaded ``__sub__`` method works as expected.

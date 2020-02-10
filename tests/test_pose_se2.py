@@ -19,17 +19,27 @@ class TestPoseSE2(unittest.TestCase):
         """Test that a ``PoseSE2`` instance can be created.
 
         """
-        r2a = PoseSE2([1, 2], 3)
-        r2b = PoseSE2(np.array([3, 4]), 5)
-        self.assertIsInstance(r2a, PoseSE2)
-        self.assertIsInstance(r2b, PoseSE2)
+        p1 = PoseSE2([1, 2], 3)
+        p2 = PoseSE2(np.array([3, 4]), 5)
+        self.assertIsInstance(p1, PoseSE2)
+        self.assertIsInstance(p2, PoseSE2)
+
+    def test_copy(self):
+        """Test that the ``copy`` method works as expected.
+
+        """
+        p1 = PoseSE2([1, 2], 3)
+        p2 = p1.copy()
+
+        p2[0] = 0
+        self.assertEqual(p1[0], 1)
 
     def test_to_array(self):
         """Test that the ``to_array`` method works as expected.
 
         """
-        r2 = PoseSE2([1, 2], 1)
-        arr = r2.to_array()
+        p1 = PoseSE2([1, 2], 1)
+        arr = p1.to_array()
 
         self.assertIsInstance(arr, np.ndarray)
         self.assertNotIsInstance(arr, PoseSE2)
@@ -39,8 +49,8 @@ class TestPoseSE2(unittest.TestCase):
         """Test that the ``to_compact`` method works as expected.
 
         """
-        r2 = PoseSE2([1, 2], 1)
-        arr = r2.to_compact()
+        p1 = PoseSE2([1, 2], 1)
+        arr = p1.to_compact()
 
         self.assertIsInstance(arr, np.ndarray)
         self.assertNotIsInstance(arr, PoseSE2)
@@ -63,8 +73,8 @@ class TestPoseSE2(unittest.TestCase):
         """Test that the ``position`` property works as expected.
 
         """
-        r2 = PoseSE2([1, 2], 3)
-        pos = r2.position
+        p1 = PoseSE2([1, 2], 3)
+        pos = p1.position
 
         true_pos = np.array([1, 2])
         self.assertIsInstance(pos, np.ndarray)
@@ -75,9 +85,9 @@ class TestPoseSE2(unittest.TestCase):
         """Test that the ``orientation`` property works as expected.
 
         """
-        r2 = PoseSE2([1, 2], 1.5)
+        p1 = PoseSE2([1, 2], 1.5)
 
-        self.assertEqual(r2.orientation, 1.5)
+        self.assertEqual(p1.orientation, 1.5)
 
     def test_inverse(self):
         """Test that the ``inverse`` property works as expected.

@@ -24,6 +24,17 @@ class PoseSE2(BasePose):
         obj = np.array([position[0], position[1], orientation], dtype=np.float64).view(cls)
         return obj
 
+    def copy(self):
+        """Return a copy of the pose.
+
+        Returns
+        -------
+        PoseSE2
+            A copy of the pose
+
+        """
+        return PoseSE2(self[:2], self[2])
+
     def to_array(self):
         """Return the pose as a numpy array.
 
