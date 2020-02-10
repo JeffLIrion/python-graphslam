@@ -140,7 +140,7 @@ class TestPoseR2(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeOPlus([v1, v2], np.eye(2), np.zeros(2))
+            e = EdgeOPlus([1, 2], np.eye(2), np.zeros(2), [v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
@@ -163,7 +163,7 @@ class TestPoseR2(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeOMinus([v1, v2], np.eye(2), np.zeros(2))
+            e = EdgeOMinus([1, 2], np.eye(2), np.zeros(2), [v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 

@@ -34,7 +34,7 @@ class TestBaseEdge(unittest.TestCase):
         """
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = BaseEdge([v], 1, 0)
+        e = BaseEdge(0, 1, 0, [v])
 
         self.assertEqual(e.vertices[0].id, 0)
         self.assertEqual(e.information, 1)
@@ -45,7 +45,7 @@ class TestBaseEdge(unittest.TestCase):
         """
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = BaseEdge([v], 1, 0)
+        e = BaseEdge(0, 1, 0, [v])
 
         with self.assertRaises(NotImplementedError):
             _ = e.calc_error()
@@ -56,7 +56,7 @@ class TestBaseEdge(unittest.TestCase):
         """
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = SimpleEdge([v], 1, 0)
+        e = SimpleEdge(0, 1, 0, [v])
 
         self.assertEqual(e.calc_chi2(), 1)
 
@@ -67,10 +67,10 @@ class TestBaseEdge(unittest.TestCase):
         p1 = PoseR2([1, 2])
         p2 = PoseR2([3, 4])
 
-        v1 = Vertex(0, p1)
-        v2 = Vertex(0, p2)
+        v1 = Vertex(1, p1)
+        v2 = Vertex(2, p2)
 
-        e = OdometryEdge([v1, v2], np.eye(2), 0)
+        e = OdometryEdge([1, 2], np.eye(2), 0, [v1, v2])
 
         jacobians = e.calc_jacobians()
 
@@ -87,7 +87,7 @@ class TestBaseEdge(unittest.TestCase):
         v1 = Vertex(0, p1, 0)
         v2 = Vertex(1, p2, 1)
 
-        e = OdometryEdge([v1, v2], np.eye(2), 0)
+        e = OdometryEdge([0, 1], np.eye(2), 0, [v1, v2])
 
         chi2, gradient, hessian = e.calc_chi2_gradient_hessian()
 

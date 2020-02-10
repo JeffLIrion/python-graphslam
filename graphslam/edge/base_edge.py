@@ -14,27 +14,32 @@ class BaseEdge:
 
     Parameters
     ----------
-    vertices : list[graphslam.vertex.Vertex]
-        A list of the vertices constrained by the edge
+    vertex_ids : list[int]
+        The IDs of all vertices constrained by this edge
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
     estimate : np.ndarray, float
         The expected measurement :math:`\mathbf{z}_j`
+    vertices : list[graphslam.vertex.Vertex], None
+        A list of the vertices constrained by the edge
 
     Attributes
     ----------
-    vertices : list[graphslam.vertex.Vertex]
-        A list of the vertices constrained by the edge
-    information : np.ndarray
-        The information matrix :math:`\Omega_j` associated with the edge
     estimate : np.ndarray, float
         The expected measurement :math:`\mathbf{z}_j`
+    information : np.ndarray
+        The information matrix :math:`\Omega_j` associated with the edge
+    vertex_ids : list[int]
+        The IDs of all vertices constrained by this edge
+    vertices : list[graphslam.vertex.Vertex], None
+        A list of the vertices constrained by the edge
 
     """
-    def __init__(self, vertices, information, estimate):
-        self.vertices = vertices
+    def __init__(self, vertex_ids, information, estimate, vertices=None):
+        self.vertex_ids = vertex_ids
         self.information = information
         self.estimate = estimate
+        self.vertices = vertices
 
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.

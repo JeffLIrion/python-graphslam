@@ -89,8 +89,32 @@ class Graph(object):
         TODO
 
     """
-    def __init__(self):
-        self.data = 5
+    def __init__(self, edges, vertices):
+        self._edges = edges
+        self._vertices = vertices
+
+        self._link_edges()
+
+    def _link_edges(self):
+        """Fill in the ``vertices`` attributes for the graph's edges.
+
+        """
+        index_id_dict = {i: v.id for i, v in enumerate(self._vertices)}
+        id_index_dict = {v_id: v_index for v_index, v_id in index_id_dict.items()}
+
+        for e in self._edges:
+            e.vertices = [self._vertices[id_index_dict[v_id]] for v_id in e.vertex_ids]
+
+    def calc_chi2(self):
+        r"""Calculate the :math:`\chi^2` error for the ``Graph``.
+
+        Returns
+        -------
+        float
+            The :math:`\chi^2` error
+
+        """
+        return sum((e.calc_chi2() for e in self._edges))
 
     def optimize(self):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
