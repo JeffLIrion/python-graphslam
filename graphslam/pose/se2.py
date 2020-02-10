@@ -2,6 +2,8 @@ r"""Representation of a pose in `SE(2)`.
 
 """
 
+import math
+
 import numpy as np
 
 from .base_pose import BasePose
@@ -44,6 +46,34 @@ class PoseSE2(BasePose):
         """
         return np.array(self)
 
+    def to_matrix(self):
+        """Return the pose as an :math:`SE(2)` matrix.
+
+        Returns
+        -------
+        np.ndarray
+            The pose as an :math:`SE(2)` matrix
+
+        """
+        return np.array([[np.cos(self[2]), -np.sin(self[2]), self[0]], [np.sin(self[2]), np.cos(self[2]), self[1]], [0., 0., 1.]], dtype=np.float64)
+
+    @classmethod
+    def from_matrix(cls, matrix):
+        """Return the pose as an :math:`SE(2)` matrix.
+
+        Parameters
+        ----------
+        matrix : np.ndarray
+            The :math:`SE(2)` matrix that will be converted to a `PoseSE2` instance
+
+        Returns
+        -------
+        PoseSE2
+            The matrix as a `PoseSE2` object
+
+        """
+        return cls([matrix[0, 2], matrix[1, 2]], math.atan2(matrix[1, 0], matrix[0, 0]))
+
     # ======================================================================= #
     #                                                                         #
     #                                Properties                               #
@@ -73,13 +103,25 @@ class PoseSE2(BasePose):
         """
         return self[2]
 
+    @property
+    def inverse(self):
+        """Return the pose's inverse.
+
+        Returns
+        -------
+        PoseSE2
+            The pose's inverse
+
+        """
+        return PoseSE2([-self[0] * np.cos(self[2]) - self[1] * np.sin(self[2]), self[0] * np.sin(self[2]) - self[1] * np.cos([self[2]])], -self[2])
+
     # ======================================================================= #
     #                                                                         #
     #                              Magic Methods                              #
     #                                                                         #
     # ======================================================================= #
     def __add__(self, other):
-        """Add poses (i.e., pose composition).
+        r"""Add poses (i.e., pose composition): :math:`p_1 \oplus p_2`.
 
         Parameters
         ----------
@@ -92,11 +134,10 @@ class PoseSE2(BasePose):
             The result of pose composition
 
         """
-        return PoseSE2([0, 0], 0)
-        # return PoseSE2(np.add(self, other))
+        return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]), self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])], self[2] + other[2])
 
     def __sub__(self, other):
-        """Subtract poses (i.e., inverse pose composition).
+        r"""Subtract poses (i.e., inverse pose composition): :math:`p_1 \ominus p_2`.
 
         Parameters
         ----------
@@ -109,5 +150,5 @@ class PoseSE2(BasePose):
             The result of inverse pose composition
 
         """
-        return PoseSE2([0, 0], 0)
-        # return PoseSE2(np.subtract(self, other))
+        # TODO: Do this by hand and simplify this computation
+        return other.inverse + self

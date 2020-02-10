@@ -49,6 +49,15 @@ class TestBasePose(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             _ = p.orientation
 
+    def test_inverse(self):
+        """Test that the ``inverse`` property is not implemented.
+
+        """
+        p = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p.inverse
+
     def test_add(self):
         """Test that the overloaded ``__add__`` method is not implemented.
 

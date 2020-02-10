@@ -71,6 +71,18 @@ class PoseR3(BasePose):
         """
         return 0.
 
+    @property
+    def inverse(self):
+        """Return the pose's inverse.
+
+        Returns
+        -------
+        PoseR3
+            The pose's inverse
+
+        """
+        return PoseR3([-self[0], -self[1], -self[2]])
+
     # ======================================================================= #
     #                                                                         #
     #                              Magic Methods                              #

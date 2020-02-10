@@ -61,6 +61,18 @@ class BasePose(np.ndarray):
         """
         raise NotImplementedError
 
+    @property
+    def inverse(self):
+        """Return the pose's inverse.
+
+        Returns
+        -------
+        BasePose
+            The pose's inverse
+
+        """
+        raise NotImplementedError
+
     # ======================================================================= #
     #                                                                         #
     #                              Magic Methods                              #

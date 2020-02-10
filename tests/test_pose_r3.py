@@ -66,6 +66,16 @@ class TestPoseR3(unittest.TestCase):
 
         self.assertEqual(r3.orientation, 0.)
 
+    def test_inverse(self):
+        """Test that the ``inverse`` property works as expected.
+
+        """
+        r3 = PoseR3([1, 2, 3])
+
+        true_inv = np.array([-1, -2, -3])
+
+        self.assertAlmostEqual(np.linalg.norm(r3.inverse.to_array() - true_inv), 0.)
+
     def test_add(self):
         """Test that the overloaded ``__add__`` method works as expected.
 
