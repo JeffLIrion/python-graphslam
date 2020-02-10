@@ -36,7 +36,7 @@ class TestBaseEdge(unittest.TestCase):
         v = Vertex(0, p)
         e = BaseEdge([v], 1, 0)
 
-        self.assertEqual(e.vertices[0].vertex_id, 0)
+        self.assertEqual(e.vertices[0].id, 0)
         self.assertEqual(e.information, 1)
 
     def test_calc_error(self):
@@ -84,8 +84,8 @@ class TestBaseEdge(unittest.TestCase):
         p1 = PoseR2([1, 3])
         p2 = PoseR2([2, 4])
 
-        v1 = Vertex(0, p1)
-        v2 = Vertex(0, p2)
+        v1 = Vertex(0, p1, 0)
+        v2 = Vertex(1, p2, 1)
 
         e = OdometryEdge([v1, v2], np.eye(2), 0)
 
@@ -96,9 +96,9 @@ class TestBaseEdge(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.norm(gradient[0] + np.ones(2)), 0.)
         self.assertAlmostEqual(np.linalg.norm(gradient[1] - np.ones(2)), 0.)
 
-        self.assertAlmostEqual(np.linalg.norm(hessian[0] - np.eye(2)), 0.)
-        self.assertAlmostEqual(np.linalg.norm(hessian[1] + np.eye(2)), 0.)
-        self.assertAlmostEqual(np.linalg.norm(hessian[2] - np.eye(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(hessian[(0, 0)] - np.eye(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(hessian[(0, 1)] + np.eye(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(hessian[(1, 1)] - np.eye(2)), 0.)
 
 
 if __name__ == '__main__':

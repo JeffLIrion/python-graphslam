@@ -22,7 +22,7 @@ class TestVertex(unittest.TestCase):
         """
         v = Vertex(1, PoseSE2([1, 2], 3))
 
-        self.assertEqual(v.vertex_id, 1)
+        self.assertEqual(v.id, 1)
         self.assertAlmostEqual(np.linalg.norm(v.pose.to_array() - np.array([1., 2., 3.])), 0.)
 
 

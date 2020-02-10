@@ -72,9 +72,9 @@ class BaseEdge:
         -------
         float
             The :math:`\chi^2` error for the edge
-        list[np.ndarray]
+        dict
             The edge's contribution(s) to the gradient
-        list[np.ndarray]
+        dict
             The edge's contribution(s) to the Hessian
 
         """
@@ -84,7 +84,7 @@ class BaseEdge:
 
         jacobians = self.calc_jacobians()
 
-        return chi2, [np.dot(np.dot(np.transpose(err), self.information), jacobian) for jacobian in jacobians], [np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j]) for i in range(len(jacobians)) for j in range(i, len(jacobians))]
+        return chi2, {v.index: np.dot(np.dot(np.transpose(err), self.information), jacobian) for v, jacobian in zip(self.vertices, jacobians)}, {(self.vertices[i].index, self.vertices[j].index): np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j]) for i in range(len(jacobians)) for j in range(i, len(jacobians))}
 
     def calc_jacobians(self):
         r"""Calculate the Jacobian of the edge's error with respect to each constrained pose.

@@ -13,15 +13,20 @@ class Vertex:
         The vertex's unique ID
     pose : graphslam.pose.base_pose.BasePose
         The pose associated with the vertex
+    vertex_index : int, None
+        The vertex's index in the graph's ``vertices`` list
 
     Attributes
     ----------
-    vertex_id : int
+    id : int
         The vertex's unique ID
+    index : int, None
+        The vertex's index in the graph's ``vertices`` list
     pose : graphslam.pose.base_pose.BasePose
         The pose associated with the vertex
 
     """
-    def __init__(self, vertex_id, pose):
-        self.vertex_id = vertex_id
+    def __init__(self, vertex_id, pose, vertex_index=None):
+        self.id = vertex_id
         self.pose = pose
+        self.index = vertex_index
