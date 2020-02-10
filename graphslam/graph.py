@@ -73,20 +73,61 @@ We apply this update to the poses and repeat until convergence.
 """
 
 
+from collections import defaultdict
+# from functools import reduce
+
+import numpy as np
+
+
+# pylint: disable=too-few-public-methods
+class _Chi2GradientHessian:
+    r"""A class that is used to aggregate the :math:`\chi^2` error, gradient, and Hessian.
+
+    Attributes
+    ----------
+    chi2 : float
+        The :math:`\chi^2` error
+    gradient : defaultdict
+        The contributions to the gradient vector
+    hessian : defaultdict
+        The contributions to the Hessian matrix
+
+    """
+    def __init__(self, dim):
+        self.chi2 = 0.
+        self.gradient = defaultdict(np.zeros(dim))
+        self.hessian = defaultdict(np.zeros((dim, dim)))
+
+    @staticmethod
+    def update(chi2_grad_hess, incoming):
+        r"""Update the :math:`\chi^2` error and the gradient and Hessian dictionaries.
+
+        Parameters
+        ----------
+        chi2_grad_hess : _Chi2GradientHessian
+            The ``_Chi2GradientHessian`` that will be updated
+        incoming : tuple
+            TODO
+
+        """
+
+
 class Graph(object):
     """A graph that will be optimized via Graph SLAM.
 
     Parameters
     ----------
-    edges : list
-        TODO
-    vertices : list
-        TODO
+    edges : list[graphslam.vertex.Vertex]
+        A list of the vertices in the graph
+    vertices : list[graphslam.vertex.Vertex]
+        A list of the vertices in the graph
 
     Attributes
     ----------
-    TODO
-        TODO
+    _edges : list[graphslam.edge.base_edge.BaseEdge]
+        A list of the edges (i.e., constraints) in the graph
+    _vertices : list[graphslam.vertex.Vertex]
+        A list of the vertices in the graph
 
     """
     def __init__(self, edges, vertices):
@@ -115,6 +156,11 @@ class Graph(object):
 
         """
         return sum((e.calc_chi2() for e in self._edges))
+
+    def calc_chi2_gradient_hessian(self):
+        r"""Calculate the :math:`\chi^2` error, the gradient :math:`\mathbf{b}`, and the Hessian :math:`H`.
+
+        """
 
     def optimize(self):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
