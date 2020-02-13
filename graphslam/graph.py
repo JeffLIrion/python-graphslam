@@ -74,7 +74,7 @@ We apply this update to the poses and repeat until convergence.
 
 
 from collections import defaultdict
-# from functools import reduce
+from functools import reduce
 
 import numpy as np
 
@@ -83,10 +83,17 @@ import numpy as np
 class _Chi2GradientHessian:
     r"""A class that is used to aggregate the :math:`\chi^2` error, gradient, and Hessian.
 
+    Parameters
+    ----------
+    dim : int
+        The compact dimensionality of the poses
+
     Attributes
     ----------
     chi2 : float
         The :math:`\chi^2` error
+    dim : int
+        The compact dimensionality of the poses
     gradient : defaultdict
         The contributions to the gradient vector
     hessian : defaultdict
@@ -95,6 +102,7 @@ class _Chi2GradientHessian:
     """
     def __init__(self, dim):
         self.chi2 = 0.
+        self.dim = dim
         self.gradient = defaultdict(np.zeros(dim))
         self.hessian = defaultdict(np.zeros((dim, dim)))
 
@@ -110,10 +118,48 @@ class _Chi2GradientHessian:
             TODO
 
         """
+        chi2_grad_hess.chi2 += incoming[0]
+
+        for idx, contrib in incoming.gradient.items():
+            chi2_grad_hess.gradient[idx * chi2_grad_hess.dim:(idx + 1) * chi2_grad_hess.dim] += contrib
+
+        for (idx1, idx2), contrib in incoming.hessian.items():
+            chi2_grad_hess.hessian[idx1 * chi2_grad_hess.dim:(idx1 + 1) * chi2_grad_hess.dim, idx2 * chi2_grad_hess.dim:(idx2 + 1) * chi2_grad_hess.dim] += contrib
+
+            if idx1 != idx2:
+                chi2_grad_hess.hessian[idx2 * chi2_grad_hess.dim:(idx2 + 1) * chi2_grad_hess.dim, idx1 * chi2_grad_hess.dim:(idx1 + 1) * chi2_grad_hess.dim] += np.transpose(contrib)
+
+
+def _chi2_gradient_hessian_initializer(dim):
+    """Return a function that initializes a `_Chi2GradientHessian` instance.
+
+    Parameters
+    ----------
+    dim : int
+        The compact dimensionality of the poses
+
+    Returns
+    -------
+    function
+        A function that creates a `_Chi2GradientHessian` instance
+
+    """
+    def _create_chi2_gradient_hessian():
+        """Create a `_Chi2GradientHessian` instance.
+
+        Returns
+        -------
+        _Chi2GradientHessian
+            A `_Chi2GradientHessian` instance with compact dimensionality ``dim``
+
+        """
+        return _Chi2GradientHessian(dim)
+
+    return _create_chi2_gradient_hessian
 
 
 class Graph(object):
-    """A graph that will be optimized via Graph SLAM.
+    r"""A graph that will be optimized via Graph SLAM.
 
     Parameters
     ----------
@@ -124,15 +170,27 @@ class Graph(object):
 
     Attributes
     ----------
+    _chi2 : float
+        The current :math:`\chi^2` error
     _edges : list[graphslam.edge.base_edge.BaseEdge]
         A list of the edges (i.e., constraints) in the graph
+    _gradient : numpy.ndarray, None
+        The gradient :math:`\mathbf{b}` of the :math:`\chi^2` error
+    _hessian : scipy.sparse.lil_matrix, None
+        The Hessian matrix :math:`H`
     _vertices : list[graphslam.vertex.Vertex]
         A list of the vertices in the graph
 
     """
     def __init__(self, edges, vertices):
+        # The vertices and edges lists
         self._edges = edges
         self._vertices = vertices
+
+        # The chi^2 error, gradient, and Hessian
+        self._chi2 = None
+        self._gradient = None
+        self._hessian = None
 
         self._link_edges()
 
@@ -157,10 +215,19 @@ class Graph(object):
         """
         return sum((e.calc_chi2() for e in self._edges))
 
-    def calc_chi2_gradient_hessian(self):
+    def _calc_chi2_gradient_hessian(self):
         r"""Calculate the :math:`\chi^2` error, the gradient :math:`\mathbf{b}`, and the Hessian :math:`H`.
 
         """
+        n = len(self._vertices)
+        dim = len(self._vertices[0].pose.to_compact())
+        chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _chi2_gradient_hessian_initializer(dim))
+
+        self._chi2 = chi2_gradient_hessian.chi2
+
+        self._gradient = np.zeros(n, dtype=np.float64)
+        for idx, contrib in chi2_gradient_hessian.gradient.items():
+            self._gradient[idx * dim:(idx + 1) * dim] += contrib
 
     def optimize(self):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
