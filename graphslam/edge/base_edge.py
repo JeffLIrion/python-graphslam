@@ -6,6 +6,7 @@ r"""A base class for edges.
 import numpy as np
 
 
+#: The difference that will be used for numerical differentiation
 EPSILON = 1e-6
 
 

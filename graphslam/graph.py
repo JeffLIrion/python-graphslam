@@ -75,8 +75,15 @@ We apply this update to the poses and repeat until convergence.
 
 from collections import defaultdict
 from functools import reduce
+import warnings
 
 import numpy as np
+from scipy.sparse import SparseEfficiencyWarning, lil_matrix
+from scipy.sparse.linalg import spsolve
+
+
+warnings.simplefilter("ignore", SparseEfficiencyWarning)
+warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
 
 
 # pylint: disable=too-few-public-methods
@@ -103,8 +110,8 @@ class _Chi2GradientHessian:
     def __init__(self, dim):
         self.chi2 = 0.
         self.dim = dim
-        self.gradient = defaultdict(np.zeros(dim))
-        self.hessian = defaultdict(np.zeros((dim, dim)))
+        self.gradient = defaultdict(lambda: np.zeros(dim))
+        self.hessian = defaultdict(lambda: np.zeros((dim, dim)))
 
     @staticmethod
     def update(chi2_grad_hess, incoming):
@@ -120,42 +127,16 @@ class _Chi2GradientHessian:
         """
         chi2_grad_hess.chi2 += incoming[0]
 
-        for idx, contrib in incoming.gradient.items():
-            chi2_grad_hess.gradient[idx * chi2_grad_hess.dim:(idx + 1) * chi2_grad_hess.dim] += contrib
+        for idx, contrib in incoming[1].items():
+            chi2_grad_hess.gradient[idx] += contrib
 
-        for (idx1, idx2), contrib in incoming.hessian.items():
-            chi2_grad_hess.hessian[idx1 * chi2_grad_hess.dim:(idx1 + 1) * chi2_grad_hess.dim, idx2 * chi2_grad_hess.dim:(idx2 + 1) * chi2_grad_hess.dim] += contrib
+        for (idx1, idx2), contrib in incoming[2].items():
+            if idx1 <= idx2:
+                chi2_grad_hess.hessian[idx1, idx2] += contrib
+            else:
+                chi2_grad_hess.hessian[idx2, idx1] += np.transpose(contrib)
 
-            if idx1 != idx2:
-                chi2_grad_hess.hessian[idx2 * chi2_grad_hess.dim:(idx2 + 1) * chi2_grad_hess.dim, idx1 * chi2_grad_hess.dim:(idx1 + 1) * chi2_grad_hess.dim] += np.transpose(contrib)
-
-
-def _chi2_gradient_hessian_initializer(dim):
-    """Return a function that initializes a `_Chi2GradientHessian` instance.
-
-    Parameters
-    ----------
-    dim : int
-        The compact dimensionality of the poses
-
-    Returns
-    -------
-    function
-        A function that creates a `_Chi2GradientHessian` instance
-
-    """
-    def _create_chi2_gradient_hessian():
-        """Create a `_Chi2GradientHessian` instance.
-
-        Returns
-        -------
-        _Chi2GradientHessian
-            A `_Chi2GradientHessian` instance with compact dimensionality ``dim``
-
-        """
-        return _Chi2GradientHessian(dim)
-
-    return _create_chi2_gradient_hessian
+        return chi2_grad_hess
 
 
 class Graph(object):
@@ -201,6 +182,10 @@ class Graph(object):
         index_id_dict = {i: v.id for i, v in enumerate(self._vertices)}
         id_index_dict = {v_id: v_index for v_index, v_id in index_id_dict.items()}
 
+        # Fill in the vertices' `index` attribute
+        for v in self._vertices:
+            v.index = id_index_dict[v.id]
+
         for e in self._edges:
             e.vertices = [self._vertices[id_index_dict[v_id]] for v_id in e.vertex_ids]
 
@@ -221,15 +206,63 @@ class Graph(object):
         """
         n = len(self._vertices)
         dim = len(self._vertices[0].pose.to_compact())
-        chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _chi2_gradient_hessian_initializer(dim))
+        chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _Chi2GradientHessian(dim))
 
         self._chi2 = chi2_gradient_hessian.chi2
 
-        self._gradient = np.zeros(n, dtype=np.float64)
+        # Fill in the gradient vector
+        self._gradient = np.zeros(n * dim, dtype=np.float64)
         for idx, contrib in chi2_gradient_hessian.gradient.items():
-            self._gradient[idx * dim:(idx + 1) * dim] += contrib
+            self._gradient[idx * dim: (idx + 1) * dim] += contrib
 
-    def optimize(self):
+        # Fill in the Hessian matrix
+        self._hessian = lil_matrix((n * dim, n * dim), dtype=np.float64)
+        for (row_idx, col_idx), contrib in chi2_gradient_hessian.hessian.items():
+            self._hessian[row_idx * dim: (row_idx + 1) * dim, col_idx * dim: (col_idx + 1) * dim] += contrib
+
+            if row_idx != col_idx:
+                self._hessian[col_idx * dim: (col_idx + 1) * dim, row_idx * dim: (row_idx + 1) * dim] += np.transpose(contrib)
+
+    def optimize(self, tol=1e-4, max_iter=20, fix_first_pose=True):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
 
+        Parameters
+        ----------
+        tol : float
+            If the relative decrease in the :math:`\chi^2` error between iterations is less than ``tol``, we will stop
+        max_iter : int
+            The maximum number of iterations
+        fix_first_pose : bool
+            If ``True``, we will fix the first pose
+
         """
+        n = len(self._vertices)
+        dim = len(self._vertices[0].pose.to_compact())
+
+        # If we are fixing the first pose, we will start with the second pose when applying updates
+        vertices_idx0 = 1 if fix_first_pose else 0
+        dx_idx0 = dim if fix_first_pose else 0
+        dx_split = n - 1 if fix_first_pose else n
+
+        # Previous iteration's chi^2 error
+        chi2_prev = -1.
+
+        for i in range(max_iter):
+            self._calc_chi2_gradient_hessian()
+
+            # Check for convergence (from the previous iteration); this avoids having to calculate chi^2 twice
+            if i > 0:
+                print("Iteration {:2d}: chi2_prev = {:.4f}, self._chi2 = {:.4f}".format(i, chi2_prev, self._chi2))
+                if self._chi2 < chi2_prev and (chi2_prev - self._chi2) / (chi2_prev + np.finfo(float).eps) < tol:
+                    return
+
+            # Update the previous iteration's chi^2 error
+            chi2_prev = self._chi2
+
+            # Solve for the updates
+            self._hessian[:dim, :dim] += 1000. * np.eye(dim)
+            dx = spsolve(self._hessian, -self._gradient)  # pylint: disable=invalid-unary-operand-type
+
+            # Apply the updates
+            for v, dx_i in zip(self._vertices[vertices_idx0:], np.split(dx[dx_idx0:], dx_split)):
+                v.pose += dx_i
