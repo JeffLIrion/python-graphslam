@@ -1,4 +1,4 @@
-r"""Representation of a point in `\mathbb{R}^2`.
+r"""Representation of a point in :math:`\mathbb{R}^2`.
 
 """
 

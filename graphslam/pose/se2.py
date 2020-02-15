@@ -1,4 +1,4 @@
-r"""Representation of a pose in `SE(2)`.
+r"""Representation of a pose in :math:`SE(2)`.
 
 """
 
