@@ -9,7 +9,7 @@ import numpy as np
 
 from graphslam.vertex import Vertex
 from graphslam.edge.base_edge import BaseEdge
-from graphslam.edge.edge_odometry import OdometryEdge
+from graphslam.edge.edge_odometry import EdgeOdometry
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.se2 import PoseSE2
 
@@ -70,7 +70,7 @@ class TestBaseEdge(unittest.TestCase):
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
 
-        e = OdometryEdge([1, 2], np.eye(2), 0, [v1, v2])
+        e = EdgeOdometry([1, 2], np.eye(2), 0, [v1, v2])
 
         jacobians = e.calc_jacobians()
 
@@ -87,7 +87,7 @@ class TestBaseEdge(unittest.TestCase):
         v1 = Vertex(0, p1, 0)
         v2 = Vertex(1, p2, 1)
 
-        e = OdometryEdge([0, 1], np.eye(2), 0, [v1, v2])
+        e = EdgeOdometry([0, 1], np.eye(2), 0, [v1, v2])
 
         chi2, gradient, hessian = e.calc_chi2_gradient_hessian()
 

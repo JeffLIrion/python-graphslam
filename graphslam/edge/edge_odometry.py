@@ -6,7 +6,7 @@ r"""A class for odometry edges.
 from .base_edge import BaseEdge
 
 
-class OdometryEdge(BaseEdge):
+class EdgeOdometry(BaseEdge):
     r"""A class for representing odometry edges in Graph SLAM.
 
     Parameters

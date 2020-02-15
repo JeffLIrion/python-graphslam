@@ -18,7 +18,7 @@ setup(
     license='MIT',
     author='Jeff Irion',
     author_email='jefflirion@users.noreply.github.com',
-    packages=['graphslam', 'graphslam.pose'],
+    packages=['graphslam', 'graphslam.pose', 'graphslam.edge'],
     install_requires=['numpy', 'scipy'],
     # tests_require=[],
     classifiers=['License :: OSI Approved :: MIT License',
