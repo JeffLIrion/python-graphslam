@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Jeff Irion and contributors
+
 """Unit tests for the pose/pose_r3.py module.
 
 """

@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Jeff Irion and contributors
+
 r"""A ``Graph`` class that stores the edges and vertices required for Graph SLAM.
 
 Given:

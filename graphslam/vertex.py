@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Jeff Irion and contributors
+
 """A ``Vertex`` class.
 
 """

@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Jeff Irion and contributors
+
 r"""Representation of a pose in :math:`SE(2)`.
 
 """
