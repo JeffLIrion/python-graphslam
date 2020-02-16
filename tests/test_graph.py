@@ -51,8 +51,13 @@ class TestGraph(unittest.TestCase):
 
         """
         chi2_orig = self.g.calc_chi2()
+
+        p0 = self.g._vertices[0].pose.to_array()  # pylint: disable=protected-access
         self.g.optimize()
         self.assertLess(self.g.calc_chi2(), chi2_orig)
+
+        # Make sure the first pose was held fixed
+        self.assertAlmostEqual(np.linalg.norm(p0 - self.g._vertices[0].pose.to_array()), 0.)  # pylint: disable=protected-access
 
 
 if __name__ == '__main__':

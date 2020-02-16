@@ -239,11 +239,6 @@ class Graph(object):
         n = len(self._vertices)
         dim = len(self._vertices[0].pose.to_compact())
 
-        # If we are fixing the first pose, we will start with the second pose when applying updates
-        vertices_idx0 = 1 if fix_first_pose else 0
-        dx_idx0 = dim if fix_first_pose else 0
-        dx_split = n - 1 if fix_first_pose else n
-
         # Previous iteration's chi^2 error
         chi2_prev = -1.
 
@@ -259,10 +254,16 @@ class Graph(object):
             # Update the previous iteration's chi^2 error
             chi2_prev = self._chi2
 
+            # Hold the first pose fixed
+            if fix_first_pose:
+                self._hessian[:dim, :] = 0.
+                self._hessian[:, :dim] = 0.
+                self._hessian[:dim, :dim] += np.eye(dim)
+                self._gradient[:dim] = 0.
+
             # Solve for the updates
-            self._hessian[:dim, :dim] += 1000. * np.eye(dim)
             dx = spsolve(self._hessian, -self._gradient)  # pylint: disable=invalid-unary-operand-type
 
             # Apply the updates
-            for v, dx_i in zip(self._vertices[vertices_idx0:], np.split(dx[dx_idx0:], dx_split)):
+            for v, dx_i in zip(self._vertices, np.split(dx, n)):
                 v.pose += dx_i
