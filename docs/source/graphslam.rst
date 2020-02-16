@@ -15,6 +15,7 @@ Submodules
 .. toctree::
 
    graphslam.graph
+   graphslam.load
    graphslam.util
    graphslam.vertex
 
