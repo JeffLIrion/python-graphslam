@@ -13,7 +13,7 @@ setup(
     version='0.0.1',
     description='Graph SLAM solver in Python',
     long_description=readme,
-    keywords=['graphslam', 'slam'],
+    keywords=['graphslam', 'slam', 'graph', 'optimization', 'mapping'],
     url='https://github.com/JeffLIrion/python-graphslam',
     license='MIT',
     author='Jeff Irion',
