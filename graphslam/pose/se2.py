@@ -111,7 +111,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         float
-            A ``PoseSE2`` object has no orientation, so this will always return 0.
+            The angle of the pose
 
         """
         return self[2]
