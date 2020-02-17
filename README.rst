@@ -1,11 +1,11 @@
 graphslam
 =========
 
-.. image:: https://travis-ci.com/JeffLIrion/graphslam.svg?branch=master
-   :target: https://travis-ci.com/JeffLIrion/graphslam
+.. image:: https://travis-ci.com/JeffLIrion/python-graphslam.svg?branch=master
+   :target: https://travis-ci.com/JeffLIrion/python-graphslam
 
-.. image:: https://coveralls.io/repos/github/JeffLIrion/graphslam/badge.svg?branch=master
-   :target: https://coveralls.io/github/JeffLIrion/graphslam?branch=master
+.. image:: https://coveralls.io/repos/github/JeffLIrion/python-graphslam/badge.svg?branch=master
+   :target: https://coveralls.io/github/JeffLIrion/python-graphslam?branch=master
 
 
 Documentation for this package can be found at https://python-graphslam.readthedocs.io/.
