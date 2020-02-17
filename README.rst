@@ -8,7 +8,7 @@ graphslam
    :target: https://coveralls.io/github/JeffLIrion/graphslam?branch=master
 
 
-Documentation for this package can be found at https://graphslam.readthedocs.io/.
+Documentation for this package can be found at https://python-graphslam.readthedocs.io/.
 
 
 This package implements a Graph SLAM solver in Python.
