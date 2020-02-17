@@ -12,6 +12,7 @@ class BasePose(np.ndarray):
 
     """
 
+    # pylint: disable=arguments-differ
     def copy(self):
         """Return a copy of the pose.
 
