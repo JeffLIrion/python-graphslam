@@ -1,13 +1,15 @@
+.PHONY: release
+release:
+	rm -rf dist
+	scripts/git_tag.sh
+	python setup.py sdist bdist_wheel
+	twine upload dist/*
+
 .PHONY: docs
 docs:
 	rm -rf docs/build/html
 	@cd docs && sphinx-apidoc -f -e -o source/ ../graphslam/
 	@cd docs && make html && make html
-
-.PHONY: doxygen
-doxygen:
-	rm -rf docs/html
-	doxygen Doxyfile
 
 .PHONY: test
 test:
@@ -23,8 +25,8 @@ tdd:
 
 .PHONY: lint
 lint:
-	flake8 graphslam/ && pylint graphslam/
+	flake8 graphslam/ && pylint graphslam/ && flake8 tests/ && pylint tests/
 
 .PHONY: alltests
 alltests:
-	flake8 graphslam/ && pylint graphslam/ && coverage run --source graphslam setup.py test && coverage report -m
+	flake8 graphslam/ && pylint graphslam/ && flake8 tests/ && pylint tests/ && coverage run --source graphslam setup.py test && coverage report -m
