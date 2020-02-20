@@ -179,7 +179,6 @@ class TestPoseSE3(unittest.TestCase):
     #                                Jacobians                                #
     #                                                                         #
     # ======================================================================= #
-    @unittest.skip("Not implemented yet")
     def test_jacobian_self_oplus_other(self):
         """Test that the ``jacobian_self_oplus_other_wrt_self`` and ``jacobian_self_oplus_other_wrt_other`` methods are correctly implemented.
 
@@ -196,7 +195,7 @@ class TestPoseSE3(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeOMinus([1, 2], np.eye(3), np.zeros(3), [v1, v2])
+            e = EdgeOPlus([1, 2], np.eye(7), np.zeros(7), [v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
@@ -204,11 +203,7 @@ class TestPoseSE3(unittest.TestCase):
 
             self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
             for n, a in zip(numerical_jacobians, analytical_jacobians):
-                # self.assertAlmostEqual(np.linalg.norm(n - a), 0., 5)
-                pass
-
-            for n, a in zip(numerical_jacobians[:1], analytical_jacobians[:1]):
-                self.assertAlmostEqual(np.linalg.norm(n[:, :3] - a[:, :3]), 0., 5)
+                self.assertAlmostEqual(np.linalg.norm(n[:, :3] - a[:, :3]), 0.)
 
     @unittest.skip("Not implemented yet")
     def test_jacobian_self_ominus_other(self):
@@ -227,7 +222,7 @@ class TestPoseSE3(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeOPlus([1, 2], np.eye(3), np.zeros(3), [v1, v2])
+            e = EdgeOMinus([1, 2], np.eye(7), np.zeros(7), [v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
