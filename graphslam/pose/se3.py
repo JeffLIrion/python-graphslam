@@ -162,28 +162,9 @@ class PoseSE3(BasePose):
             The result of inverse pose composition
 
         """
-        '''
-        other + self
-
-        return PoseSE3([INVERSE[0] + self[0] + 2. * (-(other[4]**2 + other[5]**2) * self[0] + (other[3] * other[4] + other[5] * other[6]) * self[1] + (other[3] * other[5] - other[4] * other[6]) * self[2]),
-                        INVERSE[1] + self[1] + 2. * ((other[3] * other[4] - other[5] * other[6]) * self[0] - (other[3]**2 + other[5]**2) * self[1] + (other[4] * other[5] + other[3] * other[6]) * self[2]),
-                        INVERSE[2] + self[2] + 2. * ((other[3] * other[5] + other[4] * other[6]) * self[0] + (other[4] * other[5] - other[3] * other[6]) * self[1] - (other[3]**2 + other[4]**2) * self[2])],
-                       [INVERSE[6] * self[3] + INVERSE[3] * self[6] + INVERSE[4] * self[5] - INVERSE[5] * self[4],
-                        INVERSE[6] * self[4] - INVERSE[3] * self[5] + INVERSE[4] * self[6] + INVERSE[5] * self[3],
-                        INVERSE[6] * self[5] + INVERSE[3] * self[4] - INVERSE[4] * self[3] + INVERSE[5] * self[6],
-                        INVERSE[6] * self[6] - INVERSE[3] * self[3] - INVERSE[4] * self[4] - INVERSE[5] * self[5]])
-
-        return PoseSE3([-other[0] + 2. * ((other[4]**2 + other[5]**2) * other[0] - (other[3] * other[4] + other[5] * other[6]) * other[1] + (other[4] * other[6] - other[3] * other[5]) * other[2]),
-                        -other[1] + 2. * ((other[5] * other[6] - other[3] * other[4]) * other[0] + (other[3]**2 + other[5]**2) * other[1] - (other[3] * other[6] + other[4] * other[5]) * other[2]),
-                        -other[2] + 2. * (-(other[3] * other[5] + other[4] * other[6]) * other[0] + (other[3] * other[6] - other[4] * other[5]) * other[1] + (other[3]**2 + other[4]**2) * other[2])],
-                       [-other[3], -other[4], -other[5], other[6]])
-        '''
-        INVERSE = [-other[0] + 2. * ((other[4]**2 + other[5]**2) * other[0] - (other[3] * other[4] + other[5] * other[6]) * other[1] + (other[4] * other[6] - other[3] * other[5]) * other[2]),
-                        -other[1] + 2. * ((other[5] * other[6] - other[3] * other[4]) * other[0] + (other[3]**2 + other[5]**2) * other[1] - (other[3] * other[6] + other[4] * other[5]) * other[2]),
-                        -other[2] + 2. * (-(other[3] * other[5] + other[4] * other[6]) * other[0] + (other[3] * other[6] - other[4] * other[5]) * other[1] + (other[3]**2 + other[4]**2) * other[2])]
-        return PoseSE3([INVERSE[0] + self[0] + 2. * (-(other[4]**2 + other[5]**2) * self[0] + (other[3] * other[4] + other[5] * other[6]) * self[1] + (other[3] * other[5] - other[4] * other[6]) * self[2]),
-                        INVERSE[1] + self[1] + 2. * ((other[3] * other[4] - other[5] * other[6]) * self[0] - (other[3]**2 + other[5]**2) * self[1] + (other[4] * other[5] + other[3] * other[6]) * self[2]),
-                        INVERSE[2] + self[2] + 2. * ((other[3] * other[5] + other[4] * other[6]) * self[0] + (other[4] * other[5] - other[3] * other[6]) * self[1] - (other[3]**2 + other[4]**2) * self[2])],
+        return PoseSE3([self[0] - other[0] + 2. * (-(other[4]**2 + other[5]**2) * (self[0] - other[0]) + (other[3] * other[4] + other[5] * other[6]) * (self[1] - other[1]) + (other[3] * other[5] - other[4] * other[6]) * (self[2] - other[2])),
+                        self[1] - other[1] + 2. * ((other[3] * other[4] - other[5] * other[6]) * (self[0] - other[0]) - (other[3]**2 + other[5]**2) * (self[1] - other[1]) + (other[4] * other[5] + other[3] * other[6]) * (self[2] - other[2])),
+                        self[2] - other[2] + 2. * ((other[3] * other[5] + other[4] * other[6]) * (self[0] - other[0]) + (other[4] * other[5] - other[3] * other[6]) * (self[1] - other[1]) - (other[3]**2 + other[4]**2) * (self[2] - other[2]))],
                        [other[6] * self[3] - other[3] * self[6] - other[4] * self[5] + other[5] * self[4],
                         other[6] * self[4] + other[3] * self[5] - other[4] * self[6] - other[5] * self[3],
                         other[6] * self[5] - other[3] * self[4] + other[4] * self[3] - other[5] * self[6],

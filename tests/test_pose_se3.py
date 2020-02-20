@@ -148,7 +148,6 @@ class TestPoseSE3(unittest.TestCase):
 
             expected = np.dot(np.linalg.inv(p2.to_matrix()), p1.to_matrix())
             self.assertAlmostEqual(np.linalg.norm((p1 - p2).to_matrix() - expected), 0.)
-            self.assertAlmostEqual(np.linalg.norm((p1 - p2).to_matrix()[:, :3] - expected[:, :3]), 0.)
 
     # ======================================================================= #
     #                                                                         #
