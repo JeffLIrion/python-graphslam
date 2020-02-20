@@ -99,7 +99,6 @@ class TestPoseSE3(unittest.TestCase):
 
         self.assertAlmostEqual(np.linalg.norm(p1.orientation - np.array([0, 0, 0, 1])), 0.)
 
-    @unittest.skip("Not implemented yet")
     def test_inverse(self):
         """Test that the ``inverse`` property works as expected.
 

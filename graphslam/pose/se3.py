@@ -116,7 +116,10 @@ class PoseSE3(BasePose):
             The pose's inverse
 
         """
-        raise NotImplementedError
+        return PoseSE3([-self[0] + 2. * ((self[4]**2 + self[5]**2) * self[0] - (self[3] * self[4] + self[5] * self[6]) * self[1] + (self[4] * self[6] - self[3] * self[5]) * self[2]),
+                        -self[1] + 2. * ((self[5] * self[6] - self[3] * self[4]) * self[0] + (self[3]**2 + self[5]**2) * self[1] - (self[3] * self[6] + self[4] * self[5]) * self[2]),
+                        -self[2] + 2. * (-(self[3] * self[5] + self[4] * self[6]) * self[0] + (self[3] * self[6] - self[4] * self[5]) * self[1] + (self[3]**2 + self[4]**2) * self[2])],
+                       [-self[3], -self[4], -self[5], self[6]])
 
     # ======================================================================= #
     #                                                                         #
