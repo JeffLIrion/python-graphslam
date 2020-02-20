@@ -140,13 +140,35 @@ class PoseSE3(BasePose):
             The result of pose composition
 
         """
-        return PoseSE3([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[3] * self[5] + self[4] * self[6]) * other[2]),
-                        self[1] + other[1] + 2. * ((self[3] * self[4] + self[5] * self[6]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
-                        self[2] + other[2] + 2. * ((self[3] * self[5] - self[4] * self[6]) * other[0] + (self[3] * self[6] + self[4] * self[5]) * other[1] - (self[3]**2 + self[4]**2) * other[2])],
-                       [self[6] * other[3] + self[3] * other[6] + self[4] * other[5] - self[5] * other[4],
-                        self[6] * other[4] - self[3] * other[5] + self[4] * other[6] + self[5] * other[3],
-                        self[6] * other[5] + self[3] * other[4] - self[4] * other[3] + self[5] * other[6],
-                        self[6] * other[6] - self[3] * other[3] - self[4] * other[4] - self[5] * other[5]])
+        if isinstance(other, PoseSE3):
+            # oplus: self (+) other
+            return PoseSE3([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[3] * self[5] + self[4] * self[6]) * other[2]),
+                            self[1] + other[1] + 2. * ((self[3] * self[4] + self[5] * self[6]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
+                            self[2] + other[2] + 2. * ((self[3] * self[5] - self[4] * self[6]) * other[0] + (self[3] * self[6] + self[4] * self[5]) * other[1] - (self[3]**2 + self[4]**2) * other[2])],
+                           [self[6] * other[3] + self[3] * other[6] + self[4] * other[5] - self[5] * other[4],
+                            self[6] * other[4] - self[3] * other[5] + self[4] * other[6] + self[5] * other[3],
+                            self[6] * other[5] + self[3] * other[4] - self[4] * other[3] + self[5] * other[6],
+                            self[6] * other[6] - self[3] * other[3] - self[4] * other[4] - self[5] * other[5]])
+
+        if isinstance(other, np.ndarray):
+            if len(other) == 6:
+                # boxplus: self [+] other
+                qnorm = np.linalg.norm(other[3:])
+                if qnorm > 1.0:
+                    qw, qx, qy, qz = 1., 0., 0., 0.
+                else:
+                    qw = np.sqrt(1. - qnorm**2)
+                    qx, qy, qz = other[3:]
+
+                return PoseSE3([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[3] * self[5] + self[4] * self[6]) * other[2]),
+                                self[1] + other[1] + 2. * ((self[3] * self[4] + self[5] * self[6]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
+                                self[2] + other[2] + 2. * ((self[3] * self[5] - self[4] * self[6]) * other[0] + (self[3] * self[6] + self[4] * self[5]) * other[1] - (self[3]**2 + self[4]**2) * other[2])],
+                               [self[6] * qx + self[3] * qw + self[4] * qz - self[5] * qy,
+                                self[6] * qy - self[3] * qz + self[4] * qw + self[5] * qx,
+                                self[6] * qz + self[3] * qy - self[4] * qx + self[5] * qw,
+                                self[6] * qw - self[3] * qx - self[4] * qy - self[5] * qz])
+
+        raise NotImplementedError
 
     def __sub__(self, other):
         r"""Subtract poses (i.e., inverse pose composition): :math:`p_1 \ominus p_2`.
@@ -189,7 +211,13 @@ class PoseSE3(BasePose):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
         """
-        raise NotImplementedError
+        return np.array([[1., 0., 0., 12345, 12345, 12345, 12345],
+                         [0., 1., 0., 12345, 12345, 12345, 12345],
+                         [0., 0., 1., 12345, 12345, 12345, 12345],
+                         [0., 0., 0., 12345, 12345, 12345, 12345],
+                         [0., 0., 0., 12345, 12345, 12345, 12345],
+                         [0., 0., 0., 12345, 12345, 12345, 12345],
+                         [0., 0., 0., 12345, 12345, 12345, 12345]])
 
     def jacobian_self_oplus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
@@ -205,7 +233,7 @@ class PoseSE3(BasePose):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
         """
-        raise NotImplementedError
+        return np.zeros((7, 7))
 
     def jacobian_self_ominus_other_wrt_self(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
