@@ -149,8 +149,10 @@ class TestPoseSE3(unittest.TestCase):
             p1.normalize()
 
             expected = np.dot(p1.to_matrix(), p2.to_matrix())
-            self.assertAlmostEqual(np.linalg.norm((p1 + p2_compact).to_matrix()[:, 3] - expected[:, 3]), 0.)
-            self.assertAlmostEqual(np.linalg.norm((p1 + p2_compact).to_matrix()[:, :3] - expected[:, :3]), 0.)
+            self.assertAlmostEqual(np.linalg.norm((p1 + p2_compact).to_matrix() - expected), 0.)
+
+            p1 += p2_compact
+            self.assertAlmostEqual(np.linalg.norm(p1.to_matrix() - expected), 0.)
 
         with self.assertRaises(NotImplementedError):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))

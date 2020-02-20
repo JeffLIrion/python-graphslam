@@ -251,4 +251,6 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`
 
         """
-        return np.eye(3)
+        return np.array([[np.cos(self[2]), -np.sin(self[2]), 0.],
+                         [np.sin(self[2]), np.cos(self[2]), 0.],
+                         [0., 0., 1.]])

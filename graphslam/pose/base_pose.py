@@ -124,6 +124,22 @@ class BasePose(np.ndarray):
         """
         raise NotImplementedError
 
+    def __iadd__(self, other):
+        """Add poses in-place (i.e., pose composition).
+
+        Parameters
+        ----------
+        other : BasePose
+            The other pose
+
+        Returns
+        -------
+        BasePose
+            The result of pose composition
+
+        """
+        return self + other
+
     # ======================================================================= #
     #                                                                         #
     #                                Jacobians                                #
