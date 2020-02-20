@@ -28,11 +28,11 @@ Let
 
    \mathbf{x} := \begin{bmatrix} \mathbf{x}_1 \\ \mathbf{x}_2 \\ \vdots \\ \mathbf{x}_N \end{bmatrix} \in \mathbb{R}^{cN}.
 
-We will solve this optimization problem iteratively.  We will need to represent each pose Let
+We will solve this optimization problem iteratively.  Let
 
 .. math::
 
-   \mathbf{x}^{k+1} = \mathbf{x}^k \boxplus \Delta \mathbf{x}^k.
+   \mathbf{x}^{k+1} := \mathbf{x}^k \boxplus \Delta \mathbf{x}^k.
 
 The :math:`\chi^2` error at iteration :math:`k+1` is
 
