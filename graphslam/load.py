@@ -85,8 +85,6 @@ def load_g2o_se3(infile):
         for line in f.readlines():
             if line.startswith("VERTEX_SE3:QUAT"):
                 numbers = line[16:].split()
-                print()
-                print(numbers)
                 arr = np.array([float(number) for number in numbers[1:]], dtype=np.float64)
                 p = PoseSE3(arr[:3], arr[3:])
                 v = Vertex(int(numbers[0]), p)
@@ -95,8 +93,6 @@ def load_g2o_se3(infile):
 
             if line.startswith("EDGE_SE3:QUAT"):
                 numbers = line[14:].split()
-                print()
-                print(numbers)
                 arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
                 n = 6
                 vertex_ids = [int(numbers[0]), int(numbers[1])]
