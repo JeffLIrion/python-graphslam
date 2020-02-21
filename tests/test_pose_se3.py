@@ -205,7 +205,6 @@ class TestPoseSE3(unittest.TestCase):
             for n, a in zip(numerical_jacobians, analytical_jacobians):
                 self.assertAlmostEqual(np.linalg.norm(n[:, :3] - a[:, :3]), 0.)
 
-    @unittest.skip("Not implemented yet")
     def test_jacobian_self_ominus_other(self):
         """Test that the ``jacobian_self_ominus_other_wrt_self`` and ``jacobian_self_ominus_other_wrt_other`` methods are correctly implemented.
 

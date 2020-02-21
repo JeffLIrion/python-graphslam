@@ -225,7 +225,7 @@ class PoseSE3(BasePose):
         Parameters
         ----------
         other : BasePose
-            The pose that is being added to ``self``
+            (Unused) The pose that is being added to ``self``
 
         Returns
         -------
@@ -255,7 +255,13 @@ class PoseSE3(BasePose):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
         """
-        return np.zeros((7, 7))
+        return np.array([[1. - 2. * (other[4]**2 + other[5]**2), 2. * (other[3] * other[4] + other[5] * other[6]), 2. * (other[3] * other[5] - other[4] * other[6]), 0., 0., 0., 0.],
+                         [2. * (other[3] * other[4] - other[5] * other[6]), 1. - 2. * (other[3]**2 + other[5]**2), 2. * (other[4] * other[5] + other[3] * other[6]), 0., 0., 0., 0.],
+                         [2. * (other[3] * other[5] + other[4] * other[6]), 2. * (other[4] * other[5] - other[3] * other[6]), 1. - 2. * (other[3]**2 + other[4]**2), 0., 0., 0., 0.],
+                         [0., 0., 0., other[6], other[5], -other[4], -other[3]],
+                         [0., 0., 0., -other[5], other[6], other[3], -other[4]],
+                         [0., 0., 0., other[4], -other[3], other[6], -other[5]],
+                         [0., 0., 0., other[3], other[4], other[5], other[6]]], dtype=np.float64)
 
     def jacobian_self_ominus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
@@ -271,7 +277,13 @@ class PoseSE3(BasePose):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
         """
-        return np.zeros((7, 7))
+        return np.array([[-1. + 2. * (other[4]**2 + other[5]**2), -2. * (other[3] * other[4] + other[5] * other[6]), -2. * (other[3] * other[5] - other[4] * other[6]), 2. * (other[4] * (self[1] - other[1]) + other[5] * (self[2] - other[2])), 2. * (-2. * other[4] * (self[0] - other[0]) + other[3] * (self[1] - other[1]) - other[6] * (self[2] - other[2])), 2. * (-2. * other[5] * (self[0] - other[0]) + other[6] * (self[1] - other[1]) + other[3] * (self[2] - other[2])), 2. * (other[5] * (self[1] - other[1]) - other[4] * (self[2] - other[2]))],
+                         [-2. * (other[3] * other[4] - other[5] * other[6]), -1. + 2. * (other[3]**2 + other[5]**2), -2. * (other[4] * other[5] + other[3] * other[6]), 2. * (other[4] * (self[0] - other[0]) - 2. * other[3] * (self[1] - other[1]) + other[6] * (self[2] - other[2])), 2. * (other[3] * (self[0] - other[0]) + other[5] * (self[2] - other[2])), 2. * (-other[6] * (self[0] - other[0]) - 2. * other[5] * (self[1] - other[1]) + other[4] * (self[2] - other[2])), 2. * (-other[5] * (self[0] - other[0]) + other[3] * (self[2] - other[2]))],
+                         [-2. * (other[3] * other[5] + other[4] * other[6]), -2. * (other[4] * other[5] - other[3] * other[6]), -1. + 2. * (other[3]**2 + other[4]**2), 2. * (other[5] * (self[0] - other[0]) - other[6] * (self[1] - other[1]) - 2. * other[3] * (self[2] - other[2])), 2. * (other[6] * (self[0] - other[0]) + other[5] * (self[1] - other[1]) - 2. * other[4] * (self[2] - other[2])), 2. * (other[3] * (self[0] - other[0]) + other[4] * (self[1] - other[1])), 2. * (other[4] * (self[0] - other[0]) - other[3] * (self[1] - other[1]))],
+                         [0., 0., 0., -self[6], -self[5], self[4], self[3]],
+                         [0., 0., 0., self[5], -self[6], -self[3], self[4]],
+                         [0., 0., 0., -self[4], self[3], -self[6], self[5]],
+                         [0., 0., 0., self[3], self[4], self[5], self[6]]], dtype=np.float64)
 
     def jacobian_boxplus(self):
         r"""Compute the Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`.
