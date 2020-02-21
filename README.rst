@@ -51,23 +51,23 @@ Example Usage
 
    >>> g.optimize()
 
-   Iteration  1: chi2_prev = 10140102.2610, self._chi2 = 20833919847.7259
-   Iteration  2: chi2_prev = 20833919847.7259, self._chi2 = 17362991.8231
-   Iteration  3: chi2_prev = 17362991.8231, self._chi2 = 8602802245.3984
-   Iteration  4: chi2_prev = 8602802245.3984, self._chi2 = 235948977.0316
-   Iteration  5: chi2_prev = 235948977.0316, self._chi2 = 24157387.7109
-   Iteration  6: chi2_prev = 24157387.7109, self._chi2 = 1951370.9006
-   Iteration  7: chi2_prev = 1951370.9006, self._chi2 = 3316955.3135
-   Iteration  8: chi2_prev = 3316955.3135, self._chi2 = 756557.7506
-   Iteration  9: chi2_prev = 756557.7506, self._chi2 = 444315.7353
-   Iteration 10: chi2_prev = 444315.7353, self._chi2 = 181332.8638
-   Iteration 11: chi2_prev = 181332.8638, self._chi2 = 171861.6236
-   Iteration 12: chi2_prev = 171861.6236, self._chi2 = 157799.2821
-   Iteration 13: chi2_prev = 157799.2821, self._chi2 = 158330.1207
-   Iteration 14: chi2_prev = 158330.1207, self._chi2 = 157011.2435
-   Iteration 15: chi2_prev = 157011.2435, self._chi2 = 156985.9860
-   Iteration 16: chi2_prev = 156985.9860, self._chi2 = 156860.6274
-   Iteration 17: chi2_prev = 156860.6274, self._chi2 = 156856.5443
+   Iteration  1: chi2_prev = 10140102.2610, self._chi2 = 20788949397.2203
+   Iteration  2: chi2_prev = 20788949397.2203, self._chi2 = 16923475.8850
+   Iteration  3: chi2_prev = 16923475.8850, self._chi2 = 8294793755.7228
+   Iteration  4: chi2_prev = 8294793755.7228, self._chi2 = 220115513.6180
+   Iteration  5: chi2_prev = 220115513.6180, self._chi2 = 24117440.3125
+   Iteration  6: chi2_prev = 24117440.3125, self._chi2 = 1990004.8692
+   Iteration  7: chi2_prev = 1990004.8692, self._chi2 = 3445068.7836
+   Iteration  8: chi2_prev = 3445068.7836, self._chi2 = 788043.5452
+   Iteration  9: chi2_prev = 788043.5452, self._chi2 = 462337.4617
+   Iteration 10: chi2_prev = 462337.4617, self._chi2 = 183661.3263
+   Iteration 11: chi2_prev = 183661.3263, self._chi2 = 172777.5398
+   Iteration 12: chi2_prev = 172777.5398, self._chi2 = 157818.2026
+   Iteration 13: chi2_prev = 157818.2026, self._chi2 = 158420.4379
+   Iteration 14: chi2_prev = 158420.4379, self._chi2 = 157013.3727
+   Iteration 15: chi2_prev = 157013.3727, self._chi2 = 156995.5912
+   Iteration 16: chi2_prev = 156995.5912, self._chi2 = 156861.0154
+   Iteration 17: chi2_prev = 156861.0154, self._chi2 = 156857.2851
 
 
 References and Links
