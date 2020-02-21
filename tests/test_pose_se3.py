@@ -12,7 +12,7 @@ import numpy as np
 from graphslam.vertex import Vertex
 from graphslam.pose.se3 import PoseSE3
 from graphslam.edge.base_edge import BaseEdge
-from .edge_oplus_ominus import EdgeOMinus, EdgeOPlus
+from .edge_oplus_ominus import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
 
 
 class TestPoseSE3(unittest.TestCase):
@@ -222,6 +222,58 @@ class TestPoseSE3(unittest.TestCase):
             v2 = Vertex(2, p2)
 
             e = EdgeOMinus([1, 2], np.eye(7), np.zeros(7), [v1, v2])
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0., 5)
+
+    def test_jacobian_self_oplus_other_compact(self):
+        """Test that the ``jacobian_self_oplus_other_wrt_self_compact`` and ``jacobian_self_oplus_other_wrt_other_compact`` methods are correctly implemented.
+
+        """
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+            p2 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+
+            p1.normalize()
+            p2.normalize()
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeOPlusCompact([1, 2], np.eye(7), np.zeros(7), [v1, v2])
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n[:, :3] - a[:, :3]), 0.)
+
+    def test_jacobian_self_ominus_other_compact(self):
+        """Test that the ``jacobian_self_ominus_other_wrt_self_compact`` and ``jacobian_self_ominus_other_wrt_other_compact`` methods are correctly implemented.
+
+        """
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+            p2 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+
+            p1.normalize()
+            p2.normalize()
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeOMinusCompact([1, 2], np.eye(7), np.zeros(7), [v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 

@@ -154,7 +154,39 @@ class PoseR2(BasePose):
         """
         return np.eye(2)
 
+    def jacobian_self_oplus_other_wrt_self_compact(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        """
+        return np.eye(2)
+
     def jacobian_self_oplus_other_wrt_other(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        """
+        return np.eye(2)
+
+    def jacobian_self_oplus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
         Parameters
@@ -186,7 +218,39 @@ class PoseR2(BasePose):
         """
         return np.eye(2)
 
+    def jacobian_self_ominus_other_wrt_self_compact(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being subtracted from ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+
+        """
+        return np.eye(2)
+
     def jacobian_self_ominus_other_wrt_other(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being subtracted from ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+
+        """
+        return -np.eye(2)
+
+    def jacobian_self_ominus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
         Parameters
