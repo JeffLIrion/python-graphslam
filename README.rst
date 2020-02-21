@@ -43,7 +43,7 @@ Example Usage
 
    >>> from graphslam.load import load_g2o_se2
 
-   >>> g = load_g2o_se2("input_INTEL_g2o")
+   >>> g = load_g2o_se2("input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.calc_chi2()
 
@@ -51,23 +51,23 @@ Example Usage
 
    >>> g.optimize()
 
-   Iteration  1: chi2_prev = 10140102.2610, self._chi2 = 20807915286.0808
-   Iteration  2: chi2_prev = 20807915286.0808, self._chi2 = 17138938.1459
-   Iteration  3: chi2_prev = 17138938.1459, self._chi2 = 8449141792.5765
-   Iteration  4: chi2_prev = 8449141792.5765, self._chi2 = 227464854.3710
-   Iteration  5: chi2_prev = 227464854.3710, self._chi2 = 24133028.4628
-   Iteration  6: chi2_prev = 24133028.4628, self._chi2 = 1971385.3240
-   Iteration  7: chi2_prev = 1971385.3240, self._chi2 = 3381916.5105
-   Iteration  8: chi2_prev = 3381916.5105, self._chi2 = 772245.1031
-   Iteration  9: chi2_prev = 772245.1031, self._chi2 = 453384.0468
-   Iteration 10: chi2_prev = 453384.0468, self._chi2 = 182479.5075
-   Iteration 11: chi2_prev = 182479.5075, self._chi2 = 172322.2547
-   Iteration 12: chi2_prev = 172322.2547, self._chi2 = 157810.0204
-   Iteration 13: chi2_prev = 157810.0204, self._chi2 = 158375.4994
-   Iteration 14: chi2_prev = 158375.4994, self._chi2 = 157012.2347
-   Iteration 15: chi2_prev = 157012.2347, self._chi2 = 156990.8030
-   Iteration 16: chi2_prev = 156990.8030, self._chi2 = 156860.7980
-   Iteration 17: chi2_prev = 156860.7980, self._chi2 = 156856.9133
+   Iteration  1: chi2_prev = 10140102.2610, self._chi2 = 20833919847.7259
+   Iteration  2: chi2_prev = 20833919847.7259, self._chi2 = 17362991.8231
+   Iteration  3: chi2_prev = 17362991.8231, self._chi2 = 8602802245.3984
+   Iteration  4: chi2_prev = 8602802245.3984, self._chi2 = 235948977.0316
+   Iteration  5: chi2_prev = 235948977.0316, self._chi2 = 24157387.7109
+   Iteration  6: chi2_prev = 24157387.7109, self._chi2 = 1951370.9006
+   Iteration  7: chi2_prev = 1951370.9006, self._chi2 = 3316955.3135
+   Iteration  8: chi2_prev = 3316955.3135, self._chi2 = 756557.7506
+   Iteration  9: chi2_prev = 756557.7506, self._chi2 = 444315.7353
+   Iteration 10: chi2_prev = 444315.7353, self._chi2 = 181332.8638
+   Iteration 11: chi2_prev = 181332.8638, self._chi2 = 171861.6236
+   Iteration 12: chi2_prev = 171861.6236, self._chi2 = 157799.2821
+   Iteration 13: chi2_prev = 157799.2821, self._chi2 = 158330.1207
+   Iteration 14: chi2_prev = 158330.1207, self._chi2 = 157011.2435
+   Iteration 15: chi2_prev = 157011.2435, self._chi2 = 156985.9860
+   Iteration 16: chi2_prev = 156985.9860, self._chi2 = 156860.6274
+   Iteration 17: chi2_prev = 156860.6274, self._chi2 = 156856.5443
 
 
 References and Links
