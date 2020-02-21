@@ -10,6 +10,7 @@ Submodules
    graphslam.pose.r2
    graphslam.pose.r3
    graphslam.pose.se2
+   graphslam.pose.se3
 
 Module contents
 ---------------
