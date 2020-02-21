@@ -16,16 +16,10 @@ This package implements a Graph SLAM solver in Python.
 Features
 --------
 
-- Optimize :math:`\mathbb{R}^2`, :math:`\mathbb{R}^3`, and :math:`SE(2)` datasets
+- Optimize :math:`\mathbb{R}^2`, :math:`\mathbb{R}^3`, :math:`SE(2)`, and :math:`SE(3)` datasets
 - Analytic Jacobians
 - Supports odometry edges
-- Load :math:`SE(2)` datasets from .g2o files
-
-Planned Features
-^^^^^^^^^^^^^^^^
-
-- Optimize :math:`SE(3)` datasets
-- Load :math:`SE(3)` datasets from .g2o files
+- Load :math:`SE(2)` and :math:`SE(3)` datasets from .g2o files
 
 
 Installation
@@ -38,6 +32,37 @@ Installation
 
 Example Usage
 -------------
+
+SE(3) Dataset
+^^^^^^^^^^^^^
+
+.. code-block::
+
+   >>> from graphslam.load import load_g2o_se3
+
+   >>> g = load_g2o_se3("parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
+
+   >>> g.calc_chi2()
+
+   17425.89298299299
+
+   >>> g.optimize()
+
+   Iteration  1: chi2_prev = 17425.8930, self._chi2 = 2101.3908
+   Iteration  2: chi2_prev = 2101.3908, self._chi2 = 695.2287
+   Iteration  3: chi2_prev = 695.2287, self._chi2 = 685.6427
+   Iteration  4: chi2_prev = 685.6427, self._chi2 = 691.8391
+   Iteration  5: chi2_prev = 691.8391, self._chi2 = 691.4596
+   Iteration  6: chi2_prev = 691.4596, self._chi2 = 686.1112
+   Iteration  7: chi2_prev = 686.1112, self._chi2 = 685.2138
+   Iteration  8: chi2_prev = 685.2138, self._chi2 = 685.2582
+   Iteration  9: chi2_prev = 685.2582, self._chi2 = 685.3748
+   Iteration 10: chi2_prev = 685.3748, self._chi2 = 685.5076
+   Iteration 11: chi2_prev = 685.5076, self._chi2 = 685.5009
+
+
+SE(2) Dataset
+^^^^^^^^^^^^^
 
 .. code-block::
 
