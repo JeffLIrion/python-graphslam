@@ -38,7 +38,7 @@ class TestGraphR2(unittest.TestCase):
         v3 = Vertex(3, p3)
 
         e1 = EdgeOdometry([1, 2], np.eye(2), np.zeros(2), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(2), np.zeros(2), [v1, v3])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(2), np.zeros(2), [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 
@@ -84,7 +84,7 @@ class TestGraphR3(TestGraphR2):
         v3 = Vertex(3, p3)
 
         e1 = EdgeOdometry([1, 2], np.eye(3), np.zeros(3), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), np.zeros(3), [v1, v3])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), np.zeros(3), [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 
@@ -109,7 +109,7 @@ class TestGraphSE2(TestGraphR2):
         v3 = Vertex(3, p3)
 
         e1 = EdgeOdometry([1, 2], np.eye(3), np.zeros(3), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), np.zeros(3), [v1, v3])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), np.zeros(3), [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 
@@ -138,7 +138,7 @@ class TestGraphSE3(TestGraphR2):
         v3 = Vertex(3, p3)
 
         e1 = EdgeOdometry([1, 2], np.eye(6), np.zeros(6), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(6), np.zeros(6), [v1, v3])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(6), np.zeros(6), [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 

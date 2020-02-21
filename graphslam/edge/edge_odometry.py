@@ -63,5 +63,5 @@ class EdgeOdometry(BaseEdge):
             The Jacobian matrices for the edge with respect to each constrained pose
 
         """
-        return [np.dot(self.vertices[0].pose.jacobian_self_ominus_other_wrt_self_compact(self.vertices[1].pose), self.vertices[0].pose.jacobian_boxplus()),
-                np.dot(self.vertices[0].pose.jacobian_self_ominus_other_wrt_other_compact(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
+        return [-np.dot(self.vertices[1].pose.jacobian_self_ominus_other_wrt_other_compact(self.vertices[0].pose), self.vertices[0].pose.jacobian_boxplus()),
+                -np.dot(self.vertices[1].pose.jacobian_self_ominus_other_wrt_self_compact(self.vertices[0].pose), self.vertices[1].pose.jacobian_boxplus())]
