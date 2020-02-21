@@ -188,7 +188,43 @@ class PoseSE2(BasePose):
                          [0., 1., other[0] * np.cos(self[2]) - other[1] * np.sin(self[2])],
                          [0., 0., 1.]])
 
+    def jacobian_self_oplus_other_wrt_self_compact(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        """
+        return np.array([[1., 0., -other[0] * np.sin(self[2]) - other[1] * np.cos(self[2])],
+                         [0., 1., other[0] * np.cos(self[2]) - other[1] * np.sin(self[2])],
+                         [0., 0., 1.]])
+
     def jacobian_self_oplus_other_wrt_other(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        """
+        return np.array([[np.cos(self[2]), -np.sin(self[2]), 0.],
+                         [np.sin(self[2]), np.cos(self[2]), 0.],
+                         [0., 0., 1.]])
+
+    def jacobian_self_oplus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
         Parameters
@@ -224,7 +260,43 @@ class PoseSE2(BasePose):
                          [-np.sin(other[2]), np.cos(other[2]), 0.],
                          [0., 0., 1.]])
 
+    def jacobian_self_ominus_other_wrt_self_compact(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being subtracted from ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+
+        """
+        return np.array([[np.cos(other[2]), np.sin(other[2]), 0.],
+                         [-np.sin(other[2]), np.cos(other[2]), 0.],
+                         [0., 0., 1.]])
+
     def jacobian_self_ominus_other_wrt_other(self, other):
+        r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+
+        Parameters
+        ----------
+        other : BasePose
+            The pose that is being subtracted from ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+
+        """
+        return np.array([[-np.cos(other[2]), -np.sin(other[2]), (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])],
+                         [np.sin(other[2]), -np.cos(other[2]), (other[0] - self[0]) * np.cos(other[2]) + (other[1] - self[1]) * np.sin(other[2])],
+                         [0., 0., -1.]])
+
+    def jacobian_self_ominus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
         Parameters

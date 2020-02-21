@@ -5,6 +5,8 @@ r"""A class for odometry edges.
 """
 
 
+import numpy as np
+
 from .base_edge import BaseEdge
 
 
@@ -45,4 +47,21 @@ class EdgeOdometry(BaseEdge):
             The error for the edge
 
         """
-        return self.estimate - (self.vertices[1].pose - self.vertices[0].pose).to_array()
+        return self.estimate - (self.vertices[1].pose - self.vertices[0].pose).to_compact()
+
+    def calc_jacobians(self):
+        r"""Calculate the Jacobian of the edge's error with respect to each constrained pose.
+
+        .. math::
+
+           \frac{\partial}{\partial \Delta \mathbf{x}^k} \left[ \mathbf{e}_j(\mathbf{x}^k \boxplus \Delta \mathbf{x}^k) \right]
+
+
+        Returns
+        -------
+        list[np.ndarray]
+            The Jacobian matrices for the edge with respect to each constrained pose
+
+        """
+        return [np.dot(self.vertices[0].pose.jacobian_self_ominus_other_wrt_self_compact(self.vertices[1].pose), self.vertices[0].pose.jacobian_boxplus()),
+                np.dot(self.vertices[0].pose.jacobian_self_ominus_other_wrt_other_compact(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]

@@ -12,7 +12,7 @@ import numpy as np
 from graphslam.vertex import Vertex
 from graphslam.pose.r3 import PoseR3
 from graphslam.edge.base_edge import BaseEdge
-from .edge_oplus_ominus import EdgeOMinus, EdgeOPlus
+from .edge_oplus_ominus import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
 
 
 class TestPoseR3(unittest.TestCase):
@@ -163,6 +163,52 @@ class TestPoseR3(unittest.TestCase):
             v2 = Vertex(2, p2)
 
             e = EdgeOMinus([1, 2], np.eye(3), np.zeros(3), [v1, v2])
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.)
+
+    def test_jacobian_self_oplus_other_compact(self):
+        """Test that the ``jacobian_self_oplus_other_wrt_self_compact`` and ``jacobian_self_oplus_other_wrt_other_compact`` methods are correctly implemented.
+
+        """
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseR3(np.random.random_sample(3))
+            p2 = PoseR3(np.random.random_sample(3))
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeOPlusCompact([1, 2], np.eye(3), np.zeros(3), [v1, v2])
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.)
+
+    def test_jacobian_self_ominus_other_compact(self):
+        """Test that the ``jacobian_self_ominus_other_wrt_self_compact`` and ``jacobian_self_ominus_other_wrt_other_compact`` methods are correctly implemented.
+
+        """
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseR3(np.random.random_sample(3))
+            p2 = PoseR3(np.random.random_sample(3))
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeOMinusCompact([1, 2], np.eye(3), np.zeros(3), [v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
