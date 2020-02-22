@@ -68,11 +68,12 @@ class TestBaseEdge(unittest.TestCase):
         """
         p1 = PoseR2([1, 2])
         p2 = PoseR2([3, 4])
+        estimate = PoseR2([0, 0])
 
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
 
-        e = EdgeOdometry([1, 2], np.eye(2), 0, [v1, v2])
+        e = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
 
         jacobians = e.calc_jacobians()
 
@@ -85,11 +86,12 @@ class TestBaseEdge(unittest.TestCase):
         """
         p1 = PoseR2([1, 3])
         p2 = PoseR2([2, 4])
+        estimate = PoseR2([0, 0])
 
         v1 = Vertex(0, p1, 0)
         v2 = Vertex(1, p2, 1)
 
-        e = EdgeOdometry([0, 1], np.eye(2), 0, [v1, v2])
+        e = EdgeOdometry([0, 1], np.eye(2), estimate, [v1, v2])
 
         chi2, gradient, hessian = e.calc_chi2_gradient_hessian()
 

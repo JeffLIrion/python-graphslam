@@ -10,6 +10,8 @@ import numpy as np
 
 from .base_pose import BasePose
 
+from ..util import neg_pi_to_pi
+
 
 class PoseSE2(BasePose):
     r"""A representation of a pose in :math:`SE(2)`.
@@ -23,7 +25,7 @@ class PoseSE2(BasePose):
 
     """
     def __new__(cls, position, orientation):
-        obj = np.array([position[0], position[1], orientation], dtype=np.float64).view(cls)
+        obj = np.array([position[0], position[1], neg_pi_to_pi(orientation)], dtype=np.float64).view(cls)
         return obj
 
     def copy(self):
@@ -147,7 +149,7 @@ class PoseSE2(BasePose):
             The result of pose composition
 
         """
-        return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]), self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])], self[2] + other[2])
+        return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]), self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])], neg_pi_to_pi(self[2] + other[2]))
 
     def __sub__(self, other):
         r"""Subtract poses (i.e., inverse pose composition): :math:`p_1 \ominus p_2`.
@@ -163,7 +165,7 @@ class PoseSE2(BasePose):
             The result of inverse pose composition
 
         """
-        return PoseSE2([(self[0] - other[0]) * np.cos(other[2]) + (self[1] - other[1]) * np.sin(other[2]), (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])], self[2] - other[2])
+        return PoseSE2([(self[0] - other[0]) * np.cos(other[2]) + (self[1] - other[1]) * np.sin(other[2]), (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])], neg_pi_to_pi(self[2] - other[2]))
 
     # ======================================================================= #
     #                                                                         #

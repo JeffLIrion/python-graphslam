@@ -32,13 +32,14 @@ class TestGraphR2(unittest.TestCase):
         p1 = PoseR2(np.random.random_sample(2))
         p2 = PoseR2(np.random.random_sample(2))
         p3 = PoseR2(np.random.random_sample(2))
+        estimate = PoseR2([0, 0])
 
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
         v3 = Vertex(3, p3)
 
-        e1 = EdgeOdometry([1, 2], np.eye(2), np.zeros(2), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(2), np.zeros(2), [v3, v2])
+        e1 = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(2), estimate, [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 
@@ -78,13 +79,14 @@ class TestGraphR3(TestGraphR2):
         p1 = PoseR3(np.random.random_sample(3))
         p2 = PoseR3(np.random.random_sample(3))
         p3 = PoseR3(np.random.random_sample(3))
+        estimate = PoseR3([0, 0, 0])
 
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
         v3 = Vertex(3, p3)
 
-        e1 = EdgeOdometry([1, 2], np.eye(3), np.zeros(3), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), np.zeros(3), [v3, v2])
+        e1 = EdgeOdometry([1, 2], np.eye(3), estimate, [v1, v2])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), estimate, [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 
@@ -103,13 +105,14 @@ class TestGraphSE2(TestGraphR2):
         p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
         p2 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
         p3 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+        estimate = PoseSE2([0, 0], 0.)
 
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
         v3 = Vertex(3, p3)
 
-        e1 = EdgeOdometry([1, 2], np.eye(3), np.zeros(3), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), np.zeros(3), [v3, v2])
+        e1 = EdgeOdometry([1, 2], np.eye(3), estimate, [v1, v2])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), estimate, [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 
@@ -128,6 +131,7 @@ class TestGraphSE3(TestGraphR2):
         p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
         p2 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
         p3 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+        estimate = PoseSE3([0, 0, 0], [0, 0, 0, 1])
 
         p1.normalize()
         p2.normalize()
@@ -137,8 +141,8 @@ class TestGraphSE3(TestGraphR2):
         v2 = Vertex(2, p2)
         v3 = Vertex(3, p3)
 
-        e1 = EdgeOdometry([1, 2], np.eye(6), np.zeros(6), [v1, v2])
-        e2 = EdgeOdometry([3, 2], 2 * np.eye(6), np.zeros(6), [v3, v2])
+        e1 = EdgeOdometry([1, 2], np.eye(6), estimate, [v1, v2])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(6), estimate, [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
 

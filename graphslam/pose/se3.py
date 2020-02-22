@@ -28,7 +28,8 @@ class PoseSE3(BasePose):
         """Normalize the quaternion portion of the pose.
 
         """
-        self[3:] /= np.linalg.norm(self[3:])
+        sgn = 1. if self[6] >= 0. else -1.
+        self[3:] /= (sgn * np.linalg.norm(self[3:]))
 
     def copy(self):
         """Return a copy of the pose.
