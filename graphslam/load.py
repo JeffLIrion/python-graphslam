@@ -96,7 +96,7 @@ def load_g2o_se3(infile):
                 vertex_ids = [int(numbers[0]), int(numbers[1])]
                 estimate = PoseSE3(arr[:3], arr[3:7])
                 estimate.normalize()
-                information = upper_triangular_matrix_to_full_matrix(arr[7:28], 6)
+                information = upper_triangular_matrix_to_full_matrix(arr[7:], 6)
                 e = EdgeOdometry(vertex_ids, information, estimate)
                 edges.append(e)
                 continue
