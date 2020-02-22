@@ -36,42 +36,40 @@ Example Usage
 SE(3) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block:: python
+.. code-block:: ipython
 
-   >>> from graphslam.load import load_g2o_se3
+   In [1]: from graphslam.load import load_g2o_se3
 
-   >>> g = load_g2o_se3("parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
+   In [2]: g = load_g2o_se3("parking-garage.g2o")
 
-   >>> g.calc_chi2()
+   In [3]: g.calc_chi2()
+   Out[3]: 16720.020602489112
 
-       16720.020602489112
+   In [4]: g.optimize()
 
-   >>> g.optimize()
-
-       Iteration                chi^2        rel. change
-       ---------                -----        -----------
-               0           16720.0206
-               1              26.5495          -0.998412
-               2               1.2712          -0.952119
-               3               1.2402          -0.024439
-               4               1.2396          -0.000456
-               5               1.2395          -0.000091
+   Iteration                chi^2        rel. change
+   ---------                -----        -----------
+           0           16720.0206
+           1              26.5495          -0.998412
+           2               1.2712          -0.952119
+           3               1.2402          -0.024439
+           4               1.2396          -0.000456
+           5               1.2395          -0.000091
 
 
 SE(2) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block:: python
+.. code-block:: ipython
 
-   >>> from graphslam.load import load_g2o_se2
+   In [1]: from graphslam.load import load_g2o_se2
 
-   >>> g = load_g2o_se2("input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
+   In [2]: g = load_g2o_se2("input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
-   >>> g.calc_chi2()
+   In [3]: g.calc_chi2()
+   Out[3]: 7191686.382493544
 
-   7191686.382493544
-
-   >>> g.optimize()
+   In [4]: g.optimize()
 
    Iteration                chi^2        rel. change
    ---------                -----        -----------

@@ -245,7 +245,7 @@ class Graph(object):
         chi2_prev = -1.
 
         # For displaying the optimization progress
-        print("Iteration                chi^2        rel. change")
+        print("\nIteration                chi^2        rel. change")
         print("---------                -----        -----------")
 
         for i in range(max_iter):
