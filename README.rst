@@ -36,16 +36,22 @@ Example Usage
 SE(3) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block:: ipython
+.. code-block:: python
 
-   In [1]: from graphslam.load import load_g2o_se3
+   >>> from graphslam.load import load_g2o_se3
 
-   In [2]: g = load_g2o_se3("parking-garage.g2o")
+   >>> g = load_g2o_se3("parking-garage.g2o")
 
-   In [3]: g.calc_chi2()
-   Out[3]: 16720.020602489112
+   >>> g.calc_chi2()
 
-   In [4]: g.optimize()
+   16720.020602489112
+
+   >>> g.optimize()
+
+
+**Output:**
+
+::
 
    Iteration                chi^2        rel. change
    ---------                -----        -----------
@@ -60,16 +66,22 @@ SE(3) Dataset
 SE(2) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block:: ipython
+.. code-block:: python
 
-   In [1]: from graphslam.load import load_g2o_se2
+   >>> from graphslam.load import load_g2o_se2
 
-   In [2]: g = load_g2o_se2("input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = load_g2o_se2("input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
-   In [3]: g.calc_chi2()
-   Out[3]: 7191686.382493544
+   >>> g.calc_chi2()
 
-   In [4]: g.optimize()
+   7191686.382493544
+
+   >>> g.optimize()
+
+
+**Output:**
+
+::
 
    Iteration                chi^2        rel. change
    ---------                -----        -----------
