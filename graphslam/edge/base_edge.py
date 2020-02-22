@@ -21,14 +21,14 @@ class BaseEdge:
         The IDs of all vertices constrained by this edge
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
-    estimate : np.ndarray, float
+    estimate : BasePose, np.ndarray, float
         The expected measurement :math:`\mathbf{z}_j`
     vertices : list[graphslam.vertex.Vertex], None
         A list of the vertices constrained by the edge
 
     Attributes
     ----------
-    estimate : np.ndarray, float
+    estimate : BasePose, np.ndarray, float
         The expected measurement :math:`\mathbf{z}_j`
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge

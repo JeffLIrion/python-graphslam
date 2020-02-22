@@ -19,7 +19,7 @@ class EdgeOdometry(BaseEdge):
         A list of the vertices constrained by the edge
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
-    estimate : np.ndarray, float
+    estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`
 
     Attributes
@@ -28,7 +28,7 @@ class EdgeOdometry(BaseEdge):
         A list of the vertices constrained by the edge
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
-    estimate : np.ndarray, float
+    estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`
 
     """
@@ -47,7 +47,7 @@ class EdgeOdometry(BaseEdge):
             The error for the edge
 
         """
-        return self.estimate - (self.vertices[1].pose - self.vertices[0].pose).to_compact()
+        return (self.estimate - (self.vertices[1].pose - self.vertices[0].pose)).to_compact()
 
     def calc_jacobians(self):
         r"""Calculate the Jacobian of the edge's error with respect to each constrained pose.
@@ -63,5 +63,5 @@ class EdgeOdometry(BaseEdge):
             The Jacobian matrices for the edge with respect to each constrained pose
 
         """
-        return [-np.dot(self.vertices[1].pose.jacobian_self_ominus_other_wrt_other_compact(self.vertices[0].pose), self.vertices[0].pose.jacobian_boxplus()),
-                -np.dot(self.vertices[1].pose.jacobian_self_ominus_other_wrt_self_compact(self.vertices[0].pose), self.vertices[1].pose.jacobian_boxplus())]
+        return [np.dot(np.dot(self.estimate.jacobian_self_ominus_other_wrt_other_compact(self.vertices[1].pose - self.vertices[0].pose), self.vertices[1].pose.jacobian_self_ominus_other_wrt_other(self.vertices[0].pose)), self.vertices[0].pose.jacobian_boxplus()),
+                np.dot(np.dot(self.estimate.jacobian_self_ominus_other_wrt_other_compact(self.vertices[1].pose - self.vertices[0].pose), self.vertices[1].pose.jacobian_self_ominus_other_wrt_self(self.vertices[0].pose)), self.vertices[1].pose.jacobian_boxplus())]

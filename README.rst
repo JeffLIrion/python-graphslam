@@ -36,35 +36,37 @@ Example Usage
 SE(3) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block::
+.. code-block:: python
 
    >>> from graphslam.load import load_g2o_se3
 
-   >>> g = load_g2o_se3("parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = load_g2o_se3("parking-garage.g2o")
 
    >>> g.calc_chi2()
 
-   17425.89298299299
+   16720.020602489112
 
    >>> g.optimize()
 
-   Iteration  1: chi2_prev = 17425.8930, self._chi2 = 2101.3908
-   Iteration  2: chi2_prev = 2101.3908, self._chi2 = 695.2287
-   Iteration  3: chi2_prev = 695.2287, self._chi2 = 685.6427
-   Iteration  4: chi2_prev = 685.6427, self._chi2 = 691.8391
-   Iteration  5: chi2_prev = 691.8391, self._chi2 = 691.4596
-   Iteration  6: chi2_prev = 691.4596, self._chi2 = 686.1112
-   Iteration  7: chi2_prev = 686.1112, self._chi2 = 685.2138
-   Iteration  8: chi2_prev = 685.2138, self._chi2 = 685.2582
-   Iteration  9: chi2_prev = 685.2582, self._chi2 = 685.3748
-   Iteration 10: chi2_prev = 685.3748, self._chi2 = 685.5076
-   Iteration 11: chi2_prev = 685.5076, self._chi2 = 685.5009
+
+**Output:**
+
+::
+
+   Iteration                chi^2        rel. change
+   ---------                -----        -----------
+           0           16720.0206
+           1              26.5495          -0.998412
+           2               1.2712          -0.952119
+           3               1.2402          -0.024439
+           4               1.2396          -0.000456
+           5               1.2395          -0.000091
 
 
 SE(2) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block::
+.. code-block:: python
 
    >>> from graphslam.load import load_g2o_se2
 
@@ -72,27 +74,24 @@ SE(2) Dataset
 
    >>> g.calc_chi2()
 
-   10140102.260977369
+   7191686.382493544
 
    >>> g.optimize()
 
-   Iteration  1: chi2_prev = 10140102.2610, self._chi2 = 20788949397.2203
-   Iteration  2: chi2_prev = 20788949397.2203, self._chi2 = 16923475.8850
-   Iteration  3: chi2_prev = 16923475.8850, self._chi2 = 8294793755.7228
-   Iteration  4: chi2_prev = 8294793755.7228, self._chi2 = 220115513.6180
-   Iteration  5: chi2_prev = 220115513.6180, self._chi2 = 24117440.3125
-   Iteration  6: chi2_prev = 24117440.3125, self._chi2 = 1990004.8692
-   Iteration  7: chi2_prev = 1990004.8692, self._chi2 = 3445068.7836
-   Iteration  8: chi2_prev = 3445068.7836, self._chi2 = 788043.5452
-   Iteration  9: chi2_prev = 788043.5452, self._chi2 = 462337.4617
-   Iteration 10: chi2_prev = 462337.4617, self._chi2 = 183661.3263
-   Iteration 11: chi2_prev = 183661.3263, self._chi2 = 172777.5398
-   Iteration 12: chi2_prev = 172777.5398, self._chi2 = 157818.2026
-   Iteration 13: chi2_prev = 157818.2026, self._chi2 = 158420.4379
-   Iteration 14: chi2_prev = 158420.4379, self._chi2 = 157013.3727
-   Iteration 15: chi2_prev = 157013.3727, self._chi2 = 156995.5912
-   Iteration 16: chi2_prev = 156995.5912, self._chi2 = 156861.0154
-   Iteration 17: chi2_prev = 156861.0154, self._chi2 = 156857.2851
+
+**Output:**
+
+::
+
+   Iteration                chi^2        rel. change
+   ---------                -----        -----------
+           0         7191686.3825
+           1       319915276.1284          43.484042
+           2       124894535.1749          -0.609601
+           3          338185.8171          -0.997292
+           4             734.5142          -0.997828
+           5             215.8405          -0.706145
+           6             215.8405          -0.000000
 
 
 References and Links
