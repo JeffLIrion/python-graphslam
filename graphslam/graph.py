@@ -254,7 +254,7 @@ class Graph(object):
             # Check for convergence (from the previous iteration); this avoids having to calculate chi^2 twice
             if i > 0:
                 rel_diff = (chi2_prev - self._chi2) / (chi2_prev + np.finfo(float).eps)
-                print("{:9d} {:20.4f} {:18.4f}".format(i, self._chi2, -rel_diff))
+                print("{:9d} {:20.4f} {:18.6f}".format(i, self._chi2, -rel_diff))
                 if self._chi2 < chi2_prev and rel_diff < tol:
                     return
             else:
