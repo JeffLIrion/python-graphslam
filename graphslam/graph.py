@@ -146,7 +146,7 @@ class Graph(object):
 
     Parameters
     ----------
-    edges : list[graphslam.vertex.Vertex]
+    edges : list[graphslam.edge.BaseEdge]
         A list of the vertices in the graph
     vertices : list[graphslam.vertex.Vertex]
         A list of the vertices in the graph
@@ -220,10 +220,10 @@ class Graph(object):
         # Fill in the Hessian matrix
         self._hessian = lil_matrix((n * dim, n * dim), dtype=np.float64)
         for (row_idx, col_idx), contrib in chi2_gradient_hessian.hessian.items():
-            self._hessian[row_idx * dim: (row_idx + 1) * dim, col_idx * dim: (col_idx + 1) * dim] += contrib
+            self._hessian[row_idx * dim: (row_idx + 1) * dim, col_idx * dim: (col_idx + 1) * dim] = contrib
 
             if row_idx != col_idx:
-                self._hessian[col_idx * dim: (col_idx + 1) * dim, row_idx * dim: (row_idx + 1) * dim] += np.transpose(contrib)
+                self._hessian[col_idx * dim: (col_idx + 1) * dim, row_idx * dim: (row_idx + 1) * dim] = np.transpose(contrib)
 
     def optimize(self, tol=1e-4, max_iter=20, fix_first_pose=True):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
