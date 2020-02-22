@@ -244,14 +244,21 @@ class Graph(object):
         # Previous iteration's chi^2 error
         chi2_prev = -1.
 
+        # For displaying the optimization progress
+        print("Iteration                chi^2        rel. change")
+        print("---------                -----        -----------")
+
         for i in range(max_iter):
             self._calc_chi2_gradient_hessian()
 
             # Check for convergence (from the previous iteration); this avoids having to calculate chi^2 twice
             if i > 0:
-                print("Iteration {:2d}: chi2_prev = {:.4f}, self._chi2 = {:.4f}".format(i, chi2_prev, self._chi2))
-                if self._chi2 < chi2_prev and (chi2_prev - self._chi2) / (chi2_prev + np.finfo(float).eps) < tol:
+                rel_diff = (chi2_prev - self._chi2) / (chi2_prev + np.finfo(float).eps)
+                print("{:9d} {:20.4f} {:18.4f}".format(i, self._chi2, -rel_diff))
+                if self._chi2 < chi2_prev and rel_diff < tol:
                     return
+            else:
+                print("{:9d} {:20.4f}".format(i, self._chi2))
 
             # Update the previous iteration's chi^2 error
             chi2_prev = self._chi2
