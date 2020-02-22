@@ -36,7 +36,7 @@ Example Usage
 SE(3) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block::
+.. code-block:: python
 
    >>> from graphslam.load import load_g2o_se3
 
@@ -61,7 +61,7 @@ SE(3) Dataset
 SE(2) Dataset
 ^^^^^^^^^^^^^
 
-.. code-block::
+.. code-block:: python
 
    >>> from graphslam.load import load_g2o_se2
 
