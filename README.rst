@@ -48,11 +48,14 @@ SE(3) Dataset
 
    >>> g.optimize()
 
-   Iteration  1: chi2_prev = 16720.0206, self._chi2 = 26.5495
-   Iteration  2: chi2_prev = 26.5495, self._chi2 = 1.2712
-   Iteration  3: chi2_prev = 1.2712, self._chi2 = 1.2402
-   Iteration  4: chi2_prev = 1.2402, self._chi2 = 1.2396
-   Iteration  5: chi2_prev = 1.2396, self._chi2 = 1.2395
+   Iteration                chi^2        rel. change
+   ---------                -----        -----------
+           0           16720.0206
+           1              26.5495            -0.9984
+           2               1.2712            -0.9521
+           3               1.2402            -0.0244
+           4               1.2396            -0.0005
+           5               1.2395            -0.0001
 
 
 SE(2) Dataset
@@ -70,12 +73,15 @@ SE(2) Dataset
 
    >>> g.optimize()
 
-   Iteration  1: chi2_prev = 7191686.3825, self._chi2 = 319915276.1284
-   Iteration  2: chi2_prev = 319915276.1284, self._chi2 = 124894535.1749
-   Iteration  3: chi2_prev = 124894535.1749, self._chi2 = 338185.8171
-   Iteration  4: chi2_prev = 338185.8171, self._chi2 = 734.5142
-   Iteration  5: chi2_prev = 734.5142, self._chi2 = 215.8405
-   Iteration  6: chi2_prev = 215.8405, self._chi2 = 215.8405
+   Iteration                chi^2        rel. change
+   ---------                -----        -----------
+           0         7191686.3825
+           1       319915276.1284            43.4840
+           2       124894535.1749            -0.6096
+           3          338185.8171            -0.9973
+           4             734.5142            -0.9978
+           5             215.8405            -0.7061
+           6             215.8405            -0.0000
 
 
 References and Links
