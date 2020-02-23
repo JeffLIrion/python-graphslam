@@ -149,3 +149,14 @@ class BaseEdge:
             self.vertices[vertex_index].pose = p0.copy()
 
         return jacobian
+
+    def to_g2o(self):
+        """Export the edge to the .g2o format.
+
+        Returns
+        -------
+        str
+            The edge in .g2o format
+
+        """
+        raise NotImplementedError

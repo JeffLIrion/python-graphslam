@@ -10,6 +10,7 @@ import numpy as np
 from graphslam.edge.base_edge import BaseEdge
 
 
+# pylint: disable=abstract-method
 class EdgeOPlus(BaseEdge):
     """A simple edge class for testing.
 
@@ -24,6 +25,7 @@ class EdgeOPlus(BaseEdge):
                 np.dot(self.vertices[0].pose.jacobian_self_oplus_other_wrt_other(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
 
 
+# pylint: disable=abstract-method
 class EdgeOMinus(BaseEdge):
     """A simple edge class for testing.
 
@@ -38,6 +40,7 @@ class EdgeOMinus(BaseEdge):
                 np.dot(self.vertices[0].pose.jacobian_self_ominus_other_wrt_other(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
 
 
+# pylint: disable=abstract-method
 class EdgeOPlusCompact(BaseEdge):
     """A simple edge class for testing.
 
@@ -52,6 +55,7 @@ class EdgeOPlusCompact(BaseEdge):
                 np.dot(self.vertices[0].pose.jacobian_self_oplus_other_wrt_other_compact(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
 
 
+# pylint: disable=abstract-method
 class EdgeOMinusCompact(BaseEdge):
     """A simple edge class for testing.
 
