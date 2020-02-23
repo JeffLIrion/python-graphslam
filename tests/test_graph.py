@@ -6,6 +6,7 @@
 
 
 import unittest
+from unittest.mock import mock_open, patch
 
 import numpy as np
 
@@ -63,6 +64,30 @@ class TestGraphR2(unittest.TestCase):
 
         # Make sure the first pose was held fixed
         self.assertAlmostEqual(np.linalg.norm(p0 - self.g._vertices[0].pose.to_array()), 0.)  # pylint: disable=protected-access
+
+    # pylint: disable=protected-access
+    def test_to_g2o(self):
+        """Test that the ``to_g2o`` method is implemented correctly, or raises ``NotImplementedError``.
+
+        """
+        # Supported types
+        if isinstance(self.g._vertices[0].pose, (PoseSE2, PoseSE3)):
+            print(self.g._vertices[0].to_g2o())
+            print(self.g._edges[0].to_g2o())
+
+            with patch("graphslam.graph.open", mock_open()):
+                self.g.to_g2o("test.g2o")
+        # Unsupported types
+        else:
+            with self.assertRaises(NotImplementedError):
+                print(self.g._vertices[0].to_g2o())
+
+            with self.assertRaises(NotImplementedError):
+                print(self.g._edges[0].to_g2o())
+
+            with patch("graphslam.graph.open", mock_open()):
+                with self.assertRaises(NotImplementedError):
+                    self.g.to_g2o("test.g2o")
 
 
 class TestGraphR3(TestGraphR2):

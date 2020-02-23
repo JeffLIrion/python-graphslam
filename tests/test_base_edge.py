@@ -16,6 +16,7 @@ from graphslam.pose.r2 import PoseR2
 from graphslam.pose.se2 import PoseSE2
 
 
+# pylint: disable=abstract-method
 class SimpleEdge(BaseEdge):
     """A simple edge class for testing.
 
@@ -103,6 +104,17 @@ class TestBaseEdge(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.norm(hessian[(0, 0)] - np.eye(2)), 0.)
         self.assertAlmostEqual(np.linalg.norm(hessian[(0, 1)] + np.eye(2)), 0.)
         self.assertAlmostEqual(np.linalg.norm(hessian[(1, 1)] - np.eye(2)), 0.)
+
+    def test_to_g2o(self):
+        """Test that the ``to_g2o`` method is not implemented.
+
+        """
+        p = PoseSE2([0, 0], 0)
+        v = Vertex(0, p)
+        e = BaseEdge(0, 1, 0, [v])
+
+        with self.assertRaises(NotImplementedError):
+            _ = e.to_g2o()
 
 
 if __name__ == '__main__':

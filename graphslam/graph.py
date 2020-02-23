@@ -276,3 +276,19 @@ class Graph(object):
             # Apply the updates
             for v, dx_i in zip(self._vertices, np.split(dx, n)):
                 v.pose += dx_i
+
+    def to_g2o(self, outfile):
+        """Save the graph in .g2o format.
+
+        Parameters
+        ----------
+        outfile : str
+            The path where the graph will be saved
+
+        """
+        with open(outfile, 'w') as f:
+            for v in self._vertices:
+                f.write(v.to_g2o())
+
+            for e in self._edges:
+                f.write(e.to_g2o())
