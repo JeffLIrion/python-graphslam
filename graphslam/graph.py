@@ -13,14 +13,14 @@ Given:
 * A set of :math:`N` vertices :math:`\mathcal{V}`
 
   * :math:`v_i \in \mathcal{V}` is a vertex
-  * :math:`\mathbb{x}_i \in \mathbb{R}^c` is the compact pose associated with :math:`v_i`
+  * :math:`\mathbf{x}_i \in \mathbb{R}^c` is the compact pose associated with :math:`v_i`
   * :math:`\boxplus` is the pose composition operator that yields a (non-compact) pose that lies in (a subspace of) :math:`\mathbb{R}^d`
 
 We want to optimize
 
 .. math::
 
-   \chi^2 = \sum_{e_j \in \mathcal{E}} \mathbb{e}_j^T \Omega_j \mathbb{e}_j.
+   \chi^2 = \sum_{e_j \in \mathcal{E}} \mathbf{e}_j^T \Omega_j \mathbf{e}_j.
 
 Let
 
@@ -146,21 +146,21 @@ class Graph(object):
 
     Parameters
     ----------
-    edges : list[graphslam.edge.BaseEdge]
+    edges : list[graphslam.edge.base_edge.BaseEdge]
         A list of the vertices in the graph
     vertices : list[graphslam.vertex.Vertex]
         A list of the vertices in the graph
 
     Attributes
     ----------
-    _chi2 : float
-        The current :math:`\chi^2` error
+    _chi2 : float, None
+        The current :math:`\chi^2` error, or ``None`` if it has not yet been computed
     _edges : list[graphslam.edge.base_edge.BaseEdge]
         A list of the edges (i.e., constraints) in the graph
     _gradient : numpy.ndarray, None
-        The gradient :math:`\mathbf{b}` of the :math:`\chi^2` error
+        The gradient :math:`\mathbf{b}` of the :math:`\chi^2` error, or ``None`` if it has not yet been computed
     _hessian : scipy.sparse.lil_matrix, None
-        The Hessian matrix :math:`H`
+        The Hessian matrix :math:`H`, or ``None`` if it has not yet been computed
     _vertices : list[graphslam.vertex.Vertex]
         A list of the vertices in the graph
 

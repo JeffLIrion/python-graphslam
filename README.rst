@@ -19,7 +19,7 @@ Features
 - Optimize :math:`\mathbb{R}^2`, :math:`\mathbb{R}^3`, :math:`SE(2)`, and :math:`SE(3)` datasets
 - Analytic Jacobians
 - Supports odometry edges
-- Load :math:`SE(2)` and :math:`SE(3)` datasets from .g2o files
+- Import and export .g2o files for :math:`SE(2)` and :math:`SE(3)` datasets
 
 
 Installation
