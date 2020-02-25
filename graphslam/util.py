@@ -28,7 +28,7 @@ def neg_pi_to_pi(angle):
 
 
 def solve_for_edge_dimensionality(n):
-    """Solve for the dimensionality of an edge.
+    r"""Solve for the dimensionality of an edge.
 
     In a .g2o file, an edge is specified as ``<estimate> <information matrix>``, where only the upper triangular portion of the matrix is provided.
 
@@ -36,7 +36,7 @@ def solve_for_edge_dimensionality(n):
 
     .. math::
 
-       d + (d + 1) d / 2 = n
+       d + \frac{d (d + 1)}{2} = n
 
     Returns
     -------
