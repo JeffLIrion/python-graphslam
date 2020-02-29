@@ -8,6 +8,8 @@
 import unittest
 
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D  # noqa pylint: disable=unused-import
 
 from graphslam.vertex import Vertex
 from graphslam.pose.r2 import PoseR2
@@ -44,6 +46,9 @@ class TestVertex(unittest.TestCase):
             v_none.plot()
 
         for v in [v_r2, v_se2, v_r3, v_se3]:
+            fig = plt.figure()
+            if len(v.pose.position) == 3:
+                fig.add_subplot(111, projection='3d')
             v.plot()
 
 
