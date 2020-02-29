@@ -89,6 +89,14 @@ class TestGraphR2(unittest.TestCase):
                 with self.assertRaises(NotImplementedError):
                     self.g.to_g2o("test.g2o")
 
+    def test_plot(self):
+        """Test that the ``plot`` method does not raise an exception.
+
+        """
+        # avoid showing the plots
+        with patch("graphslam.graph.plt.show"):
+            self.g.plot()
+
 
 class TestGraphR3(TestGraphR2):
     r"""Tests for the ``Graph`` class with :math:`\mathbb{R}^3` poses.

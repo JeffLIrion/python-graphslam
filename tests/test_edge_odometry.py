@@ -7,33 +7,21 @@
 
 import unittest
 
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D  # noqa pylint: disable=unused-import
-
 from graphslam.vertex import Vertex
+from graphslam.edge.edge_odometry import EdgeOdometry
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se2 import PoseSE2
 from graphslam.pose.se3 import PoseSE3
 
 
-class TestVertex(unittest.TestCase):
-    """Tests for the ``Vetex`` class.
+class TestEdgeOdometry(unittest.TestCase):
+    """Tests for the ``EdgeOdometry`` class.
 
     """
 
-    def test_constructor(self):
-        """Test that a ``Vertex`` object can be created.
-
-        """
-        v = Vertex(1, PoseSE2([1, 2], 3))
-
-        self.assertEqual(v.id, 1)
-        self.assertAlmostEqual(np.linalg.norm(v.pose.to_array() - np.array([1., 2., 3.])), 0.)
-
     def test_plot(self):
-        """Test that a ``Vertex`` can be plotted.
+        """Test that the ``plot`` method is not implemented.
 
         """
         v_none = Vertex(0, None)
@@ -43,13 +31,12 @@ class TestVertex(unittest.TestCase):
         v_se3 = Vertex(4, PoseSE3([1, 2, 3], [0.5, 0.5, 0.5, 0.5]))
 
         with self.assertRaises(NotImplementedError):
-            v_none.plot()
+            e = EdgeOdometry(0, 1, 0, [v_none, v_none])
+            e.plot()
 
         for v in [v_r2, v_se2, v_r3, v_se3]:
-            fig = plt.figure()
-            if len(v.pose.position) == 3:
-                fig.add_subplot(111, projection='3d')
-            v.plot()
+            e = EdgeOdometry(0, 1, 0, [v, v])
+            e.plot()
 
 
 if __name__ == '__main__':

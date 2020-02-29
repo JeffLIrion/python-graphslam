@@ -160,3 +160,14 @@ class BaseEdge:
 
         """
         raise NotImplementedError
+
+    def plot(self, color=''):
+        """Plot the edge.
+
+        Parameters
+        ----------
+        color : str
+            The color that will be used to plot the edge
+
+        """
+        raise NotImplementedError

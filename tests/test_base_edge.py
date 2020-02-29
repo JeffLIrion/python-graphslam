@@ -116,6 +116,17 @@ class TestBaseEdge(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             _ = e.to_g2o()
 
+    def test_plot(self):
+        """Test that the ``plot`` method is not implemented.
+
+        """
+        p = PoseSE2([0, 0], 0)
+        v = Vertex(0, p)
+        e = BaseEdge(0, 1, 0, [v])
+
+        with self.assertRaises(NotImplementedError):
+            e.plot()
+
 
 if __name__ == '__main__':
     unittest.main()

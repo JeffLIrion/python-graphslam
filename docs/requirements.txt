@@ -1,4 +1,5 @@
 sphinx==2.1.2
 graphslam
+matplotlib
 numpy
 scipy

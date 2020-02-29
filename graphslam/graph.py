@@ -83,6 +83,12 @@ import numpy as np
 from scipy.sparse import SparseEfficiencyWarning, lil_matrix
 from scipy.sparse.linalg import spsolve
 
+try:
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D  # noqa pylint: disable=unused-import
+except ImportError:  # pragma: no cover
+    plt = None
+
 
 warnings.simplefilter("ignore", SparseEfficiencyWarning)
 warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
@@ -292,3 +298,33 @@ class Graph(object):
 
             for e in self._edges:
                 f.write(e.to_g2o())
+
+    def plot(self, vertex_color='r', vertex_marker='o', vertex_markersize=3, edge_color='b'):
+        """Plot the graph.
+
+        Parameters
+        ----------
+        vertex_color : str
+            The color that will be used to plot the vertices
+        vertex_marker : str
+            The marker that will be used to plot the vertices
+        vertex_markersize : int
+            The size of the plotted vertices
+        edge_color : str
+            The color that will be used to plot the edges
+
+        """
+        if plt is None:  # pragma: no cover
+            raise NotImplementedError
+
+        fig = plt.figure()
+        if len(self._vertices[0].pose.position) == 3:
+            fig.add_subplot(111, projection='3d')
+
+        for e in self._edges:
+            e.plot(edge_color)
+
+        for v in self._vertices:
+            v.plot(vertex_color, vertex_marker, vertex_markersize)
+
+        plt.show()

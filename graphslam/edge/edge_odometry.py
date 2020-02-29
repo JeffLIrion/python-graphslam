@@ -7,9 +7,16 @@ r"""A class for odometry edges.
 
 import numpy as np
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError:  # pragma: no cover
+    plt = None
+
 from .base_edge import BaseEdge
 
+from ..pose.r2 import PoseR2
 from ..pose.se2 import PoseSE2
+from ..pose.r3 import PoseR3
 from ..pose.se3 import PoseSE3
 
 
@@ -85,3 +92,26 @@ class EdgeOdometry(BaseEdge):
             return "EDGE_SE3:QUAT {} {} {} {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1], self.estimate[2], self.estimate[3], self.estimate[4], self.estimate[5], self.estimate[6]) + " ".join([str(x) for x in self.information[np.triu_indices(6, 0)]]) + "\n"
 
         raise NotImplementedError
+
+    def plot(self, color='b'):
+        """Plot the edge.
+
+        Parameters
+        ----------
+        color : str
+            The color that will be used to plot the edge
+
+        """
+        if plt is None:  # pragma: no cover
+            raise NotImplementedError
+
+        if isinstance(self.vertices[0].pose, (PoseR2, PoseSE2)):
+            xy = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xy[:, 0], xy[:, 1], color=color)
+
+        elif isinstance(self.vertices[0].pose, (PoseR3, PoseSE3)):
+            xyz = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xyz[:, 0], xyz[:, 1], xyz[:, 2], color=color)
+
+        else:
+            raise NotImplementedError
