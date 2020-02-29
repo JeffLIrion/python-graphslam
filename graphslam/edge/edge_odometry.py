@@ -9,7 +9,9 @@ import numpy as np
 
 from .base_edge import BaseEdge
 
+from ..pose.r2 import PoseR2
 from ..pose.se2 import PoseSE2
+from ..pose.r3 import PoseR3
 from ..pose.se3 import PoseSE3
 
 
@@ -85,3 +87,21 @@ class EdgeOdometry(BaseEdge):
             return "EDGE_SE3:QUAT {} {} {} {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1], self.estimate[2], self.estimate[3], self.estimate[4], self.estimate[5], self.estimate[6]) + " ".join([str(x) for x in self.information[np.triu_indices(6, 0)]]) + "\n"
 
         raise NotImplementedError
+
+    def plot(self, color):
+        """Plot the edge.
+
+        Parameters
+        ----------
+        color : str
+            The color that will be used to plot the edge
+
+        """
+        if isinstance(self.vertices[0].pose, (PoseR2, PoseSE2)):
+            pass
+
+        elif isinstance(self.vertices[0].pose, (PoseR3, PoseSE3)):
+            pass
+
+        else:
+            raise NotImplementedError
