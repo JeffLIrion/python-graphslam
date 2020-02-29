@@ -42,11 +42,15 @@ SE(3) Dataset
 
    >>> g = load_g2o_se3("parking-garage.g2o")
 
+   >>> g.plot(vertex_markersize=1)
+
    >>> g.calc_chi2()
 
    16720.020602489112
 
    >>> g.optimize()
+
+   >>> g.plot(vertex_markersize=1)
 
 
 **Output:**
@@ -63,6 +67,13 @@ SE(3) Dataset
            5               1.2395          -0.000091
 
 
++--------------------------------------+------------------------------------------------+
+| **Original**                         | **Optimized**                                  |
++--------------------------------------+------------------------------------------------+
+| .. image:: images/parking-garage.png | .. image:: images/parking-garage-optimized.png |
++--------------------------------------+------------------------------------------------+
+
+
 SE(2) Dataset
 ^^^^^^^^^^^^^
 
@@ -72,11 +83,15 @@ SE(2) Dataset
 
    >>> g = load_g2o_se2("input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
+   >>> g.plot()
+
    >>> g.calc_chi2()
 
    7191686.382493544
 
    >>> g.optimize()
+
+   >>> g.plot()
 
 
 **Output:**
@@ -93,6 +108,12 @@ SE(2) Dataset
            5             215.8405          -0.706145
            6             215.8405          -0.000000
 
+
++-----------------------------------+---------------------------------------------+
+| **Original**                      | **Optimized**                               |
++-----------------------------------+---------------------------------------------+
+| .. image:: images/input_INTEL.png | .. image:: images/input_INTEL-optimized.png |
++-----------------------------------+---------------------------------------------+
 
 References and Links
 --------------------
