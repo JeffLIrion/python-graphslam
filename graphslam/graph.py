@@ -299,8 +299,19 @@ class Graph(object):
             for e in self._edges:
                 f.write(e.to_g2o())
 
-    def plot(self):
+    def plot(self, vertex_color='r', vertex_marker='o', vertex_markersize=3, edge_color='b'):
         """Plot the graph.
+
+        Parameters
+        ----------
+        vertex_color : str
+            The color that will be used to plot the vertices
+        vertex_marker : str
+            The marker that will be used to plot the vertices
+        vertex_markersize : int
+            The size of the plotted vertices
+        edge_color : str
+            The color that will be used to plot the edges
 
         """
         if plt is None:  # pragma: no cover
@@ -311,9 +322,9 @@ class Graph(object):
             fig.add_subplot(111, projection='3d')
 
         for e in self._edges:
-            e.plot()
+            e.plot(edge_color)
 
         for v in self._vertices:
-            v.plot()
+            v.plot(vertex_color, vertex_marker, vertex_markersize)
 
         plt.show()
