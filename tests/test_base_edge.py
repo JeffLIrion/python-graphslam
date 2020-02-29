@@ -125,7 +125,7 @@ class TestBaseEdge(unittest.TestCase):
         e = BaseEdge(0, 1, 0, [v])
 
         with self.assertRaises(NotImplementedError):
-            e.plot('k')
+            e.plot()
 
 
 if __name__ == '__main__':

@@ -88,7 +88,7 @@ class EdgeOdometry(BaseEdge):
 
         raise NotImplementedError
 
-    def plot(self, color):
+    def plot(self, color='b'):
         """Plot the edge.
 
         Parameters

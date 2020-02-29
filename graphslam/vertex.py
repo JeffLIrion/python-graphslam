@@ -55,7 +55,7 @@ class Vertex:
 
         raise NotImplementedError
 
-    def plot(self, color):
+    def plot(self, color='r'):
         """Plot the vertex.
 
         Parameters

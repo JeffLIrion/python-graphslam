@@ -41,10 +41,10 @@ class TestVertex(unittest.TestCase):
         v_se3 = Vertex(4, PoseSE3([1, 2, 3], [0.5, 0.5, 0.5, 0.5]))
 
         with self.assertRaises(NotImplementedError):
-            v_none.plot('r')
+            v_none.plot()
 
         for v in [v_r2, v_se2, v_r3, v_se3]:
-            v.plot('r')
+            v.plot()
 
 
 if __name__ == '__main__':

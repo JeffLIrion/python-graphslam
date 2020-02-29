@@ -32,11 +32,11 @@ class TestEdgeOdometry(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             e = EdgeOdometry(0, 1, 0, [v_none, v_none])
-            e.plot('b')
+            e.plot()
 
         for v in [v_r2, v_se2, v_r3, v_se3]:
             e = EdgeOdometry(0, 1, 0, [v, v])
-            e.plot('b')
+            e.plot()
 
 
 if __name__ == '__main__':
