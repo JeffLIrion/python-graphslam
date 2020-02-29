@@ -40,7 +40,7 @@ SE(3) Dataset
 
    >>> from graphslam.load import load_g2o_se3
 
-   >>> g = load_g2o_se3("parking-garage.g2o")
+   >>> g = load_g2o_se3("parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot(vertex_markersize=1)
 
