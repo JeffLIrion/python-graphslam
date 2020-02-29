@@ -22,7 +22,7 @@ setup(
     author_email='jefflirion@users.noreply.github.com',
     packages=['graphslam', 'graphslam.pose', 'graphslam.edge'],
     install_requires=['numpy', 'scipy'],
-    # tests_require=[],
+    tests_require=['matplotlib'],
     classifiers=['License :: OSI Approved :: MIT License',
                  'Operating System :: OS Independent',
                  'Programming Language :: Python :: 3'],
