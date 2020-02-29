@@ -292,3 +292,13 @@ class Graph(object):
 
             for e in self._edges:
                 f.write(e.to_g2o())
+
+    def plot(self):
+        """Plot the graph.
+
+        """
+        for e in self._edges:
+            e.plot()
+
+        for v in self._vertices:
+            v.plot()
