@@ -4,6 +4,11 @@
 
 """
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError:  # pragma: no cover
+    plt = None
+
 from .pose.r2 import PoseR2
 from .pose.r3 import PoseR3
 from .pose.se2 import PoseSE2
@@ -55,20 +60,29 @@ class Vertex:
 
         raise NotImplementedError
 
-    def plot(self, color='r'):
+    def plot(self, color='r', marker='o', markersize=3):
         """Plot the vertex.
 
         Parameters
         ----------
         color : str
             The color that will be used to plot the vertex
+        marker : str
+            The marker that will be used to plot the vertex
+        markersize : int
+            The size of the plotted vertex
 
         """
+        if plt is None:  # pragma: no cover
+            raise NotImplementedError
+
         if isinstance(self.pose, (PoseR2, PoseSE2)):
-            pass
+            x, y = self.pose.position
+            plt.plot(x, y, color=color, marker=marker, markersize=markersize)
 
         elif isinstance(self.pose, (PoseR3, PoseSE3)):
-            pass
+            x, y, z = self.pose.position
+            plt.plot([x], [y], [z], markerfacecolor=color, markeredgecolor=color, marker=marker, markersize=markersize)
 
         else:
             raise NotImplementedError

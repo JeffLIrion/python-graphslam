@@ -83,6 +83,12 @@ import numpy as np
 from scipy.sparse import SparseEfficiencyWarning, lil_matrix
 from scipy.sparse.linalg import spsolve
 
+try:
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D  # noqa pylint: disable=unused-import
+except ImportError:  # pragma: no cover
+    plt = None
+
 
 warnings.simplefilter("ignore", SparseEfficiencyWarning)
 warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
@@ -297,8 +303,17 @@ class Graph(object):
         """Plot the graph.
 
         """
+        if plt is None:  # pragma: no cover
+            raise NotImplementedError
+
+        fig = plt.figure()
+        if len(self._vertices[0].pose.position) == 3:
+            fig.add_subplot(111, projection='3d')
+
         for e in self._edges:
             e.plot()
 
         for v in self._vertices:
             v.plot()
+
+        plt.show()

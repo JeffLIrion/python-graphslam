@@ -93,7 +93,9 @@ class TestGraphR2(unittest.TestCase):
         """Test that the ``plot`` method does not raise an exception.
 
         """
-        self.g.plot()
+        # avoid showing the plots
+        with patch("graphslam.graph.plt.show"):
+            self.g.plot()
 
 
 class TestGraphR3(TestGraphR2):

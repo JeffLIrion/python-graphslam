@@ -7,6 +7,11 @@ r"""A class for odometry edges.
 
 import numpy as np
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError:  # pragma: no cover
+    plt = None
+
 from .base_edge import BaseEdge
 
 from ..pose.r2 import PoseR2
@@ -97,11 +102,16 @@ class EdgeOdometry(BaseEdge):
             The color that will be used to plot the edge
 
         """
+        if plt is None:  # pragma: no cover
+            raise NotImplementedError
+
         if isinstance(self.vertices[0].pose, (PoseR2, PoseSE2)):
-            pass
+            xy = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xy[:, 0], xy[:, 1], color=color)
 
         elif isinstance(self.vertices[0].pose, (PoseR3, PoseSE3)):
-            pass
+            xyz = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xyz[:, 0], xyz[:, 1], xyz[:, 2], color=color)
 
         else:
             raise NotImplementedError
