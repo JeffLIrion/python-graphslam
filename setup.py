@@ -8,7 +8,7 @@
 from setuptools import setup
 
 with open('README.rst') as f:
-    readme = f.read().replace(':math:', '').replace('\\mathbb{R}', 'R')
+    readme = f.read().replace(':math:', '').replace('\\mathbb{R}', 'R').replace('.. image::                                                                                  ', '.. image:: https://raw.githubusercontent.com/JeffLIrion/python-graphslam/master/docs/source/')
 
 setup(
     name='graphslam',
