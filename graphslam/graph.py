@@ -305,7 +305,7 @@ class Graph(object):
             for e in self._edges:
                 f.write(e.to_g2o())
 
-    def plot(self, vertex_color='r', vertex_marker='o', vertex_markersize=3, edge_color='b'):
+    def plot(self, vertex_color='r', vertex_marker='o', vertex_markersize=3, edge_color='b', title=None):
         """Plot the graph.
 
         Parameters
@@ -318,6 +318,8 @@ class Graph(object):
             The size of the plotted vertices
         edge_color : str
             The color that will be used to plot the edges
+        title : str, None
+            The title that will be used for the plot
 
         """
         if plt is None:  # pragma: no cover
@@ -332,5 +334,8 @@ class Graph(object):
 
         for v in self._vertices:
             v.plot(vertex_color, vertex_marker, vertex_markersize)
+
+        if title:
+            plt.title(title)
 
         plt.show()
