@@ -95,7 +95,7 @@ class TestGraphR2(unittest.TestCase):
         """
         # avoid showing the plots
         with patch("graphslam.graph.plt.show"):
-            self.g.plot()
+            self.g.plot(title="Title")
 
 
 class TestGraphR3(TestGraphR2):
