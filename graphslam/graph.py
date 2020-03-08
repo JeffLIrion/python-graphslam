@@ -206,7 +206,8 @@ class Graph(object):
             The :math:`\chi^2` error
 
         """
-        return sum((e.calc_chi2() for e in self._edges))
+        self._chi2 = sum((e.calc_chi2() for e in self._edges))
+        return self._chi2
 
     def _calc_chi2_gradient_hessian(self):
         r"""Calculate the :math:`\chi^2` error, the gradient :math:`\mathbf{b}`, and the Hessian :math:`H`.
@@ -282,6 +283,11 @@ class Graph(object):
             # Apply the updates
             for v, dx_i in zip(self._vertices, np.split(dx, n)):
                 v.pose += dx_i
+
+        # If we reached the maximum number of iterations, print out the final iteration's results
+        self.calc_chi2()
+        rel_diff = (chi2_prev - self._chi2) / (chi2_prev + np.finfo(float).eps)
+        print("{:9d} {:20.4f} {:18.6f}".format(max_iter, self._chi2, -rel_diff))
 
     def to_g2o(self, outfile):
         """Save the graph in .g2o format.
