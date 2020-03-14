@@ -40,7 +40,7 @@ SE(3) Dataset
 
    >>> from graphslam.load import load_g2o_se3
 
-   >>> g = load_g2o_se3("parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = load_g2o_se3("data/parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot(vertex_markersize=1)
 
@@ -81,7 +81,7 @@ SE(2) Dataset
 
    >>> from graphslam.load import load_g2o_se2
 
-   >>> g = load_g2o_se2("input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = load_g2o_se2("data/input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot()
 
@@ -115,12 +115,17 @@ SE(2) Dataset
 | .. image::                                                                                  images/input_INTEL.png | .. image::                                                                                  images/input_INTEL-optimized.png |
 +--------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------+
 
-References and Links
---------------------
+References and Acknowledgments
+------------------------------
 
-* `A tutorial on graph-based SLAM <http://domino.informatik.uni-freiburg.de/teaching/ws10/praktikum/slamtutorial.pdf>`_
-* `A tutorial on SE(3) transformation parameterizations and on-manifold optimization <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.468.5407&rep=rep1&type=pdf>`_
-* `Datasets from Luca Carlone <https://lucacarlone.mit.edu/datasets/>`_
+
+1. Grisetti, G., Kummerle, R., Stachniss, C. and Burgard, W., 2010. `A tutorial on graph-based SLAM <http://domino.informatik.uni-freiburg.de/teaching/ws10/praktikum/slamtutorial.pdf>`_. IEEE Intelligent Transportation Systems Magazine, 2(4), pp.31-43.
+2. Blanco, J.L., 2010. `A tutorial on SE(3) transformation parameterizations and on-manifold optimization <http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.468.5407&rep=rep1&type=pdf>`_. University of Malaga, Tech. Rep, 3.
+3. Carlone, L., Tron, R., Daniilidis, K. and Dellaert, F., 2015, May. `Initialization techniques for 3D SLAM: a survey on rotation estimation and its use in pose graph optimization <https://smartech.gatech.edu/bitstream/handle/1853/53710/Carlone15icra.pdf>`_. In 2015 IEEE international conference on robotics and automation (ICRA) (pp. 4597-4604). IEEE.
+4. Carlone, L. and Censi, A., 2014. `From angular manifolds to the integer lattice: Guaranteed orientation estimation with application to pose graph optimization <https://arxiv.org/pdf/1211.3063.pdf>`_. IEEE Transactions on Robotics, 30(2), pp.475-492.
+
+
+Thanks to Luca Larlone for allowing inclusion of the `Intel and parking garage datasets <https://lucacarlone.mit.edu/datasets/>`_ in this repo.
 
 
 Live Coding Graph SLAM in Python
