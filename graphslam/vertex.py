@@ -38,10 +38,11 @@ class Vertex:
         The pose associated with the vertex
 
     """
-    def __init__(self, vertex_id, pose, vertex_index=None):
+    def __init__(self, vertex_id, pose, fix=False, vertex_index=None):
         self.id = vertex_id
         self.pose = pose
         self.index = vertex_index
+        self.fix = fix
 
     def to_g2o(self):
         """Export the vertex to the .g2o format.
