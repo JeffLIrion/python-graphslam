@@ -249,7 +249,6 @@ class Graph(object):
 
         """
         n = len(self._vertices)
-        dim = len(self._vertices[0].pose.to_compact())
 
         # Previous iteration's chi^2 error
         chi2_prev = -1.
