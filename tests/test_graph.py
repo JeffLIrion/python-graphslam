@@ -72,6 +72,9 @@ class TestGraphR2(unittest.TestCase):
         chi2_orig = self.g.calc_chi2()
 
         poses_before = [self.g._vertices[i].pose.to_array() for i in fixed_indices]  # pylint: disable=protected-access
+        for i in fixed_indices:
+            self.g._vertices[i].fixed = True  # pylint: disable=protected-access
+
         self.g.optimize(fix_first_pose=False)
         self.assertLess(self.g.calc_chi2(), chi2_orig)
 
