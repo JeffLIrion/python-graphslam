@@ -65,6 +65,51 @@ class TestGraphR2(unittest.TestCase):
         # Make sure the first pose was held fixed
         self.assertAlmostEqual(np.linalg.norm(p0 - self.g._vertices[0].pose.to_array()), 0.)  # pylint: disable=protected-access
 
+    def _test_optimize_fixed_vertices(self, fixed_indices):
+        """Test that a ``Graph`` can be optimized with vertices held fixed.
+
+        """
+        chi2_orig = self.g.calc_chi2()
+
+        poses_before = [self.g._vertices[i].pose.to_array() for i in fixed_indices]  # pylint: disable=protected-access
+        self.g.optimize(fix_first_pose=False)
+        self.assertLess(self.g.calc_chi2(), chi2_orig)
+
+        # Make sure the poses were held fixed
+        poses_after = [self.g._vertices[i].pose.to_array() for i in fixed_indices]  # pylint: disable=protected-access
+        for before, after in zip(poses_before, poses_after):
+            self.assertAlmostEqual(np.linalg.norm(before - after), 0.)
+
+    def test_optimize_fix_1(self):
+        """Test that the ``optimize`` method works correctly when fixing vertex 1.
+
+        """
+        self._test_optimize_fixed_vertices([1])
+
+    def test_optimize_fix_2(self):
+        """Test that the ``optimize`` method works correctly when fixing vertex 2.
+
+        """
+        self._test_optimize_fixed_vertices([2])
+
+    def test_optimize_fix_01(self):
+        """Test that the ``optimize`` method works correctly when fixing vertices 0 and 1.
+
+        """
+        self._test_optimize_fixed_vertices([0, 1])
+
+    def test_optimize_fix_02(self):
+        """Test that the ``optimize`` method works correctly when fixing vertices 0 and 2.
+
+        """
+        self._test_optimize_fixed_vertices([0, 2])
+
+    def test_optimize_fix_12(self):
+        """Test that the ``optimize`` method works correctly when fixing vertices 1 and 2.
+
+        """
+        self._test_optimize_fixed_vertices([1, 2])
+
     # pylint: disable=protected-access
     def test_to_g2o(self):
         """Test that the ``to_g2o`` method is implemented correctly, or raises ``NotImplementedError``.
