@@ -27,6 +27,8 @@ class Vertex:
         The pose associated with the vertex
     vertex_index : int, None
         The vertex's index in the graph's ``vertices`` list
+    fixed : bool
+        Whether this vertex should be fixed
 
     Attributes
     ----------
@@ -36,12 +38,15 @@ class Vertex:
         The vertex's index in the graph's ``vertices`` list
     pose : graphslam.pose.base_pose.BasePose
         The pose associated with the vertex
+    fixed : bool
+        Whether this vertex should be fixed
 
     """
-    def __init__(self, vertex_id, pose, vertex_index=None):
+    def __init__(self, vertex_id, pose, vertex_index=None, fixed=False):
         self.id = vertex_id
         self.pose = pose
         self.index = vertex_index
+        self.fixed = fixed
 
     def to_g2o(self):
         """Export the vertex to the .g2o format.

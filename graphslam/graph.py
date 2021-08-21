@@ -163,6 +163,8 @@ class Graph(object):
         The current :math:`\chi^2` error, or ``None`` if it has not yet been computed
     _edges : list[graphslam.edge.base_edge.BaseEdge]
         A list of the edges (i.e., constraints) in the graph
+    _fixed_vertices : set[int]
+        The set of vertices that are fixed
     _gradient : numpy.ndarray, None
         The gradient :math:`\mathbf{b}` of the :math:`\chi^2` error, or ``None`` if it has not yet been computed
     _hessian : scipy.sparse.lil_matrix, None
@@ -175,6 +177,7 @@ class Graph(object):
         # The vertices and edges lists
         self._edges = edges
         self._vertices = vertices
+        self._fixed_vertices = set()
 
         # The chi^2 error, gradient, and Hessian
         self._chi2 = None
@@ -222,11 +225,19 @@ class Graph(object):
         # Fill in the gradient vector
         self._gradient = np.zeros(n * dim, dtype=np.float64)
         for idx, contrib in chi2_gradient_hessian.gradient.items():
-            self._gradient[idx * dim: (idx + 1) * dim] += contrib
+            # If a vertex is fixed, its block in the gradient vector is zero and so there is nothing to do
+            if idx not in self._fixed_vertices:
+                self._gradient[idx * dim: (idx + 1) * dim] += contrib
 
         # Fill in the Hessian matrix
         self._hessian = lil_matrix((n * dim, n * dim), dtype=np.float64)
         for (row_idx, col_idx), contrib in chi2_gradient_hessian.hessian.items():
+            if row_idx in self._fixed_vertices or col_idx in self._fixed_vertices:
+                # For fixed vertices, the diagonal block is the identity matrix and the off-diagonal blocks are zero
+                if row_idx == col_idx:
+                    self._hessian[row_idx * dim: (row_idx + 1) * dim, col_idx * dim: (col_idx + 1) * dim] = np.eye(dim)
+                continue
+
             self._hessian[row_idx * dim: (row_idx + 1) * dim, col_idx * dim: (col_idx + 1) * dim] = contrib
 
             if row_idx != col_idx:
@@ -246,7 +257,12 @@ class Graph(object):
 
         """
         n = len(self._vertices)
-        dim = len(self._vertices[0].pose.to_compact())
+
+        if fix_first_pose:
+            self._vertices[0].fixed = True
+
+        # Populate the set of fixed vertices
+        self._fixed_vertices = {i for i, v in enumerate(self._vertices) if v.fixed}
 
         # Previous iteration's chi^2 error
         chi2_prev = -1.
@@ -269,13 +285,6 @@ class Graph(object):
 
             # Update the previous iteration's chi^2 error
             chi2_prev = self._chi2
-
-            # Hold the first pose fixed
-            if fix_first_pose:
-                self._hessian[:dim, :] = 0.
-                self._hessian[:, :dim] = 0.
-                self._hessian[:dim, :dim] += np.eye(dim)
-                self._gradient[:dim] = 0.
 
             # Solve for the updates
             dx = spsolve(self._hessian, -self._gradient)  # pylint: disable=invalid-unary-operand-type
