@@ -34,6 +34,7 @@ jobs:
         flake8 graphslam/ && pylint graphslam/ && flake8 tests/ && pylint tests/
     - name: Test with unittest
       env:
+        COVERALLS_SERVICE_NAME: github
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         coverage run --source graphslam -m unittest discover -s tests/ -t . && coverage report -m && coveralls
