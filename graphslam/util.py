@@ -64,11 +64,10 @@ def upper_triangular_matrix_to_full_matrix(arr, n):
 
     """
     triu0 = np.triu_indices(n, 0)
-    triu1 = np.triu_indices(n, 1)
     tril1 = np.tril_indices(n, -1)
 
     mat = np.zeros((n, n), dtype=np.float64)
     mat[triu0] = arr
-    mat[tril1] = mat[triu1]
+    mat[tril1] = mat.T[tril1]
 
     return mat
