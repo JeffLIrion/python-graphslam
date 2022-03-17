@@ -42,13 +42,13 @@ class TestUtil(unittest.TestCase):
         """Test the ``upper_triangular_matrix_to_full_matrix()`` function.
 
         """
-        arr = np.array([1, 2, 3, 4, 5, 6])
+        arrays = [np.array([1, 2, 3, 4, 5, 6]), np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])]
+        answers = [np.array([[1, 2, 3], [2, 4, 5], [3, 5, 6]], dtype=np.float64), np.array([[1, 2, 3, 4], [2, 5, 6, 7], [3, 6, 8, 9], [4, 7, 9, 10]])]
+        dims = [3, 4]
 
-        mat = util.upper_triangular_matrix_to_full_matrix(arr, 3)
-
-        ans = np.array([[1, 2, 3], [2, 4, 5], [3, 5, 6]], dtype=np.float64)
-
-        self.assertAlmostEqual(np.linalg.norm(mat - ans), 0.)
+        for array, answer, dim in zip(arrays, answers, dims):
+            mat = util.upper_triangular_matrix_to_full_matrix(array, dim)
+            self.assertAlmostEqual(np.linalg.norm(mat - answer), 0.)
 
 
 if __name__ == '__main__':
