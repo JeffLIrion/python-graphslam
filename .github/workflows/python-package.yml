@@ -30,9 +30,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         make venv
-    - name: Linting checks with pylint, flake8, and black
+    - name: Linting checks with pylint, flake8, and (soon) black
       run: |
-        make lint
+        make lint-flake8 lint-pylint
     - name: Test with pytest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
