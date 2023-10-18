@@ -1,0 +1,9 @@
+black
+coverage
+coveralls
+flake8
+matplotlib
+numpy
+pylint
+pytest
+scipy
