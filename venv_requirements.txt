@@ -1,9 +1,15 @@
+# Standard requirements
 black
 coverage
 coveralls
 flake8
-matplotlib
-numpy
 pylint
 pytest
+sphinx
+sphinx-rtd-theme
+twine
+
+# Specific requirements for this project
+matplotlib
+numpy
 scipy
