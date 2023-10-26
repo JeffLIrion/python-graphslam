@@ -1,5 +1,7 @@
-sphinx==2.1.2
+# Standard requirements
+sphinx
+sphinx-rtd-theme
+
+# Specific requirements for this project
 graphslam
 matplotlib
-numpy
-scipy
