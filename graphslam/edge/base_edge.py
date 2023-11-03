@@ -5,6 +5,8 @@ r"""A base class for edges.
 """
 
 
+from abc import ABC, abstractmethod
+
 import numpy as np
 
 from graphslam.pose.base_pose import BasePose
@@ -14,7 +16,7 @@ from graphslam.pose.base_pose import BasePose
 EPSILON = 1e-6
 
 
-class BaseEdge:
+class BaseEdge(ABC):
     r"""A class for representing edges in Graph SLAM.
 
     Parameters
@@ -46,6 +48,7 @@ class BaseEdge:
         self.estimate = estimate
         self.vertices = vertices
 
+    @abstractmethod
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.
 
@@ -55,7 +58,6 @@ class BaseEdge:
             The error for the edge
 
         """
-        raise NotImplementedError
 
     def calc_chi2(self):
         r"""Calculate the :math:`\chi^2` error for the edge.
@@ -152,6 +154,7 @@ class BaseEdge:
 
         return jacobian
 
+    @abstractmethod
     def to_g2o(self):
         """Export the edge to the .g2o format.
 
@@ -161,8 +164,8 @@ class BaseEdge:
             The edge in .g2o format
 
         """
-        raise NotImplementedError
 
+    @abstractmethod
     def plot(self, color=''):
         """Plot the edge.
 
@@ -172,7 +175,6 @@ class BaseEdge:
             The color that will be used to plot the edge
 
         """
-        raise NotImplementedError
 
     def approx_equal(self, other, tol=1e-6):
         """Check whether two edges are approximately equal.
