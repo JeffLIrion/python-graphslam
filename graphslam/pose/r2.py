@@ -42,7 +42,7 @@ class PoseR2(BasePose):
             The pose as a numpy array
 
         """
-        return np.array(self._array)
+        return np.array(self._data)
 
     def to_compact(self):
         """Return the pose as a compact numpy array.
@@ -53,7 +53,7 @@ class PoseR2(BasePose):
             The pose as a compact numpy array
 
         """
-        return np.array(self._array)
+        return np.array(self._data)
 
     # ======================================================================= #
     #                                                                         #
@@ -70,7 +70,7 @@ class PoseR2(BasePose):
             The position portion of the pose
 
         """
-        return np.array(self._array)
+        return np.array(self._data)
 
     @property
     def orientation(self):

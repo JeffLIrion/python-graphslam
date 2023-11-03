@@ -15,20 +15,20 @@ class BasePose(ABC):
     Parameters
     ----------
     arr : np.ndarray, list
-        The array that will be stored as `self._array`
+        The array that will be stored as `self._data`
     dtype : type
-        The type for the numpy array `self._array`
+        The type for the numpy array `self._data`
 
     """
 
     def __init__(self, arr, dtype=np.float64):
-        self._array = np.array(arr, dtype=dtype)
+        self._data = np.array(arr, dtype=dtype)
 
     def __getitem__(self, key):
-        return self._array[key]
+        return self._data[key]
 
     def __setitem__(self, key, value):
-        self._array[key] = value
+        self._data[key] = value
 
     @abstractmethod
     def copy(self):
