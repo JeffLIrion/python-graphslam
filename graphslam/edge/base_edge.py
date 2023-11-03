@@ -12,10 +12,6 @@ import numpy as np
 from graphslam.pose.base_pose import BasePose
 
 
-#: The difference that will be used for numerical differentiation
-EPSILON = 1e-6
-
-
 class BaseEdge(ABC):
     r"""A class for representing edges in Graph SLAM.
 
@@ -42,6 +38,10 @@ class BaseEdge(ABC):
         A list of the vertices constrained by the edge
 
     """
+
+    #: The difference that will be used for numerical differentiation
+    _NUMERICAL_DIFFERENTIATION_EPSILON = 1e-6
+
     def __init__(self, vertex_ids, information, estimate, vertices=None):
         self.vertex_ids = vertex_ids
         self.information = information
@@ -143,11 +143,11 @@ class BaseEdge(ABC):
         for d in range(dim):
             # update the pose
             delta_pose = np.zeros(dim)
-            delta_pose[d] = EPSILON
+            delta_pose[d] = self._NUMERICAL_DIFFERENTIATION_EPSILON
             self.vertices[vertex_index].pose += delta_pose
 
             # compute the numerical derivative
-            jacobian[:, d] = (self.calc_error() - err) / EPSILON
+            jacobian[:, d] = (self.calc_error() - err) / self._NUMERICAL_DIFFERENTIATION_EPSILON
 
             # restore the pose
             self.vertices[vertex_index].pose = p0.copy()
