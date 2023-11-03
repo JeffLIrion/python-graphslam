@@ -115,11 +115,30 @@ class _Chi2GradientHessian:
         The contributions to the Hessian matrix
 
     """
-    def __init__(self, dim):
+
+    class DefaultArray:
+        """A class for use in a `defaultdict`."""
+
+        def __iadd__(self, other):
+            """Add `other` to `self` and return `other`.
+
+            Parameters
+            ----------
+            other : np.ndarray
+                The numpy array that is being added to `self`
+
+            Returns
+            -------
+            np.ndarray
+                `other`
+
+            """
+            return other
+
+    def __init__(self):
         self.chi2 = 0.
-        self.dim = dim
-        self.gradient = defaultdict(lambda: np.zeros(dim))
-        self.hessian = defaultdict(lambda: np.zeros((dim, dim)))
+        self.gradient = defaultdict(_Chi2GradientHessian.DefaultArray)
+        self.hessian = defaultdict(_Chi2GradientHessian.DefaultArray)
 
     @staticmethod
     def update(chi2_grad_hess, incoming):
@@ -184,6 +203,8 @@ class Graph(object):
         self._gradient = None
         self._hessian = None
 
+        self._dim = None
+
         self._link_edges()
 
     def _link_edges(self):
@@ -192,6 +213,8 @@ class Graph(object):
         """
         index_id_dict = {i: v.id for i, v in enumerate(self._vertices)}
         id_index_dict = {v_id: v_index for v_index, v_id in index_id_dict.items()}
+
+        self._dim = sum(v.pose.COMPACT_DIMENSIONALITY for v in self._vertices)
 
         # Fill in the vertices' `index` attribute
         for v in self._vertices:
@@ -216,21 +239,20 @@ class Graph(object):
         r"""Calculate the :math:`\chi^2` error, the gradient :math:`\mathbf{b}`, and the Hessian :math:`H`.
 
         """
-        n = len(self._vertices)
         dim = len(self._vertices[0].pose.to_compact())
-        chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _Chi2GradientHessian(dim))
+        chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _Chi2GradientHessian())
 
         self._chi2 = chi2_gradient_hessian.chi2
 
         # Fill in the gradient vector
-        self._gradient = np.zeros(n * dim, dtype=np.float64)
+        self._gradient = np.zeros(self._dim, dtype=np.float64)
         for idx, contrib in chi2_gradient_hessian.gradient.items():
             # If a vertex is fixed, its block in the gradient vector is zero and so there is nothing to do
             if idx not in self._fixed_vertices:
                 self._gradient[idx * dim: (idx + 1) * dim] += contrib
 
         # Fill in the Hessian matrix
-        self._hessian = lil_matrix((n * dim, n * dim), dtype=np.float64)
+        self._hessian = lil_matrix((self._dim, self._dim), dtype=np.float64)
         for (row_idx, col_idx), contrib in chi2_gradient_hessian.hessian.items():
             if row_idx in self._fixed_vertices or col_idx in self._fixed_vertices:
                 # For fixed vertices, the diagonal block is the identity matrix and the off-diagonal blocks are zero

@@ -21,6 +21,9 @@ class PoseSE3(BasePose):
 
     """
 
+    #: The compact dimensionality
+    COMPACT_DIMENSIONALITY = 6
+
     def __init__(self, position, orientation):
         super().__init__([position[0], position[1], position[2], orientation[0], orientation[1], orientation[2], orientation[3]])
 
