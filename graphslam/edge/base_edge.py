@@ -7,6 +7,8 @@ r"""A base class for edges.
 
 import numpy as np
 
+from graphslam.pose.base_pose import BasePose
+
 
 #: The difference that will be used for numerical differentiation
 EPSILON = 1e-6
@@ -171,3 +173,33 @@ class BaseEdge:
 
         """
         raise NotImplementedError
+
+    def approx_equal(self, other, tol=1e-6):
+        """Check whether two poses edges approximately equal.
+
+        Parameters
+        ----------
+        other : BaseEdge
+            The edge to which we are comparing
+        tol : float
+            The tolerance
+
+        Returns
+        -------
+        bool
+            Whether the two edges are approximately equal
+
+        """
+        if len(self.vertex_ids) != len(other.vertex_ids):
+            return False
+
+        if any(v_id1 != v_id2 for v_id1, v_id2 in zip(self.vertex_ids, other.vertex_ids)):
+            return False
+
+        if self.information.shape != other.information.shape or np.linalg.norm(self.information - other.information) / max(np.linalg.norm(self.information), tol) >= tol:
+            return False
+
+        if isinstance(self.estimate, BasePose):
+            return isinstance(other.estimate, BasePose) and self.estimate.approx_equal(other.estimate, tol)
+
+        return not isinstance(other.estimate, BasePose) and np.linalg.norm(self.estimate - other.estimate) / max(np.linalg.norm(self.estimate), tol) < tol

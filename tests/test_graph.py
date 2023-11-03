@@ -148,6 +148,11 @@ class TestGraphR2(unittest.TestCase):
         with patch("graphslam.graph.plt.show"):
             self.g.plot(title="Title")
 
+    def test_approx_equal(self):
+        """Test that the ``approx_equal`` method returns False when comparing to an empty graph."""
+        g = Graph([], [])
+        self.assertFalse(g.approx_equal(self.g))
+
 
 class TestGraphR3(TestGraphR2):
     r"""Tests for the ``Graph`` class with :math:`\mathbb{R}^3` poses.
@@ -243,11 +248,11 @@ class TestGraphOptimization(unittest.TestCase):
 
         optimized = os.path.join(os.path.dirname(__file__), "input_INTEL_optimized.g2o")
 
-        # An assertion so that linting doesn't complain about `optimized` being unused
-        self.assertEqual(os.path.dirname(__file__), os.path.dirname(optimized))
-
         # Uncomment this line to write the output file
         # g.to_g2o(optimized)
+
+        g2 = load_g2o_se2(optimized)
+        self.assertTrue(g.approx_equal(g2))
 
     def test_parking_garage(self):
         """Test for optimizing the parking garage dataset."""
@@ -258,11 +263,11 @@ class TestGraphOptimization(unittest.TestCase):
 
         optimized = os.path.join(os.path.dirname(__file__), "parking-garage_optimized.g2o")
 
-        # An assertion so that linting doesn't complain about `optimized` being unused
-        self.assertEqual(os.path.dirname(__file__), os.path.dirname(optimized))
-
         # Uncomment this line to write the output file
         # g.to_g2o(optimized)
+
+        g2 = load_g2o_se3(optimized)
+        self.assertTrue(g.approx_equal(g2))
 
 
 if __name__ == '__main__':

@@ -348,3 +348,25 @@ class Graph(object):
             plt.title(title)
 
         plt.show()
+
+    def approx_equal(self, other, tol=1e-6):
+        """Check whether two graphs are (approximately) equal.
+
+        Parameters
+        ----------
+        other : Graph
+            The graph to which we are comparing
+        tol : float
+            The tolerance
+
+        Returns
+        -------
+        bool
+            Whether the two graphs are approximately equal
+
+        """
+        # pylint: disable=protected-access
+        if len(self._edges) != len(other._edges) or len(self._vertices) != len(other._vertices):
+            return False
+
+        return all(e1.approx_equal(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.pose.approx_equal(v2.pose, tol) for v1, v2 in zip(self._vertices, other._vertices))
