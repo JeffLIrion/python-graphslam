@@ -22,8 +22,9 @@ class PoseR3(BasePose):
     #: The compact dimensionality
     COMPACT_DIMENSIONALITY = 3
 
-    def __init__(self, position):
-        super().__init__(position)
+    def __new__(cls, position):
+        obj = np.asarray(position, dtype=np.float64).view(cls)
+        return obj
 
     def copy(self):
         """Return a copy of the pose.
@@ -45,7 +46,7 @@ class PoseR3(BasePose):
             The pose as a numpy array
 
         """
-        return np.array(self._data)
+        return np.array(self)
 
     def to_compact(self):
         """Return the pose as a compact numpy array.
@@ -56,7 +57,7 @@ class PoseR3(BasePose):
             The pose as a compact numpy array
 
         """
-        return np.array(self._data)
+        return np.array(self)
 
     # ======================================================================= #
     #                                                                         #
@@ -73,7 +74,7 @@ class PoseR3(BasePose):
             The position portion of the pose
 
         """
-        return np.array(self._data)
+        return np.array(self)
 
     @property
     def orientation(self):
@@ -118,7 +119,7 @@ class PoseR3(BasePose):
             The result of pose composition
 
         """
-        return PoseR3([self[0] + other[0], self[1] + other[1], self[2] + other[2]])
+        return PoseR3(np.add(self, other))
 
     def __sub__(self, other):
         """Subtract poses (i.e., inverse pose composition).
@@ -134,7 +135,7 @@ class PoseR3(BasePose):
             The result of inverse pose composition
 
         """
-        return PoseR3([self[0] - other[0], self[1] - other[1], self[2] - other[2]])
+        return PoseR3(np.subtract(self, other))
 
     # ======================================================================= #
     #                                                                         #

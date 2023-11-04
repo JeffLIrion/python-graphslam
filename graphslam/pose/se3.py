@@ -24,10 +24,11 @@ class PoseSE3(BasePose):
     #: The compact dimensionality
     COMPACT_DIMENSIONALITY = 6
 
-    def __init__(self, position, orientation):
+    def __new__(cls, position, orientation):
         # fmt: off
-        super().__init__([position[0], position[1], position[2], orientation[0], orientation[1], orientation[2], orientation[3]])
+        obj = np.array([position[0], position[1], position[2], orientation[0], orientation[1], orientation[2], orientation[3]], dtype=np.float64).view(cls)
         # fmt: on
+        return obj
 
     def normalize(self):
         """Normalize the quaternion portion of the pose."""
@@ -54,7 +55,7 @@ class PoseSE3(BasePose):
             The pose as a numpy array
 
         """
-        return np.array(self._data)
+        return np.array(self)
 
     def to_compact(self):
         """Return the pose as a compact numpy array.
