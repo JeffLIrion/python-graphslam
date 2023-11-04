@@ -73,7 +73,9 @@ class PoseSE2(BasePose):
             The pose as an :math:`SE(2)` matrix
 
         """
+        # fmt: off
         return np.array([[np.cos(self[2]), -np.sin(self[2]), self[0]], [np.sin(self[2]), np.cos(self[2]), self[1]], [0., 0., 1.]], dtype=np.float64)
+        # fmt: on
 
     @classmethod
     def from_matrix(cls, matrix):
@@ -131,7 +133,9 @@ class PoseSE2(BasePose):
             The pose's inverse
 
         """
+        # fmt: off
         return PoseSE2([-self[0] * np.cos(self[2]) - self[1] * np.sin(self[2]), self[0] * np.sin(self[2]) - self[1] * np.cos(self[2])], -self[2])
+        # fmt: on
 
     # ======================================================================= #
     #                                                                         #
@@ -152,7 +156,9 @@ class PoseSE2(BasePose):
             The result of pose composition
 
         """
+        # fmt: off
         return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]), self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])], neg_pi_to_pi(self[2] + other[2]))
+        # fmt: on
 
     def __sub__(self, other):
         r"""Subtract poses (i.e., inverse pose composition): :math:`p_1 \ominus p_2`.
@@ -168,7 +174,9 @@ class PoseSE2(BasePose):
             The result of inverse pose composition
 
         """
+        # fmt: off
         return PoseSE2([(self[0] - other[0]) * np.cos(other[2]) + (self[1] - other[1]) * np.sin(other[2]), (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])], neg_pi_to_pi(self[2] - other[2]))
+        # fmt: on
 
     # ======================================================================= #
     #                                                                         #
@@ -189,9 +197,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
         """
+        # fmt: off
         return np.array([[1., 0., -other[0] * np.sin(self[2]) - other[1] * np.cos(self[2])],
                          [0., 1., other[0] * np.cos(self[2]) - other[1] * np.sin(self[2])],
                          [0., 0., 1.]])
+        # fmt: on
 
     def jacobian_self_oplus_other_wrt_self_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
@@ -207,9 +217,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
         """
+        # fmt: off
         return np.array([[1., 0., -other[0] * np.sin(self[2]) - other[1] * np.cos(self[2])],
                          [0., 1., other[0] * np.cos(self[2]) - other[1] * np.sin(self[2])],
                          [0., 0., 1.]])
+        # fmt: on
 
     def jacobian_self_oplus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
@@ -225,9 +237,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
         """
+        # fmt: off
         return np.array([[np.cos(self[2]), -np.sin(self[2]), 0.],
                          [np.sin(self[2]), np.cos(self[2]), 0.],
                          [0., 0., 1.]])
+        # fmt: on
 
     def jacobian_self_oplus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
@@ -243,9 +257,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
         """
+        # fmt: off
         return np.array([[np.cos(self[2]), -np.sin(self[2]), 0.],
                          [np.sin(self[2]), np.cos(self[2]), 0.],
                          [0., 0., 1.]])
+        # fmt: on
 
     def jacobian_self_ominus_other_wrt_self(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
@@ -261,9 +277,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
         """
+        # fmt: off
         return np.array([[np.cos(other[2]), np.sin(other[2]), 0.],
                          [-np.sin(other[2]), np.cos(other[2]), 0.],
                          [0., 0., 1.]])
+        # fmt: on
 
     def jacobian_self_ominus_other_wrt_self_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
@@ -279,9 +297,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
         """
+        # fmt: off
         return np.array([[np.cos(other[2]), np.sin(other[2]), 0.],
                          [-np.sin(other[2]), np.cos(other[2]), 0.],
                          [0., 0., 1.]])
+        # fmt: on
 
     def jacobian_self_ominus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
@@ -297,9 +317,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
         """
+        # fmt: off
         return np.array([[-np.cos(other[2]), -np.sin(other[2]), (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])],
                          [np.sin(other[2]), -np.cos(other[2]), (other[0] - self[0]) * np.cos(other[2]) + (other[1] - self[1]) * np.sin(other[2])],
                          [0., 0., -1.]])
+        # fmt: on
 
     def jacobian_self_ominus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
@@ -315,9 +337,11 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
         """
+        # fmt: off
         return np.array([[-np.cos(other[2]), -np.sin(other[2]), (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])],
                          [np.sin(other[2]), -np.cos(other[2]), (other[0] - self[0]) * np.cos(other[2]) + (other[1] - self[1]) * np.sin(other[2])],
                          [0., 0., -1.]])
+        # fmt: on
 
     def jacobian_boxplus(self):
         r"""Compute the Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`.
@@ -328,6 +352,8 @@ class PoseSE2(BasePose):
             The Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`
 
         """
+        # fmt: off
         return np.array([[np.cos(self[2]), -np.sin(self[2]), 0.],
                          [np.sin(self[2]), np.cos(self[2]), 0.],
                          [0., 0., 1.]])
+        # fmt: on

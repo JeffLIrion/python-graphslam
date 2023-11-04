@@ -41,6 +41,7 @@ class Vertex:
         Whether this vertex should be fixed
 
     """
+
     def __init__(self, vertex_id, pose, fixed=False):
         self.id = vertex_id
         self.pose = pose
@@ -60,11 +61,20 @@ class Vertex:
             return "VERTEX_SE2 {} {} {} {}\n".format(self.id, self.pose[0], self.pose[1], self.pose[2])
 
         if isinstance(self.pose, PoseSE3):
-            return "VERTEX_SE3:QUAT {} {} {} {} {} {} {} {}\n".format(self.id, self.pose[0], self.pose[1], self.pose[2], self.pose[3], self.pose[4], self.pose[5], self.pose[6])
+            return "VERTEX_SE3:QUAT {} {} {} {} {} {} {} {}\n".format(
+                self.id,
+                self.pose[0],
+                self.pose[1],
+                self.pose[2],
+                self.pose[3],
+                self.pose[4],
+                self.pose[5],
+                self.pose[6],
+            )
 
         raise NotImplementedError
 
-    def plot(self, color='r', marker='o', markersize=3):
+    def plot(self, color="r", marker="o", markersize=3):
         """Plot the vertex.
 
         Parameters
