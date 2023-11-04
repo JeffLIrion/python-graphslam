@@ -97,7 +97,11 @@ class BaseEdge(ABC):
         jacobians = self.calc_jacobians()
 
         # fmt: off
-        return chi2, {v.gradient_index: np.dot(np.dot(np.transpose(err), self.information), jacobian) for v, jacobian in zip(self.vertices, jacobians)}, {(self.vertices[i].gradient_index, self.vertices[j].gradient_index): np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j]) for i in range(len(jacobians)) for j in range(i, len(jacobians))}
+        return (
+            chi2,
+            {v.gradient_index: np.dot(np.dot(np.transpose(err), self.information), jacobian) for v, jacobian in zip(self.vertices, jacobians)},
+            {(self.vertices[i].gradient_index, self.vertices[j].gradient_index): np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j]) for i in range(len(jacobians)) for j in range(i, len(jacobians))},
+        )
         # fmt: on
 
     def calc_jacobians(self):
