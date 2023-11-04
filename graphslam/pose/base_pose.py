@@ -79,7 +79,8 @@ class BasePose(ABC):
             Whether the two poses are approximately equal
 
         """
-        return np.linalg.norm(self.to_array() - other.to_array()) / max(np.linalg.norm(self.to_array()), tol) < tol
+        # pylint: disable=protected-access
+        return np.linalg.norm(self._array - other._array) / max(np.linalg.norm(self._array), tol) < tol
 
     # ======================================================================= #
     #                                                                         #
