@@ -5,6 +5,7 @@
 """
 
 
+import os
 import unittest
 from unittest.mock import mock_open, patch
 
@@ -12,6 +13,7 @@ import numpy as np
 
 from graphslam.edge.edge_odometry import EdgeOdometry
 from graphslam.graph import Graph
+from graphslam.load import load_g2o_se2, load_g2o_se3
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se2 import PoseSE2
@@ -125,6 +127,7 @@ class TestGraphR2(unittest.TestCase):
 
             with patch("graphslam.graph.open", mock_open()):
                 self.g.to_g2o("test.g2o")
+
         # Unsupported types
         else:
             with self.assertRaises(NotImplementedError):
@@ -226,6 +229,40 @@ class TestGraphSE3(TestGraphR2):
         e2 = EdgeOdometry([3, 2], 2 * np.eye(6), estimate, [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
+
+
+class TestGraphOptimization(unittest.TestCase):
+    """Tests the optimizations for specific graphs."""
+
+    def test_intel(self):
+        """Test for optimizing the Intel dataset."""
+        intel = os.path.join(os.path.dirname(__file__), "..", "data", "input_INTEL.g2o")
+
+        g = load_g2o_se2(intel)
+        g.optimize()
+
+        optimized = os.path.join(os.path.dirname(__file__), "input_INTEL_optimized.g2o")
+
+        # An assertion so that linting doesn't complain about `optimized` being unused
+        self.assertEqual(os.path.dirname(__file__), os.path.dirname(optimized))
+
+        # Uncomment this line to write the output file
+        # g.to_g2o(optimized)
+
+    def test_parking_garage(self):
+        """Test for optimizing the parking garage dataset."""
+        parking_garage = os.path.join(os.path.dirname(__file__), "..", "data", "parking-garage.g2o")
+
+        g = load_g2o_se3(parking_garage)
+        g.optimize()
+
+        optimized = os.path.join(os.path.dirname(__file__), "parking-garage_optimized.g2o")
+
+        # An assertion so that linting doesn't complain about `optimized` being unused
+        self.assertEqual(os.path.dirname(__file__), os.path.dirname(optimized))
+
+        # Uncomment this line to write the output file
+        # g.to_g2o(optimized)
 
 
 if __name__ == '__main__':
