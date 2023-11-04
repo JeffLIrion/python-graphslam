@@ -237,7 +237,7 @@ class TestGraphSE3(TestGraphR2):
 
 
 class TestGraphR2SE2(unittest.TestCase):
-    r"""Test optimizing a graph with :math:`\mathbb{R}^2` poses. and :math:`SE(2)` vertices."""
+    r"""Test optimizing a graph with :math:`\mathbb{R}^2` poses and :math:`SE(2)` vertices."""
 
     def test_optimize(self):
         """Test that optimization works."""
@@ -268,6 +268,50 @@ class TestGraphR2SE2(unittest.TestCase):
 
         e3 = EdgeOdometry([4, 5], np.eye(3), estimate_se2, [v4, v5])
         e4 = EdgeOdometry([6, 5], 2 * np.eye(3), estimate_se2, [v6, v5])
+
+        v1.fixed = True
+        v4.fixed = True
+
+        g = Graph([e1, e2, e3, e4], [v1, v2, v3, v4, v5, v6])
+
+        g.optimize()
+
+
+class TestGraphR3SE3(TestGraphR2):
+    r"""Tests for the ``Graph`` class with :math:`\mathbb{R}^3` poses and :math:`SE(3)` vertices."""
+
+    def test_optimize(self):
+        """Test that optimization works."""
+        np.random.seed(0)
+
+        # R^3 poses and edges
+        p1 = PoseR3(np.random.random_sample(3))
+        p2 = PoseR3(np.random.random_sample(3))
+        p3 = PoseR3(np.random.random_sample(3))
+        estimate_r3 = PoseR3([0, 0, 0])
+
+        v1 = Vertex(1, p1)
+        v2 = Vertex(2, p2)
+        v3 = Vertex(3, p3)
+
+        e1 = EdgeOdometry([1, 2], np.eye(3), estimate_r3, [v1, v2])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(3), estimate_r3, [v3, v2])
+
+        p4 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+        p5 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+        p6 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+        estimate = PoseSE3([0, 0, 0], [0, 0, 0, 1])
+
+        p4.normalize()
+        p5.normalize()
+        p6.normalize()
+
+        v4 = Vertex(4, p4)
+        v5 = Vertex(5, p5)
+        v6 = Vertex(6, p6)
+
+        e3 = EdgeOdometry([4, 5], np.eye(6), estimate, [v4, v5])
+        e4 = EdgeOdometry([6, 5], 2 * np.eye(6), estimate, [v6, v5])
 
         v1.fixed = True
         v4.fixed = True
