@@ -350,7 +350,7 @@ class Graph(object):
         plt.show()
 
     def approx_equal(self, other, tol=1e-6):
-        """Check whether two graphs are (approximately) equal.
+        """Check whether two graphs are approximately equal.
 
         Parameters
         ----------

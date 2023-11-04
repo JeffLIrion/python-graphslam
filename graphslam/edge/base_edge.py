@@ -175,7 +175,7 @@ class BaseEdge:
         raise NotImplementedError
 
     def approx_equal(self, other, tol=1e-6):
-        """Check whether two poses edges approximately equal.
+        """Check whether two edges are approximately equal.
 
         Parameters
         ----------

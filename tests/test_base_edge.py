@@ -128,9 +128,7 @@ class TestBaseEdge(unittest.TestCase):
             e.plot()
 
     def test_approx_equal(self):
-        """Test that the ``approx_equal`` method works as expected.
-
-        """
+        """Test that the ``approx_equal`` method works as expected."""
         p1 = PoseR2([1, 2])
         p2 = PoseR2([3, 4])
         estimate = PoseR2([0, 0])
