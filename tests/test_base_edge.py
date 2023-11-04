@@ -127,6 +127,32 @@ class TestBaseEdge(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             e.plot()
 
+    def test_approx_equal(self):
+        """Test that the ``approx_equal`` method works as expected."""
+        p1 = PoseR2([1, 2])
+        p2 = PoseR2([3, 4])
+        estimate = PoseR2([0, 0])
+
+        v1 = Vertex(1, p1)
+        v2 = Vertex(2, p2)
+
+        e1 = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
+        e2 = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
+
+        self.assertTrue(e1.approx_equal(e2))
+
+        e2.estimate = 123
+        self.assertFalse(e2.approx_equal(e1))
+
+        e2.information = np.eye(1)
+        self.assertFalse(e1.approx_equal(e2))
+
+        e2.vertex_ids = [3, 4]
+        self.assertFalse(e1.approx_equal(e2))
+
+        e2.vertex_ids = [5]
+        self.assertFalse(e1.approx_equal(e2))
+
 
 if __name__ == '__main__':
     unittest.main()
