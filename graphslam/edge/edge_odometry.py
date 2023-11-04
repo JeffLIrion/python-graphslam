@@ -73,8 +73,10 @@ class EdgeOdometry(BaseEdge):
             The Jacobian matrices for the edge with respect to each constrained pose
 
         """
+        # fmt: off
         return [np.dot(np.dot(self.estimate.jacobian_self_ominus_other_wrt_other_compact(self.vertices[1].pose - self.vertices[0].pose), self.vertices[1].pose.jacobian_self_ominus_other_wrt_other(self.vertices[0].pose)), self.vertices[0].pose.jacobian_boxplus()),
                 np.dot(np.dot(self.estimate.jacobian_self_ominus_other_wrt_other_compact(self.vertices[1].pose - self.vertices[0].pose), self.vertices[1].pose.jacobian_self_ominus_other_wrt_self(self.vertices[0].pose)), self.vertices[1].pose.jacobian_boxplus())]
+        # fmt: on
 
     def to_g2o(self):
         """Export the edge to the .g2o format.
@@ -85,15 +87,17 @@ class EdgeOdometry(BaseEdge):
             The edge in .g2o format
 
         """
+        # fmt: off
         if isinstance(self.vertices[0].pose, PoseSE2):
             return "EDGE_SE2 {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
 
         if isinstance(self.vertices[0].pose, PoseSE3):
             return "EDGE_SE3:QUAT {} {} {} {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1], self.estimate[2], self.estimate[3], self.estimate[4], self.estimate[5], self.estimate[6]) + " ".join([str(x) for x in self.information[np.triu_indices(6, 0)]]) + "\n"
+        # fmt: on
 
         raise NotImplementedError
 
-    def plot(self, color='b'):
+    def plot(self, color="b"):
         """Plot the edge.
 
         Parameters

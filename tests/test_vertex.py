@@ -19,23 +19,17 @@ from graphslam.pose.se3 import PoseSE3
 
 
 class TestVertex(unittest.TestCase):
-    """Tests for the ``Vetex`` class.
-
-    """
+    """Tests for the ``Vetex`` class."""
 
     def test_constructor(self):
-        """Test that a ``Vertex`` object can be created.
-
-        """
+        """Test that a ``Vertex`` object can be created."""
         v = Vertex(1, PoseSE2([1, 2], 3))
 
         self.assertEqual(v.id, 1)
-        self.assertAlmostEqual(np.linalg.norm(v.pose.to_array() - np.array([1., 2., 3.])), 0.)
+        self.assertAlmostEqual(np.linalg.norm(v.pose.to_array() - np.array([1.0, 2.0, 3.0])), 0.0)
 
     def test_plot(self):
-        """Test that a ``Vertex`` can be plotted.
-
-        """
+        """Test that a ``Vertex`` can be plotted."""
         v_none = Vertex(0, None)
         v_r2 = Vertex(1, PoseR2([1, 2]))
         v_se2 = Vertex(2, PoseSE2([1, 2], 3))
@@ -48,9 +42,9 @@ class TestVertex(unittest.TestCase):
         for v in [v_r2, v_se2, v_r3, v_se3]:
             fig = plt.figure()
             if len(v.pose.position) == 3:
-                fig.add_subplot(111, projection='3d')
+                fig.add_subplot(111, projection="3d")
             v.plot()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
