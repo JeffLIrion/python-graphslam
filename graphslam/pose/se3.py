@@ -7,6 +7,7 @@ r"""Representation of a pose in :math:`SE(3)`.
 import numpy as np
 
 from .base_pose import BasePose
+from .r3 import PoseR3
 
 
 class PoseSE3(BasePose):
@@ -181,6 +182,16 @@ class PoseSE3(BasePose):
                                 self[6] * qz + self[3] * qy - self[4] * qx + self[5] * qw,
                                 self[6] * qw - self[3] * qx - self[4] * qy - self[5] * qz])
                 # fmt: on
+
+        if isinstance(other, PoseR3) or (isinstance(other, np.ndarray) and len(other) == 3):
+            # pose (+) point
+            # fmt: off
+            qx, qy, qz, qw = self[3:]
+            return np.array([self[0] + other[0] + 2. * (-(qy**2 + qz**2) * other[0] + (qx * qy - qz * qw) * other[1] + (qy * qw + qx * qz) * other[2]),
+                             self[1] + other[1] + 2. * ((qz * qw + qx * qy) * other[0] - (qx**2 + qz**2) * other[1] + (qy * qz - qx * qw) * other[2]),
+                             self[2] + other[2] + 2. * ((qx * qz - qy * qw) * other[0] + (qx * qw + qy * qz) * other[1] - (qx**2 + qy**2) * other[2])],
+                            dtype=np.float64)
+            # fmt: on
 
         raise NotImplementedError
 
