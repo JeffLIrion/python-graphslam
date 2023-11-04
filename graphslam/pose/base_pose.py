@@ -4,33 +4,13 @@ r"""A base class for poses.
 
 """
 
-from abc import ABC, abstractmethod
-
 import numpy as np
 
 
-class BasePose(ABC):
-    """A base class for poses.
+class BasePose(np.ndarray):
+    """A base class for poses."""
 
-    Parameters
-    ----------
-    arr : np.ndarray, list
-        The array that will be stored as `self._data`
-    dtype : type
-        The type for the numpy array `self._data`
-
-    """
-
-    def __init__(self, arr, dtype=np.float64):
-        self._data = np.array(arr, dtype=dtype)
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __setitem__(self, key, value):
-        self._data[key] = value
-
-    @abstractmethod
+    # pylint: disable=arguments-differ
     def copy(self):
         """Return a copy of the pose.
 
@@ -40,8 +20,8 @@ class BasePose(ABC):
             A copy of the pose
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def to_array(self):
         """Return the pose as a numpy array.
 
@@ -51,8 +31,8 @@ class BasePose(ABC):
             The pose as a numpy array
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def to_compact(self):
         """Return the pose as a compact numpy array.
 
@@ -62,6 +42,7 @@ class BasePose(ABC):
             The pose as a compact numpy array
 
         """
+        raise NotImplementedError
 
     def approx_equal(self, other, tol=1e-6):
         """Check whether two poses are approximately equal.
@@ -79,8 +60,7 @@ class BasePose(ABC):
             Whether the two poses are approximately equal
 
         """
-        # pylint: disable=protected-access
-        return np.linalg.norm(self._data - other._data) / max(np.linalg.norm(self._data), tol) < tol
+        return np.linalg.norm(self.to_array() - other.to_array()) / max(np.linalg.norm(self.to_array()), tol) < tol
 
     # ======================================================================= #
     #                                                                         #
@@ -88,7 +68,6 @@ class BasePose(ABC):
     #                                                                         #
     # ======================================================================= #
     @property
-    @abstractmethod
     def position(self):
         """Return the pose's position.
 
@@ -98,9 +77,9 @@ class BasePose(ABC):
             The pose's position
 
         """
+        raise NotImplementedError
 
     @property
-    @abstractmethod
     def orientation(self):
         """Return the pose's orientation.
 
@@ -110,9 +89,9 @@ class BasePose(ABC):
             The pose's orientation
 
         """
+        raise NotImplementedError
 
     @property
-    @abstractmethod
     def inverse(self):
         """Return the pose's inverse.
 
@@ -122,13 +101,13 @@ class BasePose(ABC):
             The pose's inverse
 
         """
+        raise NotImplementedError
 
     # ======================================================================= #
     #                                                                         #
     #                              Magic Methods                              #
     #                                                                         #
     # ======================================================================= #
-    @abstractmethod
     def __add__(self, other):
         """Add poses (i.e., pose composition).
 
@@ -143,8 +122,8 @@ class BasePose(ABC):
             The result of pose composition
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def __sub__(self, other):
         """Subtract poses (i.e., inverse pose composition).
 
@@ -159,6 +138,7 @@ class BasePose(ABC):
             The result of inverse pose composition
 
         """
+        raise NotImplementedError
 
     def __iadd__(self, other):
         """Add poses in-place (i.e., pose composition).
@@ -181,7 +161,6 @@ class BasePose(ABC):
     #                                Jacobians                                #
     #                                                                         #
     # ======================================================================= #
-    @abstractmethod
     def jacobian_self_oplus_other_wrt_self(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
@@ -196,8 +175,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_self_oplus_other_wrt_self_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
@@ -212,8 +191,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_self_oplus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
@@ -228,8 +207,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_self_oplus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
@@ -244,8 +223,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_self_ominus_other_wrt_self(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
@@ -260,8 +239,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_self_ominus_other_wrt_self_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
@@ -276,8 +255,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_self_ominus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
@@ -292,8 +271,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_self_ominus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
@@ -308,8 +287,8 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
         """
+        raise NotImplementedError
 
-    @abstractmethod
     def jacobian_boxplus(self):
         r"""Compute the Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`.
 
@@ -319,3 +298,4 @@ class BasePose(ABC):
             The Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`
 
         """
+        raise NotImplementedError
