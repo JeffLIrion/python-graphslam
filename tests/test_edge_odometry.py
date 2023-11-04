@@ -16,14 +16,10 @@ from graphslam.pose.se3 import PoseSE3
 
 
 class TestEdgeOdometry(unittest.TestCase):
-    """Tests for the ``EdgeOdometry`` class.
-
-    """
+    """Tests for the ``EdgeOdometry`` class."""
 
     def test_plot(self):
-        """Test that the ``plot`` method is not implemented.
-
-        """
+        """Test that the ``plot`` method is not implemented."""
         v_none = Vertex(0, None)
         v_r2 = Vertex(1, PoseR2([1, 2]))
         v_se2 = Vertex(2, PoseSE2([1, 2], 3))
@@ -39,5 +35,5 @@ class TestEdgeOdometry(unittest.TestCase):
             e.plot()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

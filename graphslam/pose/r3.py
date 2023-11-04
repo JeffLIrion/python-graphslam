@@ -85,7 +85,7 @@ class PoseR3(BasePose):
             A ``PoseR3`` object has no orientation, so this will always return 0.
 
         """
-        return 0.
+        return 0.0
 
     @property
     def inverse(self):

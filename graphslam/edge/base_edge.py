@@ -96,7 +96,13 @@ class BaseEdge(ABC):
 
         jacobians = self.calc_jacobians()
 
-        return chi2, {v.gradient_index: np.dot(np.dot(np.transpose(err), self.information), jacobian) for v, jacobian in zip(self.vertices, jacobians)}, {(self.vertices[i].gradient_index, self.vertices[j].gradient_index): np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j]) for i in range(len(jacobians)) for j in range(i, len(jacobians))}
+        # fmt: off
+        return (
+            chi2,
+            {v.gradient_index: np.dot(np.dot(np.transpose(err), self.information), jacobian) for v, jacobian in zip(self.vertices, jacobians)},
+            {(self.vertices[i].gradient_index, self.vertices[j].gradient_index): np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j]) for i in range(len(jacobians)) for j in range(i, len(jacobians))},
+        )
+        # fmt: on
 
     def calc_jacobians(self):
         r"""Calculate the Jacobian of the edge's error with respect to each constrained pose.
@@ -166,7 +172,7 @@ class BaseEdge(ABC):
         """
 
     @abstractmethod
-    def plot(self, color=''):
+    def plot(self, color=""):
         """Plot the edge.
 
         Parameters
@@ -198,10 +204,14 @@ class BaseEdge(ABC):
         if any(v_id1 != v_id2 for v_id1, v_id2 in zip(self.vertex_ids, other.vertex_ids)):
             return False
 
+        # fmt: off
         if self.information.shape != other.information.shape or np.linalg.norm(self.information - other.information) / max(np.linalg.norm(self.information), tol) >= tol:
             return False
+        # fmt: on
 
         if isinstance(self.estimate, BasePose):
             return isinstance(other.estimate, BasePose) and self.estimate.approx_equal(other.estimate, tol)
 
+        # fmt: off
         return not isinstance(other.estimate, BasePose) and np.linalg.norm(self.estimate - other.estimate) / max(np.linalg.norm(self.estimate), tol) < tol
+        # fmt: onn

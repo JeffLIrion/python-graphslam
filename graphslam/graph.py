@@ -129,7 +129,7 @@ class _Chi2GradientHessian:
             return other
 
     def __init__(self):
-        self.chi2 = 0.
+        self.chi2 = 0.0
         self.gradient = defaultdict(_Chi2GradientHessian.DefaultArray)
         self.hessian = defaultdict(_Chi2GradientHessian.DefaultArray)
 
@@ -187,6 +187,7 @@ class Graph(object):
         A list of the vertices in the graph
 
     """
+
     def __init__(self, edges, vertices):
         # The vertices and edges lists
         self._edges = edges
@@ -203,9 +204,7 @@ class Graph(object):
         self._initialize()
 
     def _initialize(self):
-        """Fill in the ``vertices`` attributes for the graph's edges, and other necessary preparations.
-
-        """
+        """Fill in the ``vertices`` attributes for the graph's edges, and other necessary preparations."""
         # Fill in the vertices' `gradient_index` attribute
         gradient_index = 0
         for v in self._vertices:
@@ -235,10 +234,10 @@ class Graph(object):
         return self._chi2
 
     def _calc_chi2_gradient_hessian(self):
-        r"""Calculate the :math:`\chi^2` error, the gradient :math:`\mathbf{b}`, and the Hessian :math:`H`.
-
-        """
+        r"""Calculate the :math:`\chi^2` error, the gradient :math:`\mathbf{b}`, and the Hessian :math:`H`."""
+        # fmt: off
         chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _Chi2GradientHessian())
+        # fmt: on
 
         self._chi2 = chi2_gradient_hessian.chi2
 
@@ -247,7 +246,9 @@ class Graph(object):
         for gradient_idx, contrib in chi2_gradient_hessian.gradient.items():
             # If a vertex is fixed, its block in the gradient vector is zero and so there is nothing to do
             if gradient_idx not in self._fixed_gradient_indices:
+                # fmt: off
                 self._gradient[gradient_idx: gradient_idx + len(contrib)] += contrib
+                # fmt: on
 
         # Fill in the Hessian matrix
         self._hessian = lil_matrix((self._len_gradient, self._len_gradient), dtype=np.float64)
@@ -256,13 +257,19 @@ class Graph(object):
             if hessian_row_idx in self._fixed_gradient_indices or hessian_col_idx in self._fixed_gradient_indices:
                 # For fixed vertices, the diagonal block is the identity matrix and the off-diagonal blocks are zero
                 if hessian_row_idx == hessian_col_idx:
+                    # fmt: off
                     self._hessian[hessian_row_idx: hessian_row_idx + dim, hessian_col_idx: hessian_col_idx + dim] = np.eye(dim)
+                    # fmt: on
                 continue
 
+            # fmt: off
             self._hessian[hessian_row_idx: hessian_row_idx + dim, hessian_col_idx: hessian_col_idx + dim] = contrib
+            # fmt: on
 
             if hessian_row_idx != hessian_col_idx:
+                # fmt: off
                 self._hessian[hessian_col_idx: hessian_col_idx + dim, hessian_row_idx: hessian_row_idx + dim] = np.transpose(contrib)
+                # fmt: on
 
     def optimize(self, tol=1e-4, max_iter=20, fix_first_pose=True):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
@@ -284,7 +291,7 @@ class Graph(object):
         self._fixed_gradient_indices = {v.gradient_index for v in self._vertices if v.fixed}
 
         # Previous iteration's chi^2 error
-        chi2_prev = -1.
+        chi2_prev = -1.0
 
         # For displaying the optimization progress
         print("\nIteration                chi^2        rel. change")
@@ -310,7 +317,9 @@ class Graph(object):
 
             # Apply the updates
             for v in self._vertices:
+                # fmt: off
                 v.pose += dx[v.gradient_index: v.gradient_index + v.pose.COMPACT_DIMENSIONALITY]
+                # fmt: on
 
         # If we reached the maximum number of iterations, print out the final iteration's results
         self.calc_chi2()
@@ -326,14 +335,14 @@ class Graph(object):
             The path where the graph will be saved
 
         """
-        with open(outfile, 'w') as f:
+        with open(outfile, "w") as f:
             for v in self._vertices:
                 f.write(v.to_g2o())
 
             for e in self._edges:
                 f.write(e.to_g2o())
 
-    def plot(self, vertex_color='r', vertex_marker='o', vertex_markersize=3, edge_color='b', title=None):
+    def plot(self, vertex_color="r", vertex_marker="o", vertex_markersize=3, edge_color="b", title=None):
         """Plot the graph.
 
         Parameters
@@ -355,7 +364,7 @@ class Graph(object):
 
         fig = plt.figure()
         if len(self._vertices[0].pose.position) == 3:
-            fig.add_subplot(111, projection='3d')
+            fig.add_subplot(111, projection="3d")
 
         for e in self._edges:
             e.plot(edge_color)
@@ -388,4 +397,6 @@ class Graph(object):
         if len(self._edges) != len(other._edges) or len(self._vertices) != len(other._vertices):
             return False
 
+        # fmt: off
         return all(e1.approx_equal(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.pose.approx_equal(v2.pose, tol) for v1, v2 in zip(self._vertices, other._vertices))
+        # fmt: on

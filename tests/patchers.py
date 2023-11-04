@@ -10,8 +10,9 @@ from contextlib import contextmanager
 
 class FileReadWrite(object):
     """Mock an opened file that can be read and written to."""
+
     def __init__(self):
-        self._content = ''
+        self._content = ""
 
     def read(self):
         """Mock reading from a file."""
@@ -31,7 +32,7 @@ FAKE_FILE = FileReadWrite()
 
 
 @contextmanager
-def open_fake_file(infile, mode='r'):  # pylint: disable=unused-argument
+def open_fake_file(infile, mode="r"):  # pylint: disable=unused-argument
     """A context manager for mocking file I/O."""
     try:
         yield FAKE_FILE

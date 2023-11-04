@@ -15,18 +15,15 @@ from .patchers import open_fake_file
 
 
 class TestLoad(unittest.TestCase):
-    """Tests for the ``load`` functions.
+    """Tests for the ``load`` functions."""
 
-    """
     def test_load_g2o_se2(self):
-        """Test the ``load_g2o_se2()`` function.
-
-        """
-        infile = os.path.join(os.path.dirname(__file__), 'test_se2.g2o')
+        """Test the ``load_g2o_se2()`` function."""
+        infile = os.path.join(os.path.dirname(__file__), "test_se2.g2o")
         g = load_g2o_se2(infile)
         chi2 = g.calc_chi2()
 
-        self.assertGreater(chi2, 0.)
+        self.assertGreater(chi2, 0.0)
 
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
@@ -36,14 +33,12 @@ class TestLoad(unittest.TestCase):
             self.assertAlmostEqual(chi2, g2.calc_chi2())
 
     def test_load_g2o_se3(self):
-        """Test the ``load_g2o_se3()`` function.
-
-        """
-        infile = os.path.join(os.path.dirname(__file__), 'test_se3.g2o')
+        """Test the ``load_g2o_se3()`` function."""
+        infile = os.path.join(os.path.dirname(__file__), "test_se3.g2o")
         g = load_g2o_se3(infile)
         chi2 = g.calc_chi2()
 
-        self.assertGreater(chi2, 0.)
+        self.assertGreater(chi2, 0.0)
 
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
