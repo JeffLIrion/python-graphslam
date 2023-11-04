@@ -232,9 +232,7 @@ class TestGraphSE3(TestGraphR2):
 
 
 class TestGraphOptimization(unittest.TestCase):
-    r"""Tests the optimizations for specific graphs.
-
-    """
+    """Tests the optimizations for specific graphs."""
 
     def test_intel(self):
         """Test for optimizing the Intel dataset."""
