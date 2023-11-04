@@ -74,7 +74,10 @@ class PoseSE2(BasePose):
 
         """
         # fmt: off
-        return np.array([[np.cos(self[2]), -np.sin(self[2]), self[0]], [np.sin(self[2]), np.cos(self[2]), self[1]], [0., 0., 1.]], dtype=np.float64)
+        return np.array([[np.cos(self[2]), -np.sin(self[2]), self[0]],
+                         [np.sin(self[2]), np.cos(self[2]), self[1]],
+                         [0., 0., 1.]],
+                        dtype=np.float64)
         # fmt: on
 
     @classmethod
@@ -134,7 +137,9 @@ class PoseSE2(BasePose):
 
         """
         # fmt: off
-        return PoseSE2([-self[0] * np.cos(self[2]) - self[1] * np.sin(self[2]), self[0] * np.sin(self[2]) - self[1] * np.cos(self[2])], -self[2])
+        return PoseSE2([-self[0] * np.cos(self[2]) - self[1] * np.sin(self[2]),
+                        self[0] * np.sin(self[2]) - self[1] * np.cos(self[2])],
+                       -self[2])
         # fmt: on
 
     # ======================================================================= #
@@ -157,7 +162,9 @@ class PoseSE2(BasePose):
 
         """
         # fmt: off
-        return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]), self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])], neg_pi_to_pi(self[2] + other[2]))
+        return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]),
+                        self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])],
+                       neg_pi_to_pi(self[2] + other[2]))
         # fmt: on
 
     def __sub__(self, other):
@@ -175,7 +182,9 @@ class PoseSE2(BasePose):
 
         """
         # fmt: off
-        return PoseSE2([(self[0] - other[0]) * np.cos(other[2]) + (self[1] - other[1]) * np.sin(other[2]), (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])], neg_pi_to_pi(self[2] - other[2]))
+        return PoseSE2([(self[0] - other[0]) * np.cos(other[2]) + (self[1] - other[1]) * np.sin(other[2]),
+                        (other[0] - self[0]) * np.sin(other[2]) + (self[1] - other[1]) * np.cos(other[2])],
+                       neg_pi_to_pi(self[2] - other[2]))
         # fmt: on
 
     # ======================================================================= #
