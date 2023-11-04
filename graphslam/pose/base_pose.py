@@ -80,7 +80,7 @@ class BasePose(ABC):
 
         """
         # pylint: disable=protected-access
-        return np.linalg.norm(self._array - other._array) / max(np.linalg.norm(self._array), tol) < tol
+        return np.linalg.norm(self._data - other._data) / max(np.linalg.norm(self._data), tol) < tol
 
     # ======================================================================= #
     #                                                                         #
