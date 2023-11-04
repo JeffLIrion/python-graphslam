@@ -159,7 +159,7 @@ class PoseSE2(BasePose):
 
         Returns
         -------
-        PoseSE2
+        PoseSE2, np.ndarray
             The result of pose composition
 
         """

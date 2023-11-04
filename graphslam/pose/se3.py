@@ -147,7 +147,7 @@ class PoseSE3(BasePose):
 
         Returns
         -------
-        PoseSE3
+        PoseSE3, np.ndarray
             The result of pose composition
 
         """
