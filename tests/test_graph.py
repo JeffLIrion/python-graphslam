@@ -22,7 +22,7 @@ from graphslam.vertex import Vertex
 
 
 class TestGraphR2(unittest.TestCase):
-    r"""Tests for the ``Graph`` class with :math:`\mathbb{R}^3` poses.
+    r"""Tests for the ``Graph`` class with :math:`\mathbb{R}^2` poses.
 
     """
 
@@ -234,6 +234,47 @@ class TestGraphSE3(TestGraphR2):
         e2 = EdgeOdometry([3, 2], 2 * np.eye(6), estimate, [v3, v2])
 
         self.g = Graph([e1, e2], [v1, v2, v3])
+
+
+class TestGraphR2SE2(unittest.TestCase):
+    r"""Test optimizing a graph with :math:`\mathbb{R}^2` poses. and :math:`SE(2)` vertices."""
+
+    def test_optimize(self):
+        """Test that optimization works."""
+        np.random.seed(0)
+
+        # R^2 poses and edges
+        p1 = PoseR2(np.random.random_sample(2))
+        p2 = PoseR2(np.random.random_sample(2))
+        p3 = PoseR2(np.random.random_sample(2))
+        estimate_r2 = PoseR2([0, 0])
+
+        v1 = Vertex(1, p1)
+        v2 = Vertex(2, p2)
+        v3 = Vertex(3, p3)
+
+        e1 = EdgeOdometry([1, 2], np.eye(2), estimate_r2, [v1, v2])
+        e2 = EdgeOdometry([3, 2], 2 * np.eye(2), estimate_r2, [v3, v2])
+
+        # SE(2) poses and edges
+        p4 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+        p5 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+        p6 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+        estimate_se2 = PoseSE2([0, 0], 0.)
+
+        v4 = Vertex(4, p4)
+        v5 = Vertex(5, p5)
+        v6 = Vertex(6, p6)
+
+        e3 = EdgeOdometry([4, 5], np.eye(3), estimate_se2, [v4, v5])
+        e4 = EdgeOdometry([6, 5], 2 * np.eye(3), estimate_se2, [v6, v5])
+
+        v1.fixed = True
+        v4.fixed = True
+
+        g = Graph([e1, e2, e3, e4], [v1, v2, v3, v4, v5, v6])
+
+        g.optimize()
 
 
 class TestGraphOptimization(unittest.TestCase):

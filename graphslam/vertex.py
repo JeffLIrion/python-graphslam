@@ -25,28 +25,27 @@ class Vertex:
         The vertex's unique ID
     pose : graphslam.pose.base_pose.BasePose
         The pose associated with the vertex
-    vertex_index : int, None
-        The vertex's index in the graph's ``vertices`` list
     fixed : bool
         Whether this vertex should be fixed
 
     Attributes
     ----------
+    gradient_index : int, None
+        The index of the first entry in the gradient vector to which this vertex
+        corresponds (and similarly for the Hessian matrix)
     id : int
         The vertex's unique ID
-    index : int, None
-        The vertex's index in the graph's ``vertices`` list
     pose : graphslam.pose.base_pose.BasePose
         The pose associated with the vertex
     fixed : bool
         Whether this vertex should be fixed
 
     """
-    def __init__(self, vertex_id, pose, vertex_index=None, fixed=False):
+    def __init__(self, vertex_id, pose, fixed=False):
         self.id = vertex_id
         self.pose = pose
-        self.index = vertex_index
         self.fixed = fixed
+        self.gradient_index = None
 
     def to_g2o(self):
         """Export the vertex to the .g2o format.
