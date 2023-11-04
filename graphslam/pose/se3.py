@@ -186,10 +186,9 @@ class PoseSE3(BasePose):
         if isinstance(other, PoseR3) or (isinstance(other, np.ndarray) and len(other) == 3):
             # pose (+) point
             # fmt: off
-            qx, qy, qz, qw = self[3:]
-            return np.array([self[0] + other[0] + 2. * (-(qy**2 + qz**2) * other[0] + (qx * qy - qz * qw) * other[1] + (qy * qw + qx * qz) * other[2]),
-                             self[1] + other[1] + 2. * ((qz * qw + qx * qy) * other[0] - (qx**2 + qz**2) * other[1] + (qy * qz - qx * qw) * other[2]),
-                             self[2] + other[2] + 2. * ((qx * qz - qy * qw) * other[0] + (qx * qw + qy * qz) * other[1] - (qx**2 + qy**2) * other[2])],
+            return np.array([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[4] * self[6] + self[3] * self[5]) * other[2]),
+                             self[1] + other[1] + 2. * ((self[5] * self[6] + self[3] * self[4]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
+                             self[2] + other[2] + 2. * ((self[3] * self[5] - self[4] * self[6]) * other[0] + (self[3] * self[6] + self[4] * self[5]) * other[1] - (self[3]**2 + self[4]**2) * other[2])],
                             dtype=np.float64)
             # fmt: on
 
