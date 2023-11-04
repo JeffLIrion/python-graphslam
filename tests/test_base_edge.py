@@ -80,18 +80,21 @@ class TestBaseEdge(unittest.TestCase):
         v1 = Vertex(0, p1, 0)
         v2 = Vertex(1, p2, 1)
 
+        v1.gradient_index = 0
+        v2.gradient_index = v1.pose.COMPACT_DIMENSIONALITY
+
         e = EdgeOdometry([0, 1], np.eye(2), estimate, [v1, v2])
 
         chi2, gradient, hessian = e.calc_chi2_gradient_hessian()
 
         self.assertEqual(chi2, 2.)
 
-        self.assertAlmostEqual(np.linalg.norm(gradient[0] + np.ones(2)), 0.)
-        self.assertAlmostEqual(np.linalg.norm(gradient[1] - np.ones(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(gradient[v1.gradient_index] + np.ones(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(gradient[v2.gradient_index] - np.ones(2)), 0.)
 
-        self.assertAlmostEqual(np.linalg.norm(hessian[(0, 0)] - np.eye(2)), 0.)
-        self.assertAlmostEqual(np.linalg.norm(hessian[(0, 1)] + np.eye(2)), 0.)
-        self.assertAlmostEqual(np.linalg.norm(hessian[(1, 1)] - np.eye(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(hessian[(v1.gradient_index, v1.gradient_index)] - np.eye(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(hessian[(v1.gradient_index, v2.gradient_index)] + np.eye(2)), 0.)
+        self.assertAlmostEqual(np.linalg.norm(hessian[(v2.gradient_index, v2.gradient_index)] - np.eye(2)), 0.)
 
     def test_approx_equal(self):
         """Test that the ``approx_equal`` method works as expected."""

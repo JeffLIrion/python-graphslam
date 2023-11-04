@@ -19,6 +19,9 @@ class PoseR3(BasePose):
 
     """
 
+    #: The compact dimensionality
+    COMPACT_DIMENSIONALITY = 3
+
     def __init__(self, position):
         super().__init__(position)
 

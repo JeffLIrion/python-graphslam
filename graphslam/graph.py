@@ -98,28 +98,40 @@ warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
 class _Chi2GradientHessian:
     r"""A class that is used to aggregate the :math:`\chi^2` error, gradient, and Hessian.
 
-    Parameters
-    ----------
-    dim : int
-        The compact dimensionality of the poses
-
     Attributes
     ----------
     chi2 : float
         The :math:`\chi^2` error
-    dim : int
-        The compact dimensionality of the poses
     gradient : defaultdict
         The contributions to the gradient vector
     hessian : defaultdict
         The contributions to the Hessian matrix
 
     """
-    def __init__(self, dim):
+
+    class DefaultArray:
+        """A class for use in a `defaultdict`."""
+
+        def __iadd__(self, other):
+            """Add `other` to `self` and return `other`.
+
+            Parameters
+            ----------
+            other : np.ndarray
+                The numpy array that is being added to `self`
+
+            Returns
+            -------
+            np.ndarray
+                `other`
+
+            """
+            return other
+
+    def __init__(self):
         self.chi2 = 0.
-        self.dim = dim
-        self.gradient = defaultdict(lambda: np.zeros(dim))
-        self.hessian = defaultdict(lambda: np.zeros((dim, dim)))
+        self.gradient = defaultdict(_Chi2GradientHessian.DefaultArray)
+        self.hessian = defaultdict(_Chi2GradientHessian.DefaultArray)
 
     @staticmethod
     def update(chi2_grad_hess, incoming):
@@ -130,7 +142,7 @@ class _Chi2GradientHessian:
         chi2_grad_hess : _Chi2GradientHessian
             The ``_Chi2GradientHessian`` that will be updated
         incoming : tuple
-            TODO
+            The return value from `BaseEdge.calc_chi2_gradient_hessian`
 
         """
         chi2_grad_hess.chi2 += incoming[0]
@@ -163,12 +175,14 @@ class Graph(object):
         The current :math:`\chi^2` error, or ``None`` if it has not yet been computed
     _edges : list[graphslam.edge.base_edge.BaseEdge]
         A list of the edges (i.e., constraints) in the graph
-    _fixed_vertices : set[int]
-        The set of vertices that are fixed
+    _fixed_gradient_indices : set[int]
+        The set of gradient indices (i.e., `Vertex.gradient_index`) for vertices that are fixed
     _gradient : numpy.ndarray, None
         The gradient :math:`\mathbf{b}` of the :math:`\chi^2` error, or ``None`` if it has not yet been computed
     _hessian : scipy.sparse.lil_matrix, None
         The Hessian matrix :math:`H`, or ``None`` if it has not yet been computed
+    _len_gradient : int, None
+        The length of the gradient vector (and the Hessian matrix)
     _vertices : list[graphslam.vertex.Vertex]
         A list of the vertices in the graph
 
@@ -177,26 +191,34 @@ class Graph(object):
         # The vertices and edges lists
         self._edges = edges
         self._vertices = vertices
-        self._fixed_vertices = set()
+        self._fixed_gradient_indices = set()
 
         # The chi^2 error, gradient, and Hessian
         self._chi2 = None
         self._gradient = None
         self._hessian = None
 
-        self._link_edges()
+        self._len_gradient = None
 
-    def _link_edges(self):
-        """Fill in the ``vertices`` attributes for the graph's edges.
+        self._initialize()
+
+    def _initialize(self):
+        """Fill in the ``vertices`` attributes for the graph's edges, and other necessary preparations.
 
         """
+        # Fill in the vertices' `gradient_index` attribute
+        gradient_index = 0
+        for v in self._vertices:
+            v.gradient_index = gradient_index
+            gradient_index += v.pose.COMPACT_DIMENSIONALITY
+
+        # The length of the gradient vector (and the shape of the Hessian matrix)
+        self._len_gradient = gradient_index
+
         index_id_dict = {i: v.id for i, v in enumerate(self._vertices)}
         id_index_dict = {v_id: v_index for v_index, v_id in index_id_dict.items()}
 
-        # Fill in the vertices' `index` attribute
-        for v in self._vertices:
-            v.index = id_index_dict[v.id]
-
+        # Fill in the `vertices` attributes for the edges
         for e in self._edges:
             e.vertices = [self._vertices[id_index_dict[v_id]] for v_id in e.vertex_ids]
 
@@ -216,32 +238,31 @@ class Graph(object):
         r"""Calculate the :math:`\chi^2` error, the gradient :math:`\mathbf{b}`, and the Hessian :math:`H`.
 
         """
-        n = len(self._vertices)
-        dim = len(self._vertices[0].pose.to_compact())
-        chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _Chi2GradientHessian(dim))
+        chi2_gradient_hessian = reduce(_Chi2GradientHessian.update, (e.calc_chi2_gradient_hessian() for e in self._edges), _Chi2GradientHessian())
 
         self._chi2 = chi2_gradient_hessian.chi2
 
         # Fill in the gradient vector
-        self._gradient = np.zeros(n * dim, dtype=np.float64)
-        for idx, contrib in chi2_gradient_hessian.gradient.items():
+        self._gradient = np.zeros(self._len_gradient, dtype=np.float64)
+        for gradient_idx, contrib in chi2_gradient_hessian.gradient.items():
             # If a vertex is fixed, its block in the gradient vector is zero and so there is nothing to do
-            if idx not in self._fixed_vertices:
-                self._gradient[idx * dim: (idx + 1) * dim] += contrib
+            if gradient_idx not in self._fixed_gradient_indices:
+                self._gradient[gradient_idx: gradient_idx + len(contrib)] += contrib
 
         # Fill in the Hessian matrix
-        self._hessian = lil_matrix((n * dim, n * dim), dtype=np.float64)
-        for (row_idx, col_idx), contrib in chi2_gradient_hessian.hessian.items():
-            if row_idx in self._fixed_vertices or col_idx in self._fixed_vertices:
+        self._hessian = lil_matrix((self._len_gradient, self._len_gradient), dtype=np.float64)
+        for (hessian_row_idx, hessian_col_idx), contrib in chi2_gradient_hessian.hessian.items():
+            dim = contrib.shape[0]
+            if hessian_row_idx in self._fixed_gradient_indices or hessian_col_idx in self._fixed_gradient_indices:
                 # For fixed vertices, the diagonal block is the identity matrix and the off-diagonal blocks are zero
-                if row_idx == col_idx:
-                    self._hessian[row_idx * dim: (row_idx + 1) * dim, col_idx * dim: (col_idx + 1) * dim] = np.eye(dim)
+                if hessian_row_idx == hessian_col_idx:
+                    self._hessian[hessian_row_idx: hessian_row_idx + dim, hessian_col_idx: hessian_col_idx + dim] = np.eye(dim)
                 continue
 
-            self._hessian[row_idx * dim: (row_idx + 1) * dim, col_idx * dim: (col_idx + 1) * dim] = contrib
+            self._hessian[hessian_row_idx: hessian_row_idx + dim, hessian_col_idx: hessian_col_idx + dim] = contrib
 
-            if row_idx != col_idx:
-                self._hessian[col_idx * dim: (col_idx + 1) * dim, row_idx * dim: (row_idx + 1) * dim] = np.transpose(contrib)
+            if hessian_row_idx != hessian_col_idx:
+                self._hessian[hessian_col_idx: hessian_col_idx + dim, hessian_row_idx: hessian_row_idx + dim] = np.transpose(contrib)
 
     def optimize(self, tol=1e-4, max_iter=20, fix_first_pose=True):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
@@ -256,13 +277,11 @@ class Graph(object):
             If ``True``, we will fix the first pose
 
         """
-        n = len(self._vertices)
-
         if fix_first_pose:
             self._vertices[0].fixed = True
 
-        # Populate the set of fixed vertices
-        self._fixed_vertices = {i for i, v in enumerate(self._vertices) if v.fixed}
+        # Populate the set of fixed gradient indices
+        self._fixed_gradient_indices = {v.gradient_index for v in self._vertices if v.fixed}
 
         # Previous iteration's chi^2 error
         chi2_prev = -1.
@@ -290,8 +309,8 @@ class Graph(object):
             dx = spsolve(self._hessian, -self._gradient)  # pylint: disable=invalid-unary-operand-type
 
             # Apply the updates
-            for v, dx_i in zip(self._vertices, np.split(dx, n)):
-                v.pose += dx_i
+            for v in self._vertices:
+                v.pose += dx[v.gradient_index: v.gradient_index + v.pose.COMPACT_DIMENSIONALITY]
 
         # If we reached the maximum number of iterations, print out the final iteration's results
         self.calc_chi2()
