@@ -8,9 +8,7 @@ import numpy as np
 
 
 class BasePose(np.ndarray):
-    """A base class for poses.
-
-    """
+    """A base class for poses."""
 
     # pylint: disable=arguments-differ
     def copy(self):
