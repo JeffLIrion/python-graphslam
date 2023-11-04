@@ -10,6 +10,7 @@ import unittest
 import numpy as np
 
 from graphslam.vertex import Vertex
+from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se3 import PoseSE3
 from graphslam.edge.base_edge import BaseEdge
 from .edge_oplus_ominus import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
@@ -133,6 +134,16 @@ class TestPoseSE3(unittest.TestCase):
 
             p1 += p2_compact
             self.assertAlmostEqual(np.linalg.norm(p1.to_matrix() - expected), 0.0)
+
+        # PoseSE3 (+) PoseR3
+        for _ in range(10):
+            p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+            p2 = PoseR3(np.random.random_sample(3))
+
+            p1.normalize()
+
+            expected = np.dot(p1.to_matrix(), np.array([p2[0], p2[1], p2[2], 1.0]))
+            self.assertAlmostEqual(np.linalg.norm(p1 + p2 - expected[:3]), 0.0)
 
         with self.assertRaises(NotImplementedError):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))

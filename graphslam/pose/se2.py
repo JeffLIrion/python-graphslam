@@ -9,6 +9,7 @@ import math
 import numpy as np
 
 from .base_pose import BasePose
+from .r2 import PoseR2
 
 from ..util import neg_pi_to_pi
 
@@ -158,15 +159,26 @@ class PoseSE2(BasePose):
 
         Returns
         -------
-        PoseSE2
+        PoseSE2, np.ndarray
             The result of pose composition
 
         """
-        # fmt: off
-        return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]),
-                        self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])],
-                       neg_pi_to_pi(self[2] + other[2]))
-        # fmt: on
+        if isinstance(other, PoseSE2) or (isinstance(other, np.ndarray) and len(other) == 3):
+            # fmt: off
+            return PoseSE2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]),
+                            self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])],
+                           neg_pi_to_pi(self[2] + other[2]))
+            # fmt: on
+
+        if isinstance(other, PoseR2) or (isinstance(other, np.ndarray) and len(other) == 2):
+            # pose (+) point
+            # fmt: off
+            return np.array([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]),
+                             self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])],
+                            dtype=np.float64)
+            # fmt: on
+
+        raise NotImplementedError
 
     def __sub__(self, other):
         r"""Subtract poses (i.e., inverse pose composition): :math:`p_1 \ominus p_2`.
