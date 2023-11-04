@@ -241,13 +241,13 @@ class TestGraphOptimization(unittest.TestCase):
         g = load_g2o_se2(intel)
         g.optimize()
 
-        outfile = os.path.join(os.path.dirname(__file__), "input_INTEL_optimized.g2o")
+        optimized = os.path.join(os.path.dirname(__file__), "input_INTEL_optimized.g2o")
 
-        # An assertion so that linting doesn't complain about `outfile` being unused
-        self.assertEqual(os.path.dirname(__file__), os.path.dirname(outfile))
+        # An assertion so that linting doesn't complain about `optimized` being unused
+        self.assertEqual(os.path.dirname(__file__), os.path.dirname(optimized))
 
         # Uncomment this line to write the output file
-        # g.to_g2o(outfile)
+        # g.to_g2o(optimized)
 
     def test_parking_garage(self):
         """Test for optimizing the parking garage dataset."""
@@ -256,13 +256,13 @@ class TestGraphOptimization(unittest.TestCase):
         g = load_g2o_se3(parking_garage)
         g.optimize()
 
-        outfile = os.path.join(os.path.dirname(__file__), "parking-garage_optimized.g2o")
+        optimized = os.path.join(os.path.dirname(__file__), "parking-garage_optimized.g2o")
 
-        # An assertion so that linting doesn't complain about `outfile` being unused
-        self.assertEqual(os.path.dirname(__file__), os.path.dirname(outfile))
+        # An assertion so that linting doesn't complain about `optimized` being unused
+        self.assertEqual(os.path.dirname(__file__), os.path.dirname(optimized))
 
         # Uncomment this line to write the output file
-        # g.to_g2o(outfile)
+        # g.to_g2o(optimized)
 
 
 if __name__ == '__main__':
