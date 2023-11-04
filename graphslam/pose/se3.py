@@ -80,7 +80,8 @@ class PoseSE3(BasePose):
         return np.array([[self[6]**2 + self[3]**2 - self[4]**2 - self[5]**2, 2. * (self[3] * self[4] - self[5] * self[6]), 2. * (self[3] * self[5] + self[4] * self[6]), self[0]],
                          [2. * (self[3] * self[4] + self[6] * self[5]), self[6]**2 - self[3]**2 + self[4]**2 - self[5]**2, 2. * (self[4] * self[5] - self[3] * self[6]), self[1]],
                          [2. * (self[3] * self[5] - self[4] * self[6]), 2. * (self[3] * self[6] + self[4] * self[5]), self[6]**2 - self[3]**2 - self[4]**2 + self[5]**2, self[2]],
-                         [0., 0., 0., 1.]], dtype=np.float64)
+                         [0., 0., 0., 1.]],
+                        dtype=np.float64)
         # fmt: on
 
     # ======================================================================= #
@@ -232,7 +233,8 @@ class PoseSE3(BasePose):
                          [0., 0., 0., other[6], other[5], -other[4], other[3]],
                          [0., 0., 0., -other[5], other[6], other[3], other[4]],
                          [0., 0., 0., other[4], -other[3], other[6], other[5]],
-                         [0., 0., 0., -other[3], -other[4], -other[5], other[6]]], dtype=np.float64)
+                         [0., 0., 0., -other[3], -other[4], -other[5], other[6]]],
+                        dtype=np.float64)
         # fmt: on
 
     def jacobian_self_oplus_other_wrt_self_compact(self, other):
@@ -255,7 +257,8 @@ class PoseSE3(BasePose):
                          [0., 0., 1., 2. * self[5] * other[0] + 2. * self[6] * other[1] - 4. * self[3] * other[2], -2. * self[6] * other[0] + 2. * self[5] * other[1] - 4. * self[4] * other[2], 2. * self[3] * other[0] + 2. * self[4] * other[1], -2. * self[4] * other[0] + 2. * self[3] * other[1]],
                          [0., 0., 0., other[6], other[5], -other[4], other[3]],
                          [0., 0., 0., -other[5], other[6], other[3], other[4]],
-                         [0., 0., 0., other[4], -other[3], other[6], other[5]]], dtype=np.float64)
+                         [0., 0., 0., other[4], -other[3], other[6], other[5]]],
+                        dtype=np.float64)
         # fmt: on
 
     def jacobian_self_oplus_other_wrt_other(self, other):
@@ -279,8 +282,9 @@ class PoseSE3(BasePose):
                          [0., 0., 0., self[6], -self[5], self[4], self[3]],
                          [0., 0., 0., self[5], self[6], -self[3], self[4]],
                          [0., 0., 0., -self[4], self[3], self[6], self[5]],
-                         [0., 0., 0., -self[3], -self[4], -self[5], self[6]]], dtype=np.float64)
-        # fmt: off
+                         [0., 0., 0., -self[3], -self[4], -self[5], self[6]]],
+                        dtype=np.float64)
+        # fmt: on
 
     def jacobian_self_oplus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
@@ -302,7 +306,8 @@ class PoseSE3(BasePose):
                          [2. * (self[3] * self[5] - self[4] * self[6]), 2. * (self[3] * self[6] + self[4] * self[5]), 1. - 2. * (self[3]**2 + self[4]**2), 0., 0., 0., 0.],
                          [0., 0., 0., self[6], -self[5], self[4], self[3]],
                          [0., 0., 0., self[5], self[6], -self[3], self[4]],
-                         [0., 0., 0., -self[4], self[3], self[6], self[5]]], dtype=np.float64)
+                         [0., 0., 0., -self[4], self[3], self[6], self[5]]],
+                        dtype=np.float64)
         # fmt: on
 
     def jacobian_self_ominus_other_wrt_self(self, other):
@@ -326,7 +331,8 @@ class PoseSE3(BasePose):
                          [0., 0., 0., other[6], other[5], -other[4], -other[3]],
                          [0., 0., 0., -other[5], other[6], other[3], -other[4]],
                          [0., 0., 0., other[4], -other[3], other[6], -other[5]],
-                         [0., 0., 0., other[3], other[4], other[5], other[6]]], dtype=np.float64)
+                         [0., 0., 0., other[3], other[4], other[5], other[6]]],
+                        dtype=np.float64)
         # fmt: on
 
     def jacobian_self_ominus_other_wrt_self_compact(self, other):
@@ -349,7 +355,8 @@ class PoseSE3(BasePose):
                          [2. * (other[3] * other[5] + other[4] * other[6]), 2. * (other[4] * other[5] - other[3] * other[6]), 1. - 2. * (other[3]**2 + other[4]**2), 0., 0., 0., 0.],
                          [0., 0., 0., other[6], other[5], -other[4], -other[3]],
                          [0., 0., 0., -other[5], other[6], other[3], -other[4]],
-                         [0., 0., 0., other[4], -other[3], other[6], -other[5]]], dtype=np.float64)
+                         [0., 0., 0., other[4], -other[3], other[6], -other[5]]],
+                        dtype=np.float64)
         # fmt: on
 
     def jacobian_self_ominus_other_wrt_other(self, other):
@@ -373,7 +380,8 @@ class PoseSE3(BasePose):
                          [0., 0., 0., -self[6], -self[5], self[4], self[3]],
                          [0., 0., 0., self[5], -self[6], -self[3], self[4]],
                          [0., 0., 0., -self[4], self[3], -self[6], self[5]],
-                         [0., 0., 0., self[3], self[4], self[5], self[6]]], dtype=np.float64)
+                         [0., 0., 0., self[3], self[4], self[5], self[6]]],
+                        dtype=np.float64)
         # fmt: on
 
     def jacobian_self_ominus_other_wrt_other_compact(self, other):
@@ -396,7 +404,8 @@ class PoseSE3(BasePose):
                          [-2. * (other[3] * other[5] + other[4] * other[6]), -2. * (other[4] * other[5] - other[3] * other[6]), -1. + 2. * (other[3]**2 + other[4]**2), 2. * (other[5] * (self[0] - other[0]) - other[6] * (self[1] - other[1]) - 2. * other[3] * (self[2] - other[2])), 2. * (other[6] * (self[0] - other[0]) + other[5] * (self[1] - other[1]) - 2. * other[4] * (self[2] - other[2])), 2. * (other[3] * (self[0] - other[0]) + other[4] * (self[1] - other[1])), 2. * (other[4] * (self[0] - other[0]) - other[3] * (self[1] - other[1]))],
                          [0., 0., 0., -self[6], -self[5], self[4], self[3]],
                          [0., 0., 0., self[5], -self[6], -self[3], self[4]],
-                         [0., 0., 0., -self[4], self[3], -self[6], self[5]]], dtype=np.float64)
+                         [0., 0., 0., -self[4], self[3], -self[6], self[5]]],
+                        dtype=np.float64)
         # fmt: on
 
     def jacobian_boxplus(self):
@@ -415,5 +424,6 @@ class PoseSE3(BasePose):
                          [0., 0., 0., self[6], -self[5], self[4]],
                          [0., 0., 0., self[5], self[6], -self[3]],
                          [0., 0., 0., -self[4], self[3], self[6]],
-                         [0., 0., 0., -self[3], -self[4], -self[5]]], dtype=np.float64)
+                         [0., 0., 0., -self[3], -self[4], -self[5]]],
+                        dtype=np.float64)
         # fmt: on
