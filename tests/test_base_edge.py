@@ -10,14 +10,13 @@ import unittest
 import numpy as np
 
 from graphslam.vertex import Vertex
-from graphslam.edge.base_edge import BaseEdge
 from graphslam.edge.edge_odometry import EdgeOdometry
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.se2 import PoseSE2
+from .edge_oplus_ominus import BaseEdgeForTests
 
 
-# pylint: disable=abstract-method
-class SimpleEdge(BaseEdge):
+class SimpleEdge(BaseEdgeForTests):
     """A simple edge class for testing.
 
     """
@@ -37,21 +36,10 @@ class TestBaseEdge(unittest.TestCase):
         """
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = BaseEdge(0, 1, 0, [v])
+        e = SimpleEdge(0, 1, 0, [v])
 
         self.assertEqual(e.vertices[0].id, 0)
         self.assertEqual(e.information, 1)
-
-    def test_calc_error(self):
-        """Test that the ``calc_error`` method is not implemented.
-
-        """
-        p = PoseSE2([0, 0], 0)
-        v = Vertex(0, p)
-        e = BaseEdge(0, 1, 0, [v])
-
-        with self.assertRaises(NotImplementedError):
-            _ = e.calc_error()
 
     def test_calc_chi2(self):
         """Test that the ``calc_chi2`` method works as expected.
@@ -104,28 +92,6 @@ class TestBaseEdge(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.norm(hessian[(0, 0)] - np.eye(2)), 0.)
         self.assertAlmostEqual(np.linalg.norm(hessian[(0, 1)] + np.eye(2)), 0.)
         self.assertAlmostEqual(np.linalg.norm(hessian[(1, 1)] - np.eye(2)), 0.)
-
-    def test_to_g2o(self):
-        """Test that the ``to_g2o`` method is not implemented.
-
-        """
-        p = PoseSE2([0, 0], 0)
-        v = Vertex(0, p)
-        e = BaseEdge(0, 1, 0, [v])
-
-        with self.assertRaises(NotImplementedError):
-            _ = e.to_g2o()
-
-    def test_plot(self):
-        """Test that the ``plot`` method is not implemented.
-
-        """
-        p = PoseSE2([0, 0], 0)
-        v = Vertex(0, p)
-        e = BaseEdge(0, 1, 0, [v])
-
-        with self.assertRaises(NotImplementedError):
-            e.plot()
 
     def test_approx_equal(self):
         """Test that the ``approx_equal`` method works as expected."""

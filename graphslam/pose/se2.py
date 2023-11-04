@@ -24,9 +24,9 @@ class PoseSE2(BasePose):
         The angle of the pose (in radians)
 
     """
-    def __new__(cls, position, orientation):
-        obj = np.array([position[0], position[1], neg_pi_to_pi(orientation)], dtype=np.float64).view(cls)
-        return obj
+
+    def __init__(self, position, orientation):
+        super().__init__([position[0], position[1], neg_pi_to_pi(orientation)])
 
     def copy(self):
         """Return a copy of the pose.
@@ -48,7 +48,7 @@ class PoseSE2(BasePose):
             The pose as a numpy array
 
         """
-        return np.array(self)
+        return np.array(self._data)
 
     def to_compact(self):
         """Return the pose as a compact numpy array.
@@ -59,7 +59,7 @@ class PoseSE2(BasePose):
             The pose as a compact numpy array
 
         """
-        return np.array(self)
+        return np.array(self._data)
 
     def to_matrix(self):
         """Return the pose as an :math:`SE(2)` matrix.

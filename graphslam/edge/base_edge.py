@@ -5,16 +5,14 @@ r"""A base class for edges.
 """
 
 
+from abc import ABC, abstractmethod
+
 import numpy as np
 
 from graphslam.pose.base_pose import BasePose
 
 
-#: The difference that will be used for numerical differentiation
-EPSILON = 1e-6
-
-
-class BaseEdge:
+class BaseEdge(ABC):
     r"""A class for representing edges in Graph SLAM.
 
     Parameters
@@ -40,12 +38,17 @@ class BaseEdge:
         A list of the vertices constrained by the edge
 
     """
+
+    #: The difference that will be used for numerical differentiation
+    _NUMERICAL_DIFFERENTIATION_EPSILON = 1e-6
+
     def __init__(self, vertex_ids, information, estimate, vertices=None):
         self.vertex_ids = vertex_ids
         self.information = information
         self.estimate = estimate
         self.vertices = vertices
 
+    @abstractmethod
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.
 
@@ -55,7 +58,6 @@ class BaseEdge:
             The error for the edge
 
         """
-        raise NotImplementedError
 
     def calc_chi2(self):
         r"""Calculate the :math:`\chi^2` error for the edge.
@@ -141,17 +143,18 @@ class BaseEdge:
         for d in range(dim):
             # update the pose
             delta_pose = np.zeros(dim)
-            delta_pose[d] = EPSILON
+            delta_pose[d] = self._NUMERICAL_DIFFERENTIATION_EPSILON
             self.vertices[vertex_index].pose += delta_pose
 
             # compute the numerical derivative
-            jacobian[:, d] = (self.calc_error() - err) / EPSILON
+            jacobian[:, d] = (self.calc_error() - err) / self._NUMERICAL_DIFFERENTIATION_EPSILON
 
             # restore the pose
             self.vertices[vertex_index].pose = p0.copy()
 
         return jacobian
 
+    @abstractmethod
     def to_g2o(self):
         """Export the edge to the .g2o format.
 
@@ -161,8 +164,8 @@ class BaseEdge:
             The edge in .g2o format
 
         """
-        raise NotImplementedError
 
+    @abstractmethod
     def plot(self, color=''):
         """Plot the edge.
 
@@ -172,7 +175,6 @@ class BaseEdge:
             The color that will be used to plot the edge
 
         """
-        raise NotImplementedError
 
     def approx_equal(self, other, tol=1e-6):
         """Check whether two edges are approximately equal.

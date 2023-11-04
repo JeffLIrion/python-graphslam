@@ -20,9 +20,9 @@ class PoseSE3(BasePose):
         The orientation of the pose as a unit quaternion: :math:`[q_x, q_y, q_z, q_w]`
 
     """
-    def __new__(cls, position, orientation):
-        obj = np.array([position[0], position[1], position[2], orientation[0], orientation[1], orientation[2], orientation[3]], dtype=np.float64).view(cls)
-        return obj
+
+    def __init__(self, position, orientation):
+        super().__init__([position[0], position[1], position[2], orientation[0], orientation[1], orientation[2], orientation[3]])
 
     def normalize(self):
         """Normalize the quaternion portion of the pose.
@@ -51,7 +51,7 @@ class PoseSE3(BasePose):
             The pose as a numpy array
 
         """
-        return np.array(self)
+        return np.array(self._data)
 
     def to_compact(self):
         """Return the pose as a compact numpy array.

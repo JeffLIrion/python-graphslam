@@ -18,9 +18,9 @@ class PoseR2(BasePose):
         The position in :math:`\mathbb{R}^2`
 
     """
-    def __new__(cls, position):
-        obj = np.asarray(position, dtype=np.float64).view(cls)
-        return obj
+
+    def __init__(self, position):
+        super().__init__(position)
 
     def copy(self):
         """Return a copy of the pose.
@@ -42,7 +42,7 @@ class PoseR2(BasePose):
             The pose as a numpy array
 
         """
-        return np.array(self)
+        return np.array(self._data)
 
     def to_compact(self):
         """Return the pose as a compact numpy array.
@@ -53,7 +53,7 @@ class PoseR2(BasePose):
             The pose as a compact numpy array
 
         """
-        return np.array(self)
+        return np.array(self._data)
 
     # ======================================================================= #
     #                                                                         #
@@ -70,7 +70,7 @@ class PoseR2(BasePose):
             The position portion of the pose
 
         """
-        return np.array(self)
+        return np.array(self._data)
 
     @property
     def orientation(self):
@@ -115,7 +115,7 @@ class PoseR2(BasePose):
             The result of pose composition
 
         """
-        return PoseR2(np.add(self, other))
+        return PoseR2([self[0] + other[0], self[1] + other[1]])
 
     def __sub__(self, other):
         """Subtract poses (i.e., inverse pose composition).
@@ -131,7 +131,7 @@ class PoseR2(BasePose):
             The result of inverse pose composition
 
         """
-        return PoseR2(np.subtract(self, other))
+        return PoseR2([self[0] - other[0], self[1] - other[1]])
 
     # ======================================================================= #
     #                                                                         #

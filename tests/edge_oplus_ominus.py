@@ -10,8 +10,17 @@ import numpy as np
 from graphslam.edge.base_edge import BaseEdge
 
 
-# pylint: disable=abstract-method
-class EdgeOPlus(BaseEdge):
+class BaseEdgeForTests(BaseEdge):
+    """A base edge class for tests."""
+
+    def to_g2o(self):
+        """Not supported, so don't do anything."""
+
+    def plot(self, color=''):
+        """Not supported, so don't do anything."""
+
+
+class EdgeOPlus(BaseEdgeForTests):
     """A simple edge class for testing.
 
     """
@@ -25,8 +34,7 @@ class EdgeOPlus(BaseEdge):
                 np.dot(self.vertices[0].pose.jacobian_self_oplus_other_wrt_other(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
 
 
-# pylint: disable=abstract-method
-class EdgeOMinus(BaseEdge):
+class EdgeOMinus(BaseEdgeForTests):
     """A simple edge class for testing.
 
     """
@@ -40,8 +48,7 @@ class EdgeOMinus(BaseEdge):
                 np.dot(self.vertices[0].pose.jacobian_self_ominus_other_wrt_other(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
 
 
-# pylint: disable=abstract-method
-class EdgeOPlusCompact(BaseEdge):
+class EdgeOPlusCompact(BaseEdgeForTests):
     """A simple edge class for testing.
 
     """
@@ -55,8 +62,7 @@ class EdgeOPlusCompact(BaseEdge):
                 np.dot(self.vertices[0].pose.jacobian_self_oplus_other_wrt_other_compact(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
 
 
-# pylint: disable=abstract-method
-class EdgeOMinusCompact(BaseEdge):
+class EdgeOMinusCompact(BaseEdgeForTests):
     """A simple edge class for testing.
 
     """
