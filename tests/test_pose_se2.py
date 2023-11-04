@@ -10,6 +10,7 @@ import unittest
 import numpy as np
 
 from graphslam.vertex import Vertex
+from graphslam.pose.r2 import PoseR2
 from graphslam.pose.se2 import PoseSE2
 from graphslam.edge.base_edge import BaseEdge
 from .edge_oplus_ominus import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
@@ -108,6 +109,18 @@ class TestPoseSE2(unittest.TestCase):
 
             expected = PoseSE2.from_matrix(np.dot(p1.to_matrix(), p2.to_matrix()))
             self.assertAlmostEqual(np.linalg.norm((p1 + p2).to_array() - expected.to_array()), 0.0)
+
+        # PoseSE2 (+) PoseR2
+        for _ in range(10):
+            p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+            p2 = PoseR2(np.random.random_sample(2))
+
+            expected = np.dot(p1.to_matrix(), np.array([p2[0], p2[1], 1.0]))
+            self.assertAlmostEqual(np.linalg.norm(p1 + p2 - expected[:2]), 0.0)
+
+        with self.assertRaises(NotImplementedError):
+            p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+            _ = p1 + 5
 
     def test_sub(self):
         """Test that the overloaded ``__sub__`` method works as expected."""
