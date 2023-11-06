@@ -45,6 +45,14 @@ class TestVertex(unittest.TestCase):
                 fig.add_subplot(111, projection="3d")
             v.plot()
 
+    def test_to_g2o(self):
+        """Test that an unsupported pose type cannot be written to a .g2o file."""
+        # Use `None` in lieue of an actual unsupported pose
+        v = Vertex(0, None)
+
+        with self.assertRaises(NotImplementedError):
+            v.to_g2o()
+
 
 if __name__ == "__main__":
     unittest.main()
