@@ -13,7 +13,7 @@ from graphslam.vertex import Vertex
 from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se3 import PoseSE3
 from graphslam.edge.base_edge import BaseEdge
-from .edge_oplus_ominus import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
+from .edge_types import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
 
 
 class TestPoseSE3(unittest.TestCase):
