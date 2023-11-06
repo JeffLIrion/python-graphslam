@@ -120,10 +120,7 @@ class BaseEdge(ABC):
         """
         err = self.calc_error()
 
-        # The dimensionality of the compact pose representation
-        dim = len(self.vertices[0].pose.to_compact())
-
-        return [self._calc_jacobian(err, dim, i) for i in range(len(self.vertices))]
+        return [self._calc_jacobian(err, v.pose.COMPACT_DIMENSIONALITY, i) for i, v in enumerate(self.vertices)]
 
     def _calc_jacobian(self, err, dim, vertex_index):
         r"""Calculate the Jacobian of the edge with respect to the specified vertex's pose.
