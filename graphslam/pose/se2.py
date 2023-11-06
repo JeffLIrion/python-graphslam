@@ -171,7 +171,7 @@ class PoseSE2(BasePose):
 
         Returns
         -------
-        PoseSE2, np.ndarray
+        PoseSE2, PoseR2
             The result of pose composition
 
         """
@@ -185,9 +185,8 @@ class PoseSE2(BasePose):
         if isinstance(other, PoseR2) or (isinstance(other, np.ndarray) and len(other) == 2):
             # pose (+) point
             # fmt: off
-            return np.array([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]),
-                             self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])],
-                            dtype=np.float64)
+            return PoseR2([self[0] + other[0] * np.cos(self[2]) - other[1] * np.sin(self[2]),
+                           self[1] + other[0] * np.sin(self[2]) + other[1] * np.cos(self[2])])
             # fmt: on
 
         raise NotImplementedError
