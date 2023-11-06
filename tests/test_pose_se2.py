@@ -137,7 +137,8 @@ class TestPoseSE2(unittest.TestCase):
             self.assertAlmostEqual(np.linalg.norm((p1 - p2).to_matrix() - expected), 0.0)
 
             expected2 = PoseSE2.from_matrix(expected) - PoseSE2.identity()
-            self.assertAlmostEqual(np.linalg.norm((expected2 - expected).to_array()), 0.0)
+            expected2 = p1 - p2 - PoseSE2.identity()
+            self.assertAlmostEqual(np.linalg.norm(expected2.to_matrix() - expected), 0.0)
 
     # ======================================================================= #
     #                                                                         #

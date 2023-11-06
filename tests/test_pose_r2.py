@@ -108,7 +108,7 @@ class TestPoseR2(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.norm(((r2b - r2a) - expected).to_array()), 0.0)
 
         expected2 = expected - PoseR2.identity()
-        self.assertAlmostEqual(np.linalg.norm(((expected2 - r2a) - expected).to_array()), 0.0)
+        self.assertAlmostEqual(np.linalg.norm((expected2 - expected).to_array()), 0.0)
 
     # ======================================================================= #
     #                                                                         #
