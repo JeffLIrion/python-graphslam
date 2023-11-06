@@ -162,6 +162,24 @@ class TestBasePose(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             _ = p1.jacobian_boxplus()
 
+    def test_jacobian_self_oplus_point(self):
+        """Test that the ``jacobian_self_oplus_point_wrt_self`` and ``jacobian_self_oplus_point_wrt_point`` methods are not implemented."""
+        p1 = BasePose([])
+        p2 = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_self_oplus_point_wrt_self(p2)
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_self_oplus_point_wrt_point(p2)
+
+    def test_jacobian_inverse(self):
+        """Test that the ``jacobian_inverse`` method is not implemented."""
+        p1 = BasePose([])
+
+        with self.assertRaises(NotImplementedError):
+            _ = p1.jacobian_inverse()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -12,7 +12,7 @@ import numpy as np
 from graphslam.vertex import Vertex
 from graphslam.pose.r3 import PoseR3
 from graphslam.edge.base_edge import BaseEdge
-from .edge_types import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
+from .edge_types import EdgeInverse, EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact, EdgeOPlusPoint
 
 
 class TestPoseR3(unittest.TestCase):
@@ -187,6 +187,46 @@ class TestPoseR3(unittest.TestCase):
             v2 = Vertex(2, p2)
 
             e = EdgeOMinusCompact([1, 2], np.eye(3), np.zeros(3), [v1, v2])
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0)
+
+    def test_jacobian_self_oplus_point(self):
+        """Test that the ``jacobian_self_oplus_point_wrt_self`` and ``jacobian_self_oplus_point_wrt_point`` methods are correctly implemented."""
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseR3(np.random.random_sample(3))
+            p2 = PoseR3(np.random.random_sample(3))
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeOPlusPoint([1, 2], np.eye(3), np.zeros(3), [v1, v2])
+
+            numerical_jacobians = BaseEdge.calc_jacobians(e)
+
+            analytical_jacobians = e.calc_jacobians()
+
+            self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
+            for n, a in zip(numerical_jacobians, analytical_jacobians):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0)
+
+    def test_jacobian_inverse(self):
+        """Test that the ``jacobian_inverse`` method is correctly implemented."""
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseR3(np.random.random_sample(3))
+
+            v1 = Vertex(1, p1)
+
+            e = EdgeInverse([1], np.eye(3), np.zeros(3), [v1])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
