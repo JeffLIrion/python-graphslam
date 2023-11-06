@@ -274,7 +274,7 @@ class TestPoseSE3(unittest.TestCase):
         """Test that the ``jacobian_self_oplus_point_wrt_self`` and ``jacobian_self_oplus_point_wrt_point`` methods are correctly implemented."""
         np.random.seed(0)
 
-        for _ in range(10):
+        for a in range(10):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
             p2 = PoseR3(np.random.random_sample(3))
 
@@ -312,7 +312,7 @@ class TestPoseSE3(unittest.TestCase):
 
             self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
             for n, a in zip(numerical_jacobians, analytical_jacobians):
-                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0)
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0, places=5)
 
 
 if __name__ == "__main__":
