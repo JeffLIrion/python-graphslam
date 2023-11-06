@@ -115,6 +115,9 @@ class TestPoseSE3(unittest.TestCase):
             expected = np.dot(p1.to_matrix(), p2.to_matrix())
             self.assertAlmostEqual(np.linalg.norm((p1 + p2).to_matrix() - expected), 0.0)
 
+            expected2 = (p1 + p2 + PoseSE3.identity()).to_matrix()
+            self.assertAlmostEqual(np.linalg.norm(expected2 - expected), 0.0)
+
         # PoseSE3 [+] numpy.ndarray
         for _ in range(10):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
@@ -162,6 +165,9 @@ class TestPoseSE3(unittest.TestCase):
 
             expected = np.dot(np.linalg.inv(p2.to_matrix()), p1.to_matrix())
             self.assertAlmostEqual(np.linalg.norm((p1 - p2).to_matrix() - expected), 0.0)
+
+            expected2 = (p1 - p2 - PoseSE3.identity()).to_matrix()
+            self.assertAlmostEqual(np.linalg.norm(expected2 - expected), 0.0)
 
     # ======================================================================= #
     #                                                                         #

@@ -31,6 +31,18 @@ class PoseSE3(BasePose):
         # fmt: on
         return obj
 
+    @classmethod
+    def identity(cls):
+        """Return the identity pose.
+
+        Returns
+        -------
+        PoseSE3
+            The identity pose
+
+        """
+        return PoseSE3([0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0])
+
     def normalize(self):
         """Normalize the quaternion portion of the pose."""
         sgn = 1.0 if self[6] >= 0.0 else -1.0
