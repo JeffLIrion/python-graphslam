@@ -159,7 +159,7 @@ class PoseSE3(BasePose):
 
         Returns
         -------
-        PoseSE3, np.ndarray
+        PoseSE3, PoseR3
             The result of pose composition
 
         """
@@ -198,10 +198,9 @@ class PoseSE3(BasePose):
         if isinstance(other, PoseR3) or (isinstance(other, np.ndarray) and len(other) == 3):
             # pose (+) point
             # fmt: off
-            return np.array([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[4] * self[6] + self[3] * self[5]) * other[2]),
-                             self[1] + other[1] + 2. * ((self[5] * self[6] + self[3] * self[4]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
-                             self[2] + other[2] + 2. * ((self[3] * self[5] - self[4] * self[6]) * other[0] + (self[3] * self[6] + self[4] * self[5]) * other[1] - (self[3]**2 + self[4]**2) * other[2])],
-                            dtype=np.float64)
+            return PoseR3([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[4] * self[6] + self[3] * self[5]) * other[2]),
+                           self[1] + other[1] + 2. * ((self[5] * self[6] + self[3] * self[4]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
+                           self[2] + other[2] + 2. * ((self[3] * self[5] - self[4] * self[6]) * other[0] + (self[3] * self[6] + self[4] * self[5]) * other[1] - (self[3]**2 + self[4]**2) * other[2])])
             # fmt: on
 
         raise NotImplementedError
