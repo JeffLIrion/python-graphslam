@@ -466,7 +466,7 @@ class PoseSE3(BasePose):
         """
         # fmt: off
         return np.array([[1., 0., 0., 2. * self[4] * point[1] + 2. * self[5] * point[2], -4. * self[4] * point[0] + 2. * self[3] * point[1] + 2. * self[6] * point[2], -4. * self[5] * point[0] - 2. * self[6] * point[1] + 2. * self[3] * point[2], -2. * self[5] * point[1] + 2. * self[4] * point[2]],
-                         [0., 1., 0., 2. * self[4] * point[0] - 4. * self[3] * point[1] - 2. * self[6] * point[2], 2. * self[3] * point[0] + 2. * self[5] * point[2], -2. * self[6] * point[0] - 4. * self[5] * point[1] + self[4] * point[2], 2. * self[5] * point[0] - 2. * self[3] * point[2]],
+                         [0., 1., 0., 2. * self[4] * point[0] - 4. * self[3] * point[1] - 2. * self[6] * point[2], 2. * self[3] * point[0] + 2. * self[5] * point[2], 2. * self[6] * point[0] - 4. * self[5] * point[1] + 2. * self[4] * point[2], 2. * self[5] * point[0] - 2. * self[3] * point[2]],
                          [0., 0., 1., 2. * self[5] * point[0] + 2. * self[6] * point[1] - 4. * self[3] * point[2], -2. * self[6] * point[0] + 2. * self[5] * point[1] - 4. * self[4] * point[2], 2. * self[3] * point[0] + 2. * self[4] * point[1], -2. * self[4] * point[0] + 2. * self[3] * point[1]]],
                         dtype=np.float64)
         # fmt: on

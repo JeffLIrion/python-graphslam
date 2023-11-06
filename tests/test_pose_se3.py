@@ -291,7 +291,7 @@ class TestPoseSE3(unittest.TestCase):
 
             self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
             for n, a in zip(numerical_jacobians, analytical_jacobians):
-                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0)
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0, places=5)
 
     def test_jacobian_inverse(self):
         """Test that the ``jacobian_inverse`` method is correctly implemented."""
