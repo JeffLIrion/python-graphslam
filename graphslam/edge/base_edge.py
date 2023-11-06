@@ -182,8 +182,8 @@ class BaseEdge(ABC):
 
         """
 
-    def approx_equal(self, other, tol=1e-6):
-        """Check whether two edges are approximately equal.
+    def equals(self, other, tol=1e-6):
+        """Check whether two edges are equal.
 
         Parameters
         ----------
@@ -195,7 +195,7 @@ class BaseEdge(ABC):
         Returns
         -------
         bool
-            Whether the two edges are approximately equal
+            Whether the two edges are equal
 
         """
         if len(self.vertex_ids) != len(other.vertex_ids):
@@ -210,7 +210,7 @@ class BaseEdge(ABC):
         # fmt: on
 
         if isinstance(self.estimate, BasePose):
-            return isinstance(other.estimate, BasePose) and self.estimate.approx_equal(other.estimate, tol)
+            return isinstance(other.estimate, BasePose) and self.estimate.equals(other.estimate, tol)
 
         # fmt: off
         return not isinstance(other.estimate, BasePose) and np.linalg.norm(self.estimate - other.estimate) / max(np.linalg.norm(self.estimate), tol) < tol
