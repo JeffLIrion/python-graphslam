@@ -501,4 +501,14 @@ class PoseSE3(BasePose):
             The Jacobian of :math:`p^{-1}
 
         """
-        return self.identity().jacobian_self_ominus_other_wrt_other(self)
+        # fmt: off
+        IDENTITY = self.identity()
+        return np.array([[-1. + 2. * (self[4]**2 + self[5]**2), -2. * (self[3] * self[4] + self[5] * self[6]), -2. * (self[3] * self[5] - self[4] * self[6]), 2. * (self[4] * (IDENTITY[1] - self[1]) + self[5] * (IDENTITY[2] - self[2])), 2. * (-2. * self[4] * (IDENTITY[0] - self[0]) + self[3] * (IDENTITY[1] - self[1]) - self[6] * (IDENTITY[2] - self[2])), 2. * (-2. * self[5] * (IDENTITY[0] - self[0]) + self[6] * (IDENTITY[1] - self[1]) + self[3] * (IDENTITY[2] - self[2])), 2. * (self[5] * (IDENTITY[1] - self[1]) - self[4] * (IDENTITY[2] - self[2]))],
+                         [-2. * (self[3] * self[4] - self[5] * self[6]), -1. + 2. * (self[3]**2 + self[5]**2), -2. * (self[4] * self[5] + self[3] * self[6]), 2. * (self[4] * (IDENTITY[0] - self[0]) - 2. * self[3] * (IDENTITY[1] - self[1]) + self[6] * (IDENTITY[2] - self[2])), 2. * (self[3] * (IDENTITY[0] - self[0]) + self[5] * (IDENTITY[2] - self[2])), 2. * (-self[6] * (IDENTITY[0] - self[0]) - 2. * self[5] * (IDENTITY[1] - self[1]) + self[4] * (IDENTITY[2] - self[2])), 2. * (-self[5] * (IDENTITY[0] - self[0]) + self[3] * (IDENTITY[2] - self[2]))],
+                         [-2. * (self[3] * self[5] + self[4] * self[6]), -2. * (self[4] * self[5] - self[3] * self[6]), -1. + 2. * (self[3]**2 + self[4]**2), 2. * (self[5] * (IDENTITY[0] - self[0]) - self[6] * (IDENTITY[1] - self[1]) - 2. * self[3] * (IDENTITY[2] - self[2])), 2. * (self[6] * (IDENTITY[0] - self[0]) + self[5] * (IDENTITY[1] - self[1]) - 2. * self[4] * (IDENTITY[2] - self[2])), 2. * (self[3] * (IDENTITY[0] - self[0]) + self[4] * (IDENTITY[1] - self[1])), 2. * (self[4] * (IDENTITY[0] - self[0]) - self[3] * (IDENTITY[1] - self[1]))],
+                         [0., 0., 0., -1., 0., 0., 0.],
+                         [0., 0., 0., 0., -1., 0., 0.],
+                         [0., 0., 0., 0., 0., -1., 0.],
+                         [0., 0., 0., 0., 0., 0., 1.]],
+                        dtype=np.float64)
+        # fmt: on
