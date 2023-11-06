@@ -72,6 +72,12 @@ class Vertex:
                 self.pose[6],
             )
 
+        if isinstance(self.pose, PoseR2):
+            return "VERTEX_XY {} {} {}\n".format(self.id, self.pose[0], self.pose[1])
+
+        if isinstance(self.pose, PoseR3):
+            return "VERTEX_TRACKXYZ {} {} {} {}\n".format(self.id, self.pose[0], self.pose[1], self.pose[2])
+
         raise NotImplementedError
 
     def plot(self, color="r", marker="o", markersize=3):
