@@ -250,7 +250,7 @@ class PoseSE3(BasePose):
         """
         # fmt: off
         return np.array([[1., 0., 0., 2. * self[4] * other[1] + 2. * self[5] * other[2], -4. * self[4] * other[0] + 2. * self[3] * other[1] + 2. * self[6] * other[2], -4. * self[5] * other[0] - 2. * self[6] * other[1] + 2. * self[3] * other[2], -2. * self[5] * other[1] + 2. * self[4] * other[2]],
-                         [0., 1., 0., 2. * self[4] * other[0] - 4. * self[3] * other[1] - 2. * self[6] * other[2], 2. * self[3] * other[0] + 2. * self[5] * other[2], -2. * self[6] * other[0] - 4. * self[5] * other[1] + self[4] * other[2], 2. * self[5] * other[0] - 2. * self[3] * other[2]],
+                         [0., 1., 0., 2. * self[4] * other[0] - 4. * self[3] * other[1] - 2. * self[6] * other[2], 2. * self[3] * other[0] + 2. * self[5] * other[2], -2. * self[6] * other[0] - 4. * self[5] * other[1] + 2. * self[4] * other[2], 2. * self[5] * other[0] - 2. * self[3] * other[2]],
                          [0., 0., 1., 2. * self[5] * other[0] + 2. * self[6] * other[1] - 4. * self[3] * other[2], -2. * self[6] * other[0] + 2. * self[5] * other[1] - 4. * self[4] * other[2], 2. * self[3] * other[0] + 2. * self[4] * other[1], -2. * self[4] * other[0] + 2. * self[3] * other[1]],
                          [0., 0., 0., other[6], other[5], -other[4], other[3]],
                          [0., 0., 0., -other[5], other[6], other[3], other[4]],
@@ -275,7 +275,7 @@ class PoseSE3(BasePose):
         """
         # fmt: off
         return np.array([[1., 0., 0., 2. * self[4] * other[1] + 2. * self[5] * other[2], -4. * self[4] * other[0] + 2. * self[3] * other[1] + 2. * self[6] * other[2], -4. * self[5] * other[0] - 2. * self[6] * other[1] + 2. * self[3] * other[2], -2. * self[5] * other[1] + 2. * self[4] * other[2]],
-                         [0., 1., 0., 2. * self[4] * other[0] - 4. * self[3] * other[1] - 2. * self[6] * other[2], 2. * self[3] * other[0] + 2. * self[5] * other[2], -2. * self[6] * other[0] - 4. * self[5] * other[1] + self[4] * other[2], 2. * self[5] * other[0] - 2. * self[3] * other[2]],
+                         [0., 1., 0., 2. * self[4] * other[0] - 4. * self[3] * other[1] - 2. * self[6] * other[2], 2. * self[3] * other[0] + 2. * self[5] * other[2], -2. * self[6] * other[0] - 4. * self[5] * other[1] + 2. * self[4] * other[2], 2. * self[5] * other[0] - 2. * self[3] * other[2]],
                          [0., 0., 1., 2. * self[5] * other[0] + 2. * self[6] * other[1] - 4. * self[3] * other[2], -2. * self[6] * other[0] + 2. * self[5] * other[1] - 4. * self[4] * other[2], 2. * self[3] * other[0] + 2. * self[4] * other[1], -2. * self[4] * other[0] + 2. * self[3] * other[1]],
                          [0., 0., 0., other[6], other[5], -other[4], other[3]],
                          [0., 0., 0., -other[5], other[6], other[3], other[4]],

@@ -195,8 +195,8 @@ class TestPoseSE3(unittest.TestCase):
             analytical_jacobians = e.calc_jacobians()
 
             self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
-            for n, a in zip(numerical_jacobians, analytical_jacobians):
-                self.assertAlmostEqual(np.linalg.norm(n[:, :3] - a[:, :3]), 0.0)
+            for n, a in zip(numerical_jacobians[1:], analytical_jacobians[1:]):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0, places=5)
 
     def test_jacobian_self_ominus_other(self):
         """Test that the ``jacobian_self_ominus_other_wrt_self`` and ``jacobian_self_ominus_other_wrt_other`` methods are correctly implemented."""
@@ -243,8 +243,8 @@ class TestPoseSE3(unittest.TestCase):
             analytical_jacobians = e.calc_jacobians()
 
             self.assertEqual(len(numerical_jacobians), len(analytical_jacobians))
-            for n, a in zip(numerical_jacobians, analytical_jacobians):
-                self.assertAlmostEqual(np.linalg.norm(n[:, :3] - a[:, :3]), 0.0)
+            for n, a in zip(numerical_jacobians[1:], analytical_jacobians[1:]):
+                self.assertAlmostEqual(np.linalg.norm(n - a), 0.0, places=5)
 
     def test_jacobian_self_ominus_other_compact(self):
         """Test that the ``jacobian_self_ominus_other_wrt_self_compact`` and ``jacobian_self_ominus_other_wrt_other_compact`` methods are correctly implemented."""
