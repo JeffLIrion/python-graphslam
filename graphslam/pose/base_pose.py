@@ -44,8 +44,8 @@ class BasePose(np.ndarray):
         """
         raise NotImplementedError
 
-    def approx_equal(self, other, tol=1e-6):
-        """Check whether two poses are approximately equal.
+    def equals(self, other, tol=1e-6):
+        """Check whether two poses are equal.
 
         Parameters
         ----------
@@ -57,7 +57,7 @@ class BasePose(np.ndarray):
         Returns
         -------
         bool
-            Whether the two poses are approximately equal
+            Whether the two poses are equal
 
         """
         return np.linalg.norm(self.to_array() - other.to_array()) / max(np.linalg.norm(self.to_array()), tol) < tol

@@ -377,8 +377,8 @@ class Graph(object):
 
         plt.show()
 
-    def approx_equal(self, other, tol=1e-6):
-        """Check whether two graphs are approximately equal.
+    def equals(self, other, tol=1e-6):
+        """Check whether two graphs are equal.
 
         Parameters
         ----------
@@ -390,7 +390,7 @@ class Graph(object):
         Returns
         -------
         bool
-            Whether the two graphs are approximately equal
+            Whether the two graphs are equal
 
         """
         # pylint: disable=protected-access
@@ -398,5 +398,5 @@ class Graph(object):
             return False
 
         # fmt: off
-        return all(e1.approx_equal(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.pose.approx_equal(v2.pose, tol) for v1, v2 in zip(self._vertices, other._vertices))
+        return all(e1.equals(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.pose.equals(v2.pose, tol) for v1, v2 in zip(self._vertices, other._vertices))
         # fmt: on
