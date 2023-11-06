@@ -13,6 +13,11 @@ from graphslam.pose.base_pose import BasePose
 class TestBasePose(unittest.TestCase):
     """Tests for the ``PoseR2`` class."""
 
+    def test_identity(self):
+        """Test that the ``identity`` method is not implemented."""
+        with self.assertRaises(NotImplementedError):
+            BasePose.identity()
+
     def test_to_array(self):
         """Test that the ``to_array`` method is not implemented."""
         p = BasePose([])

@@ -26,6 +26,18 @@ class PoseR3(BasePose):
         obj = np.asarray(position, dtype=np.float64).view(cls)
         return obj
 
+    @classmethod
+    def identity(cls):
+        """Return the identity pose.
+
+        Returns
+        -------
+        PoseR3
+            The identity pose
+
+        """
+        return PoseR3([0.0, 0.0, 0.0])
+
     def copy(self):
         """Return a copy of the pose.
 

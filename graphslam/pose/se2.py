@@ -33,6 +33,18 @@ class PoseSE2(BasePose):
         obj = np.array([position[0], position[1], neg_pi_to_pi(orientation)], dtype=np.float64).view(cls)
         return obj
 
+    @classmethod
+    def identity(cls):
+        """Return the identity pose.
+
+        Returns
+        -------
+        PoseSE2
+            The identity pose
+
+        """
+        return PoseSE2([0.0, 0.0], 0.0)
+
     def copy(self):
         """Return a copy of the pose.
 

@@ -96,6 +96,9 @@ class TestPoseR2(unittest.TestCase):
         r2a += r2b
         self.assertAlmostEqual(np.linalg.norm((r2a - expected).to_array()), 0.0)
 
+        expected2 = expected + PoseR2.identity()
+        self.assertAlmostEqual(np.linalg.norm((expected2 - expected).to_array()), 0.0)
+
     def test_sub(self):
         """Test that the overloaded ``__sub__`` method works as expected."""
         r2a = PoseR2([1, 2])
@@ -103,6 +106,9 @@ class TestPoseR2(unittest.TestCase):
 
         expected = PoseR2([2, 2])
         self.assertAlmostEqual(np.linalg.norm(((r2b - r2a) - expected).to_array()), 0.0)
+
+        expected2 = expected - PoseR2.identity()
+        self.assertAlmostEqual(np.linalg.norm((expected2 - expected).to_array()), 0.0)
 
     # ======================================================================= #
     #                                                                         #

@@ -10,6 +10,18 @@ import numpy as np
 class BasePose(np.ndarray):
     """A base class for poses."""
 
+    @classmethod
+    def identity(cls):
+        """Return the identity pose.
+
+        Returns
+        -------
+        BasePose
+            The identity pose
+
+        """
+        raise NotImplementedError
+
     # pylint: disable=arguments-differ
     def copy(self):
         """Return a copy of the pose.
