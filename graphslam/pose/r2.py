@@ -292,3 +292,46 @@ class PoseR2(BasePose):
 
         """
         return np.eye(2)
+
+    def jacobian_self_oplus_point_wrt_self(self, point):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`, where `:math:p_2` is a point.
+
+        Parameters
+        ----------
+        point : PoseR2
+            The point that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        """
+        return np.eye(2)
+
+    def jacobian_self_oplus_point_wrt_point(self, point):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`, where `:math:p_2` is a point.
+
+        Parameters
+        ----------
+        point : PoseR2
+            The point that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        """
+        return np.eye(2)
+
+    def jacobian_inverse(self):
+        r"""Compute the Jacobian of :math:`p_1^{-1}`.
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1^{-1}
+
+        """
+        return -np.eye(2)
