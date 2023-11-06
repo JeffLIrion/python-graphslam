@@ -326,12 +326,12 @@ class PoseR3(BasePose):
         return np.eye(3)
 
     def jacobian_inverse(self):
-        r"""Compute the Jacobian of :math:`p_1^{-1}`.
+        r"""Compute the Jacobian of :math:`p^{-1}`.
 
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1^{-1}
+            The Jacobian of :math:`p^{-1}
 
         """
         return -np.eye(3)
