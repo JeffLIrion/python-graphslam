@@ -13,7 +13,7 @@ from graphslam.vertex import Vertex
 from graphslam.edge.edge_odometry import EdgeOdometry
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.se2 import PoseSE2
-from .edge_oplus_ominus import BaseEdgeForTests
+from .edge_types import BaseEdgeForTests
 
 
 class SimpleEdge(BaseEdgeForTests):

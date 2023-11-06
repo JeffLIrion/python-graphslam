@@ -12,7 +12,7 @@ import numpy as np
 from graphslam.vertex import Vertex
 from graphslam.pose.r2 import PoseR2
 from graphslam.edge.base_edge import BaseEdge
-from .edge_oplus_ominus import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
+from .edge_types import EdgeOMinus, EdgeOMinusCompact, EdgeOPlus, EdgeOPlusCompact
 
 
 class TestPoseR2(unittest.TestCase):

@@ -1,6 +1,6 @@
 # Copyright (c) 2020 Jeff Irion and contributors
 
-"""A custom edge type used for unit tests.
+"""Edge types used for unit tests.
 
 """
 
