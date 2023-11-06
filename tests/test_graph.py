@@ -100,7 +100,7 @@ class TestGraphR2(unittest.TestCase):
     # pylint: disable=protected-access
     def test_to_g2o(self):
         """Test that the ``to_g2o`` method is implemented correctly, or raises ``NotImplementedError``."""
-        # Supported types
+        # Fully supported types
         if isinstance(self.g._vertices[0].pose, (PoseSE2, PoseSE3)):
             print(self.g._vertices[0].to_g2o())
             print(self.g._edges[0].to_g2o())
@@ -108,11 +108,8 @@ class TestGraphR2(unittest.TestCase):
             with patch("graphslam.graph.open", mock_open()):
                 self.g.to_g2o("test.g2o")
 
-        # Unsupported types
-        else:
-            with self.assertRaises(NotImplementedError):
-                print(self.g._vertices[0].to_g2o())
-
+        # Unsupported edges
+        if isinstance(self.g._vertices[0].pose, (PoseR2, PoseR3)):
             with self.assertRaises(NotImplementedError):
                 print(self.g._edges[0].to_g2o())
 
