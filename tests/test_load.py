@@ -11,11 +11,15 @@ from unittest import mock
 
 from graphslam.load import load_g2o_r2, load_g2o_r3, load_g2o_se2, load_g2o_se3
 
-from .patchers import open_fake_file
+from .patchers import FAKE_FILE, open_fake_file
 
 
 class TestLoad(unittest.TestCase):
     """Tests for the ``load`` functions."""
+
+    def setUp(self):
+        """Clear ``FAKE_FILE``."""
+        FAKE_FILE.clear()
 
     def test_load_g2o_r2(self):
         """Test the ``load_g2o_r2()`` function."""
@@ -48,8 +52,6 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.load.open", open_fake_file):
             g2 = load_g2o_r3("test.g2o")
             self.assertAlmostEqual(chi2, g2.calc_chi2())
-
-    #########################
 
     def test_load_g2o_se2(self):
         """Test the ``load_g2o_se2()`` function."""

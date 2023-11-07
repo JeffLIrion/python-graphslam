@@ -27,6 +27,10 @@ class FileReadWrite(object):
         """Mock writing to a file."""
         self._content += content
 
+    def clear(self):
+        """Clear the contents."""
+        self._content = ""
+
 
 FAKE_FILE = FileReadWrite()
 

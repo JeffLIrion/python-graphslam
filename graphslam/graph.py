@@ -363,7 +363,7 @@ class Graph(object):
             raise NotImplementedError
 
         fig = plt.figure()
-        if len(self._vertices[0].pose.position) == 3:
+        if any(len(v.pose.position) == 3 for v in self._vertices):
             fig.add_subplot(111, projection="3d")
 
         for e in self._edges:

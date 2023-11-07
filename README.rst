@@ -38,9 +38,9 @@ SE(3) Dataset
 
 .. code-block:: python
 
-   >>> from graphslam.load import load_g2o_se3
+   >>> from graphslam.load import load_g2o
 
-   >>> g = load_g2o_se3("data/parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = load_g2o("data/parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot(vertex_markersize=1)
 
@@ -78,9 +78,9 @@ SE(2) Dataset
 
 .. code-block:: python
 
-   >>> from graphslam.load import load_g2o_se2
+   >>> from graphslam.load import load_g2o
 
-   >>> g = load_g2o_se2("data/input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = load_g2o("data/input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot()
 
@@ -100,11 +100,11 @@ SE(2) Dataset
    Iteration                chi^2        rel. change
    ---------                -----        -----------
            0         7191686.3825
-           1       319916668.8138          43.484235
-           2       124888469.1437          -0.609622
-           3          338171.6169          -0.997292
-           4             734.5693          -0.997828
-           5             215.8405          -0.706167
+           1       319950425.6477          43.488929
+           2       124950341.8035          -0.609470
+           3          338165.0770          -0.997294
+           4             734.7343          -0.997827
+           5             215.8405          -0.706233
            6             215.8405          -0.000000
 
 
