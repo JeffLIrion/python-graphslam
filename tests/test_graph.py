@@ -13,7 +13,7 @@ import numpy as np
 
 from graphslam.edge.edge_odometry import EdgeOdometry
 from graphslam.graph import Graph
-from graphslam.load import load_g2o_se2, load_g2o_se3
+from graphslam.load import load_g2o
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se2 import PoseSE2
@@ -291,7 +291,7 @@ class TestGraphOptimization(unittest.TestCase):
         """Test for optimizing the Intel dataset."""
         intel = os.path.join(os.path.dirname(__file__), "..", "data", "input_INTEL.g2o")
 
-        g = load_g2o_se2(intel)
+        g = load_g2o(intel)
         g.optimize()
 
         optimized = os.path.join(os.path.dirname(__file__), "input_INTEL_optimized.g2o")
@@ -299,14 +299,14 @@ class TestGraphOptimization(unittest.TestCase):
         # Uncomment this line to write the output file
         # g.to_g2o(optimized)
 
-        g2 = load_g2o_se2(optimized)
+        g2 = load_g2o(optimized)
         self.assertTrue(g.equals(g2))
 
     def test_parking_garage(self):
         """Test for optimizing the parking garage dataset."""
         parking_garage = os.path.join(os.path.dirname(__file__), "..", "data", "parking-garage.g2o")
 
-        g = load_g2o_se3(parking_garage)
+        g = load_g2o(parking_garage)
         g.optimize()
 
         optimized = os.path.join(os.path.dirname(__file__), "parking-garage_optimized.g2o")
@@ -314,7 +314,7 @@ class TestGraphOptimization(unittest.TestCase):
         # Uncomment this line to write the output file
         # g.to_g2o(optimized)
 
-        g2 = load_g2o_se3(optimized)
+        g2 = load_g2o(optimized)
         self.assertTrue(g.equals(g2))
 
 
