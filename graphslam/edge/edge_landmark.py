@@ -102,7 +102,8 @@ class EdgeLandmark(BaseEdge):
             return "EDGE_SE2_XY {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1]) + " ".join([str(x) for x in self.information[np.triu_indices(2, 0)]]) + "\n"
 
         if isinstance(self.vertices[0].pose, PoseSE3):
-            return "EDGE_SE3_TRACKXYZ {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], 0, self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
+            offset_parameter = 0
+            return "EDGE_SE3_TRACKXYZ {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], offset_parameter, self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
         # fmt: on
 
         raise NotImplementedError
