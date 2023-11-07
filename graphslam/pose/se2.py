@@ -390,3 +390,56 @@ class PoseSE2(BasePose):
                          [np.sin(self[2]), np.cos(self[2]), 0.],
                          [0., 0., 1.]])
         # fmt: on
+
+    def jacobian_self_oplus_point_wrt_self(self, point):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`, where `:math:p_2` is a point.
+
+        Parameters
+        ----------
+        point : PoseR2
+            The point that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        """
+        # fmt: off
+        return np.array([[1., 0., -point[0] * np.sin(self[2]) - point[1] * np.cos(self[2])],
+                         [0., 1., point[0] * np.cos(self[2]) - point[1] * np.sin(self[2])]])
+        # fmt: on
+
+    def jacobian_self_oplus_point_wrt_point(self, point):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`, where `:math:p_2` is a point.
+
+        Parameters
+        ----------
+        point : PoseR2
+            The point that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        """
+        # fmt: off
+        return np.array([[np.cos(self[2]), -np.sin(self[2])],
+                         [np.sin(self[2]), np.cos(self[2])]])
+        # fmt: on
+
+    def jacobian_inverse(self):
+        r"""Compute the Jacobian of :math:`p^{-1}`.
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p^{-1}
+
+        """
+        # fmt: off
+        return np.array([[-np.cos(self[2]), -np.sin(self[2]), self[0] * np.sin(self[2]) - self[1] * np.cos(self[2])],
+                         [np.sin(self[2]), -np.cos(self[2]), self[0] * np.cos(self[2]) + self[1] * np.sin(self[2])],
+                         [0., 0., -1.]])
+        # fmt: on

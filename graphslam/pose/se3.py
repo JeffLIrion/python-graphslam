@@ -198,8 +198,8 @@ class PoseSE3(BasePose):
         if isinstance(other, PoseR3) or (isinstance(other, np.ndarray) and len(other) == 3):
             # pose (+) point
             # fmt: off
-            return PoseR3([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[4] * self[6] + self[3] * self[5]) * other[2]),
-                           self[1] + other[1] + 2. * ((self[5] * self[6] + self[3] * self[4]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
+            return PoseR3([self[0] + other[0] + 2. * (-(self[4]**2 + self[5]**2) * other[0] + (self[3] * self[4] - self[5] * self[6]) * other[1] + (self[3] * self[5] + self[4] * self[6]) * other[2]),
+                           self[1] + other[1] + 2. * ((self[3] * self[4] + self[5] * self[6]) * other[0] - (self[3]**2 + self[5]**2) * other[1] + (self[4] * self[5] - self[3] * self[6]) * other[2]),
                            self[2] + other[2] + 2. * ((self[3] * self[5] - self[4] * self[6]) * other[0] + (self[3] * self[6] + self[4] * self[5]) * other[1] - (self[3]**2 + self[4]**2) * other[2])])
             # fmt: on
 
@@ -447,5 +447,67 @@ class PoseSE3(BasePose):
                          [0., 0., 0., self[5], self[6], -self[3]],
                          [0., 0., 0., -self[4], self[3], self[6]],
                          [0., 0., 0., -self[3], -self[4], -self[5]]],
+                        dtype=np.float64)
+        # fmt: on
+
+    def jacobian_self_oplus_point_wrt_self(self, point):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`, where `:math:p_2` is a point.
+
+        Parameters
+        ----------
+        point : PoseR3
+            The point that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        """
+        # fmt: off
+        return np.array([[1., 0., 0., 2. * self[4] * point[1] + 2. * self[5] * point[2], -4. * self[4] * point[0] + 2. * self[3] * point[1] + 2. * self[6] * point[2], -4. * self[5] * point[0] - 2. * self[6] * point[1] + 2. * self[3] * point[2], -2. * self[5] * point[1] + 2. * self[4] * point[2]],
+                         [0., 1., 0., 2. * self[4] * point[0] - 4. * self[3] * point[1] - 2. * self[6] * point[2], 2. * self[3] * point[0] + 2. * self[5] * point[2], 2. * self[6] * point[0] - 4. * self[5] * point[1] + 2. * self[4] * point[2], 2. * self[5] * point[0] - 2. * self[3] * point[2]],
+                         [0., 0., 1., 2. * self[5] * point[0] + 2. * self[6] * point[1] - 4. * self[3] * point[2], -2. * self[6] * point[0] + 2. * self[5] * point[1] - 4. * self[4] * point[2], 2. * self[3] * point[0] + 2. * self[4] * point[1], -2. * self[4] * point[0] + 2. * self[3] * point[1]]],
+                        dtype=np.float64)
+        # fmt: on
+
+    def jacobian_self_oplus_point_wrt_point(self, point):
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`, where `:math:p_2` is a point.
+
+        Parameters
+        ----------
+        point : PoseR3
+            The point that is being added to ``self``
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        """
+        # fmt: off
+        return np.array([[1. - 2. * (self[4]**2 + self[5]**2), 2. * (self[3] * self[4] - self[5] * self[6]), 2. * (self[3] * self[5] + self[4] * self[6])],
+                         [2. * (self[3] * self[4] + self[5] * self[6]), 1. - 2. * (self[3]**2 + self[5]**2), 2. * (self[4] * self[5] - self[3] * self[6])],
+                         [2. * (self[3] * self[5] - self[4] * self[6]), 2. * (self[3] * self[6] + self[4] * self[5]), 1. - 2. * (self[3]**2 + self[4]**2)]],
+                        dtype=np.float64)
+        # fmt: on
+
+    def jacobian_inverse(self):
+        r"""Compute the Jacobian of :math:`p^{-1}`.
+
+        Returns
+        -------
+        np.ndarray
+            The Jacobian of :math:`p^{-1}
+
+        """
+        # fmt: off
+        return np.array([[-1. + 2. * (self[4]**2 + self[5]**2), -2. * (self[3] * self[4] + self[5] * self[6]), -2. * (self[3] * self[5] - self[4] * self[6]), -2. * (self[4] * self[1] + self[5] * self[2]), 2. * (2. * self[4] * self[0] - self[3] * self[1] + self[6] * self[2]), 2. * (2. * self[5] * self[0] - self[6] * self[1] - self[3] * self[2]), 2. * (-self[5] * self[1] + self[4] * self[2])],
+                         [-2. * (self[3] * self[4] - self[5] * self[6]), -1. + 2. * (self[3]**2 + self[5]**2), -2. * (self[4] * self[5] + self[3] * self[6]), 2. * (-self[4] * self[0] + 2. * self[3] * self[1] - self[6] * self[2]), -2. * (self[3] * self[0] + self[5] * self[2]), 2. * (self[6] * self[0] + 2. * self[5] * self[1] - self[4] * self[2]), 2. * (self[5] * self[0] - self[3] * self[2])],
+                         [-2. * (self[3] * self[5] + self[4] * self[6]), -2. * (self[4] * self[5] - self[3] * self[6]), -1. + 2. * (self[3]**2 + self[4]**2), 2. * (-self[5] * self[0] + self[6] * self[1] + 2. * self[3] * self[2]), -2. * (self[6] * self[0] + self[5] * self[1] - 2. * self[4] * self[2]), -2. * (self[3] * self[0] + self[4] * self[1]), 2. * (-self[4] * self[0] + self[3] * self[1])],
+                         [0., 0., 0., -1., 0., 0., 0.],
+                         [0., 0., 0., 0., -1., 0., 0.],
+                         [0., 0., 0., 0., 0., -1., 0.],
+                         [0., 0., 0., 0., 0., 0., 1.]],
                         dtype=np.float64)
         # fmt: on
