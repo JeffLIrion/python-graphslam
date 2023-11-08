@@ -84,9 +84,9 @@ class BaseEdge(ABC):
         -------
         float
             The :math:`\chi^2` error for the edge
-        dict
+        list[tuple[int, np.ndarray]]
             The edge's contribution(s) to the gradient
-        dict
+        list[tuple[tuple[int, int], np.ndarray]]
             The edge's contribution(s) to the Hessian
 
         """
@@ -99,8 +99,8 @@ class BaseEdge(ABC):
         # fmt: off
         return (
             chi2,
-            {v.gradient_index: np.dot(np.dot(np.transpose(err), self.information), jacobian) for v, jacobian in zip(self.vertices, jacobians)},
-            {(self.vertices[i].gradient_index, self.vertices[j].gradient_index): np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j]) for i in range(len(jacobians)) for j in range(i, len(jacobians))},
+            [(v.gradient_index, np.dot(np.dot(np.transpose(err), self.information), jacobian)) for v, jacobian in zip(self.vertices, jacobians)],
+            [((self.vertices[i].gradient_index, self.vertices[j].gradient_index), np.dot(np.dot(np.transpose(jacobians[i]), self.information), jacobians[j])) for i in range(len(jacobians)) for j in range(i, len(jacobians))],
         )
         # fmt: on
 

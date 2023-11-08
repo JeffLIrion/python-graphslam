@@ -147,10 +147,10 @@ class _Chi2GradientHessian:
         """
         chi2_grad_hess.chi2 += incoming[0]
 
-        for idx, contrib in incoming[1].items():
+        for idx, contrib in incoming[1]:
             chi2_grad_hess.gradient[idx] += contrib
 
-        for (idx1, idx2), contrib in incoming[2].items():
+        for (idx1, idx2), contrib in incoming[2]:
             if idx1 <= idx2:
                 chi2_grad_hess.hessian[idx1, idx2] += contrib
             else:
