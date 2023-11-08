@@ -55,7 +55,9 @@ class TestGraphR2(unittest.TestCase):
         p0 = self.g._vertices[0].pose.to_array()  # pylint: disable=protected-access
         result = self.g.optimize()
         self.assertLess(self.g.calc_chi2(), chi2_orig)
+        self.assertTrue(result.converged)
         self.assertNotEqual(result.initial_chi2, result.iteration_results[0].chi2)
+        self.assertEqual(result.final_chi2, result.iteration_results[-2].chi2)
 
         # Make sure the first pose was held fixed
         # fmt: off
@@ -72,7 +74,9 @@ class TestGraphR2(unittest.TestCase):
 
         result = self.g.optimize(fix_first_pose=False)
         self.assertLess(self.g.calc_chi2(), chi2_orig)
+        self.assertTrue(result.converged)
         self.assertNotEqual(result.initial_chi2, result.iteration_results[0].chi2)
+        self.assertEqual(result.final_chi2, result.iteration_results[-2].chi2)
         print(result)
 
         # Make sure the poses were held fixed

@@ -444,7 +444,7 @@ class Graph(object):
                 ret.iteration_results[-2].chi2 = self._chi2
                 ret.iteration_results[-2].rel_diff = -rel_diff
 
-                if self._chi2 < chi2_prev and rel_diff < tol:
+                if self._chi2 <= chi2_prev and rel_diff < tol:
                     # Record information about this iteration and the optimization as a whole
                     ret.converged = True
                     ret.num_iterations = i
@@ -488,7 +488,7 @@ class Graph(object):
         ret.iteration_results[-1].rel_diff = -rel_diff
 
         # Record information about the optimization as a whole
-        ret.converged = self._chi2 < chi2_prev and rel_diff < tol
+        ret.converged = self._chi2 <= chi2_prev and rel_diff < tol
         ret.num_iterations = max_iter
         ret.final_chi2 = self._chi2
         ret.duration_s = time.time() - start_time
