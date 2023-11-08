@@ -78,12 +78,12 @@ class TestBaseEdge(unittest.TestCase):
 
         self.assertEqual(chi2, 2.0)
 
-        self.assertAlmostEqual(np.linalg.norm(gradient[v1.gradient_index] + np.ones(2)), 0.0)
-        self.assertAlmostEqual(np.linalg.norm(gradient[v2.gradient_index] - np.ones(2)), 0.0)
+        self.assertAlmostEqual(np.linalg.norm(gradient[0][1] + np.ones(2)), 0.0)
+        self.assertAlmostEqual(np.linalg.norm(gradient[1][1] - np.ones(2)), 0.0)
 
-        self.assertAlmostEqual(np.linalg.norm(hessian[(v1.gradient_index, v1.gradient_index)] - np.eye(2)), 0.0)
-        self.assertAlmostEqual(np.linalg.norm(hessian[(v1.gradient_index, v2.gradient_index)] + np.eye(2)), 0.0)
-        self.assertAlmostEqual(np.linalg.norm(hessian[(v2.gradient_index, v2.gradient_index)] - np.eye(2)), 0.0)
+        self.assertAlmostEqual(np.linalg.norm(hessian[0][1] - np.eye(2)), 0.0)
+        self.assertAlmostEqual(np.linalg.norm(hessian[1][1] + np.eye(2)), 0.0)
+        self.assertAlmostEqual(np.linalg.norm(hessian[2][1] - np.eye(2)), 0.0)
 
     def test_equals(self):
         """Test that the ``equals`` method works as expected."""
