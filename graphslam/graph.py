@@ -77,6 +77,7 @@ We apply this update to the poses and repeat until convergence.
 
 from collections import defaultdict
 from functools import reduce
+import time
 import warnings
 
 import numpy as np
@@ -92,6 +93,121 @@ except ImportError:  # pragma: no cover
 
 warnings.simplefilter("ignore", SparseEfficiencyWarning)
 warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
+
+
+# pylint: disable=too-few-public-methods
+class OptimizationResult:
+    r"""A class for storing information about a graph optimization; see `Graph.optimize`.
+
+    Attributes
+    ----------
+    converged : bool
+        Whether the optimization converged
+    duration_s : float, None
+        The total time for the optimization (in seconds)
+    final_chi2 : float, None
+        The final :math:`\chi^2` error
+    initial_chi2 : float, None
+        The initial :math:`\chi^2` error
+    iteration_results : list[IterationResult]
+        Information about each iteration
+    num_iterations : int, None
+        The number of iterations that were performed
+
+    """
+
+    # pylint: disable=too-few-public-methods
+    class IterationResult:
+        r"""A class for storing information about a single graph optimization iteration; see `Graph.optimize`.
+
+        Attributes
+        ----------
+        calc_chi2_gradient_hessian_duration_s : float, None
+            The time to compute :math:`\chi^2`, the gradient, and the Hessian (in seconds); see `Graph._calc_chi2_gradient_hessian`
+        chi2 : float, None
+            The :math:`\chi^2` of the graph after performing this iteration's update
+        duration_s : float, None
+            The total time for this iteration (in seconds)
+        rel_diff : float, None
+            The relative difference in the :math:`\chi^2` as a result of this iteration
+        solve_duration_s : float, None
+            The time to solve :math:`H \Delta \mathbf{x}^k = -\mathbf{b}` (in seconds)
+        update_duration_s : float, None
+            The time to update the poses (in seconds)
+
+        """
+
+        def __init__(self):
+            self.calc_chi2_gradient_hessian_duration_s = None
+            self.chi2 = None
+            self.duration_s = None
+            self.rel_diff = None
+            self.solve_duration_s = None
+            self.update_duration_s = None
+
+        def is_complete_iteration(self):
+            r"""Whether this was a full iteration.
+
+            At iteration ``i``, we compute the :math:`\chi^2` error for iteration ``i-1`` (see `Graph.optimize`).  If
+            this meets the convergence criteria, then we do not solve the linear system and update the poses, and so
+            this is not a complete iteration.
+
+            Returns
+            -------
+            bool
+                Whether this was a complete iteration (i.e., we solve the linear system and updated the poses)
+
+            """
+            return self.solve_duration_s is not None
+
+    def __init__(self):
+        self.converged = False
+        self.duration_s = None
+        self.final_chi2 = None
+        self.initial_chi2 = None
+        self.iteration_results = []
+        self.num_iterations = None
+
+    def __str__(self):
+        """Format the optimization results in a string table.
+
+        Returns
+        -------
+        str
+            The formatted optimization results
+
+        """
+        initial_chi2_str = "{:.4f}".format(self.initial_chi2)
+        final_chi2_str = "{:.4f}".format(self.final_chi2)
+        chi2_str_len = max(len(initial_chi2_str), len(final_chi2_str))
+
+        lines = [
+            "Initial chi^2 = {}{}".format(" " * (chi2_str_len - len(initial_chi2_str)), initial_chi2_str),
+            "Final chi^2   = {}{}".format(" " * (chi2_str_len - len(final_chi2_str)), final_chi2_str),
+            "",
+            "Converged = {}".format(self.converged),
+            "Iterations = {}".format(self.num_iterations),
+            "Duration = {:.3f} s".format(self.duration_s),
+            "",
+            "Iteration                chi^2        rel. change        duration (s)        calc_chi2_gradient_hessian (s)        solve (s)        update (s)",
+            "---------                -----        -----------        ------------        ------------------------------        ---------        ----------",
+        ]
+
+        for i, iter_result in enumerate(self.iteration_results):
+            if iter_result.is_complete_iteration():
+                lines.append(
+                    "{:9d} {:20.4f} {:18.6f}        {:12.3f}        {:30.3f}        {:9.3f}        {:10.3f}".format(
+                        i + 1,
+                        iter_result.chi2,
+                        iter_result.rel_diff,
+                        iter_result.duration_s,
+                        iter_result.calc_chi2_gradient_hessian_duration_s,
+                        iter_result.solve_duration_s,
+                        iter_result.update_duration_s,
+                    )
+                )
+
+        return "\n".join(lines)
 
 
 # pylint: disable=too-few-public-methods
@@ -271,7 +387,7 @@ class Graph(object):
                 self._hessian[hessian_col_idx: hessian_col_idx + dim, hessian_row_idx: hessian_row_idx + dim] = np.transpose(contrib)
                 # fmt: on
 
-    def optimize(self, tol=1e-4, max_iter=20, fix_first_pose=True):
+    def optimize(self, tol=1e-4, max_iter=20, fix_first_pose=True, verbose=True):
         r"""Optimize the :math:`\chi^2` error for the ``Graph``.
 
         Parameters
@@ -282,8 +398,19 @@ class Graph(object):
             The maximum number of iterations
         fix_first_pose : bool
             If ``True``, we will fix the first pose
+        verbose : bool
+            Whether to print information about the optimization
+
+        Returns
+        -------
+        ret : OptimizationResult
+            Information about this optimization
 
         """
+        start_time = time.time()
+
+        ret = OptimizationResult()
+
         if fix_first_pose:
             self._vertices[0].fixed = True
 
@@ -294,37 +421,78 @@ class Graph(object):
         chi2_prev = -1.0
 
         # For displaying the optimization progress
-        print("\nIteration                chi^2        rel. change")
-        print("---------                -----        -----------")
+        if verbose:
+            print("\nIteration                chi^2        rel. change")
+            print("---------                -----        -----------")
 
         for i in range(max_iter):
+            ret.iteration_results.append(OptimizationResult.IterationResult())
+            iteration_start_time = time.time()
+
+            # Calculate chi^2, the gradient, and the Hessian
+            calc_chi2_gradient_hessian_start_time = time.time()
             self._calc_chi2_gradient_hessian()
+            ret.iteration_results[-1].calc_chi2_gradient_hessian_duration_s = time.time() - calc_chi2_gradient_hessian_start_time  # fmt: skip
 
             # Check for convergence (from the previous iteration); this avoids having to calculate chi^2 twice
             if i > 0:
                 rel_diff = (chi2_prev - self._chi2) / (chi2_prev + np.finfo(float).eps)
-                print("{:9d} {:20.4f} {:18.6f}".format(i, self._chi2, -rel_diff))
+                if verbose:
+                    print("{:9d} {:20.4f} {:18.6f}".format(i, self._chi2, -rel_diff))
+
+                # Update the previous iteration's chi^2 and relative difference
+                ret.iteration_results[-2].chi2 = self._chi2
+                ret.iteration_results[-2].rel_diff = -rel_diff
+
                 if self._chi2 < chi2_prev and rel_diff < tol:
-                    return
+                    # Record information about this iteration and the optimization as a whole
+                    ret.converged = True
+                    ret.num_iterations = i
+                    ret.final_chi2 = self._chi2
+                    ret.iteration_results[-1].duration_s = time.time() - iteration_start_time
+                    ret.duration_s = time.time() - start_time
+                    return ret
+
             else:
-                print("{:9d} {:20.4f}".format(i, self._chi2))
+                ret.initial_chi2 = self._chi2
+                if verbose:
+                    print("{:9d} {:20.4f}".format(i, self._chi2))
 
             # Update the previous iteration's chi^2 error
             chi2_prev = self._chi2
 
             # Solve for the updates
+            solve_start_time = time.time()
             dx = spsolve(self._hessian, -self._gradient)  # pylint: disable=invalid-unary-operand-type
+            ret.iteration_results[-1].solve_duration_s = time.time() - solve_start_time
 
             # Apply the updates
+            update_start_time = time.time()
             for v in self._vertices:
                 # fmt: off
                 v.pose += dx[v.gradient_index: v.gradient_index + v.pose.COMPACT_DIMENSIONALITY]
                 # fmt: on
+            ret.iteration_results[-1].update_duration_s = time.time() - update_start_time
+
+            # Record the duration for this iteration
+            ret.iteration_results[-1].duration_s = time.time() - iteration_start_time
 
         # If we reached the maximum number of iterations, print out the final iteration's results
         self.calc_chi2()
         rel_diff = (chi2_prev - self._chi2) / (chi2_prev + np.finfo(float).eps)
-        print("{:9d} {:20.4f} {:18.6f}".format(max_iter, self._chi2, -rel_diff))
+        if verbose:
+            print("{:9d} {:20.4f} {:18.6f}".format(max_iter, self._chi2, -rel_diff))
+
+        # Update the final iteration's chi^2 and relative difference
+        ret.iteration_results[-1].chi2 = self._chi2
+        ret.iteration_results[-1].rel_diff = -rel_diff
+
+        # Record information about the optimization as a whole
+        ret.converged = self._chi2 < chi2_prev and rel_diff < tol
+        ret.num_iterations = max_iter
+        ret.final_chi2 = self._chi2
+        ret.duration_s = time.time() - start_time
+        return ret
 
     def to_g2o(self, outfile):
         """Save the graph in .g2o format.

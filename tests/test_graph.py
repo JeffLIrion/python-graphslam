@@ -53,8 +53,9 @@ class TestGraphR2(unittest.TestCase):
         chi2_orig = self.g.calc_chi2()
 
         p0 = self.g._vertices[0].pose.to_array()  # pylint: disable=protected-access
-        self.g.optimize()
+        result = self.g.optimize()
         self.assertLess(self.g.calc_chi2(), chi2_orig)
+        self.assertNotEqual(result.initial_chi2, result.iteration_results[0].chi2)
 
         # Make sure the first pose was held fixed
         # fmt: off
@@ -69,8 +70,10 @@ class TestGraphR2(unittest.TestCase):
         for i in fixed_indices:
             self.g._vertices[i].fixed = True  # pylint: disable=protected-access
 
-        self.g.optimize(fix_first_pose=False)
+        result = self.g.optimize(fix_first_pose=False)
         self.assertLess(self.g.calc_chi2(), chi2_orig)
+        self.assertNotEqual(result.initial_chi2, result.iteration_results[0].chi2)
+        print(result)
 
         # Make sure the poses were held fixed
         poses_after = [self.g._vertices[i].pose.to_array() for i in fixed_indices]  # pylint: disable=protected-access
@@ -292,7 +295,10 @@ class TestGraphOptimization(unittest.TestCase):
         intel = os.path.join(os.path.dirname(__file__), "..", "data", "input_INTEL.g2o")
 
         g = load_g2o(intel)
-        g.optimize()
+        result = g.optimize()
+        print(result)
+        self.assertTrue(result.converged)
+        self.assertEqual(result.num_iterations + 1, len(result.iteration_results))
 
         optimized = os.path.join(os.path.dirname(__file__), "input_INTEL_optimized.g2o")
 
@@ -302,12 +308,24 @@ class TestGraphOptimization(unittest.TestCase):
         g2 = load_g2o(optimized)
         self.assertTrue(g.equals(g2))
 
+    def test_intel_two_iterations(self):
+        """Test for optimizing the Intel dataset."""
+        intel = os.path.join(os.path.dirname(__file__), "..", "data", "input_INTEL.g2o")
+
+        g = load_g2o(intel)
+        result = g.optimize(max_iter=2)
+        self.assertFalse(result.converged)
+        print(result)
+
     def test_parking_garage(self):
         """Test for optimizing the parking garage dataset."""
         parking_garage = os.path.join(os.path.dirname(__file__), "..", "data", "parking-garage.g2o")
 
         g = load_g2o(parking_garage)
-        g.optimize()
+        result = g.optimize()
+        print(result)
+        self.assertTrue(result.converged)
+        self.assertEqual(result.num_iterations + 1, len(result.iteration_results))
 
         optimized = os.path.join(os.path.dirname(__file__), "parking-garage_optimized.g2o")
 
