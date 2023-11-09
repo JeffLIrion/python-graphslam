@@ -321,6 +321,20 @@ class TestGraphOptimization(unittest.TestCase):
         self.assertFalse(result.converged)
         print(result)
 
+    def test_intel_max_iterations(self):
+        """Test for optimizing the Intel dataset."""
+        intel = os.path.join(os.path.dirname(__file__), "..", "data", "input_INTEL.g2o")
+
+        g = load_g2o(intel)
+        result = g.optimize()
+        self.assertTrue(result.converged)
+        self.assertEqual(result.num_iterations + 1, len(result.iteration_results))
+
+        g2 = load_g2o(intel)
+        result2 = g2.optimize(max_iter=result.num_iterations)
+        self.assertTrue(result2.converged)
+        self.assertEqual(result2.num_iterations, len(result2.iteration_results))
+
     def test_parking_garage(self):
         """Test for optimizing the parking garage dataset."""
         parking_garage = os.path.join(os.path.dirname(__file__), "..", "data", "parking-garage.g2o")
