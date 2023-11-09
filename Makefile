@@ -62,8 +62,7 @@ venv: venv/.bin venv/.requirements venv/.setup .git/hooks/pre-commit  ## Create 
 venv/.bin:  ## Create the virtual environment
 	if [ -z "$$ENV_GITHUB_ACTIONS" ]; then \
 	  echo -e "If this target fails, you can perform this action manually via:\n\n    make clean-venv && python3 -m venv venv && source venv/bin/activate && pip install -U setuptools && echo -e '*.*\\\n**/' > venv/.gitignore && touch venv/.bin\n\n"; \
-	  apt list -a --installed python3-venv 2>&1 | grep -q installed || sudo apt update && sudo apt install python3-venv; \
-	  python3 -m venv venv; \
+	  python3 -m venv venv || (sudo apt update && sudo apt install python3-venv && python3 -m venv venv); \
 	  $(PIP) install -U setuptools; \
 	else \
 	  mkdir -p venv/bin; \
