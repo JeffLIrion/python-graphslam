@@ -239,7 +239,7 @@ class BasePose(np.ndarray):
            # The dimensionality of `other`
            n_other = len(other.to_array())
 
-           # The compact dimensionality of `self + other`
+           # The dimensionality of `self + other`
            n_oplus = len((self + other).to_array())
 
         Then the shape of the Jacobian will be ``n_oplus x n_other``.
@@ -351,7 +351,7 @@ class BasePose(np.ndarray):
            # The dimensionality of `other`
            n_other = len(other.to_array())
 
-           # The compact dimensionality of `self - other`
+           # The dimensionality of `self - other`
            n_ominus = len((self - other).to_array())
 
         Then the shape of the Jacobian will be ``n_ominus x n_other``.
