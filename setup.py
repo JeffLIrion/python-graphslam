@@ -16,6 +16,10 @@ with open("README.rst") as f:
             ".. image::                                                                                  ",
             ".. image:: https://raw.githubusercontent.com/JeffLIrion/python-graphslam/master/docs/source/",
         )
+        .replace(
+            "<tests/test_custom_edge.py>",
+            "<https://github.com/JeffLIrion/python-graphslam/blob/master/tests/test_edge_odometry.py>",
+        )
     )
 
 setup(
