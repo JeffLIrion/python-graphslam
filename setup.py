@@ -24,7 +24,7 @@ with open("README.rst") as f:
 
 setup(
     name="graphslam",
-    version="0.0.12",
+    version="0.0.13",
     description="Graph SLAM solver in Python",
     long_description=readme,
     keywords=["graphslam", "slam", "graph", "optimization", "mapping"],
