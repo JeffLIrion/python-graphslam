@@ -18,7 +18,7 @@ with open("README.rst") as f:
         )
         .replace(
             "<tests/test_custom_edge.py>",
-            "<https://github.com/JeffLIrion/python-graphslam/blob/master/tests/test_edge_odometry.py>",
+            "<https://github.com/JeffLIrion/python-graphslam/blob/master/tests/test_custom_edge.py>",
         )
     )
 
