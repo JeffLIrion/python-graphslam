@@ -176,6 +176,18 @@ class BasePose(np.ndarray):
     def jacobian_self_oplus_other_wrt_self(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
 
+        Let
+
+        .. code::
+
+           # The dimensionality of `self`
+           n_self = len(self.to_array())
+
+           # The dimensionality of `self + other`
+           n_oplus = len((self + other).to_array())
+
+        Then the shape of the Jacobian will be ``n_oplus x n_self``.
+
         Parameters
         ----------
         other : BasePose
@@ -191,6 +203,18 @@ class BasePose(np.ndarray):
 
     def jacobian_self_oplus_other_wrt_self_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+
+        Let
+
+        .. code::
+
+           # The dimensionality of `self`
+           n_self = len(self.to_array())
+
+           # The compact dimensionality of `self + other`
+           n_compact = (self + other).COMPACT_DIMENSIONALITY
+
+        Then the shape of the Jacobian will be ``n_compact x n_self``.
 
         Parameters
         ----------
@@ -208,6 +232,18 @@ class BasePose(np.ndarray):
     def jacobian_self_oplus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
 
+        Let
+
+        .. code::
+
+           # The dimensionality of `other`
+           n_other = len(other.to_array())
+
+           # The compact dimensionality of `self + other`
+           n_oplus = len((self + other).to_array())
+
+        Then the shape of the Jacobian will be ``n_oplus x n_other``.
+
         Parameters
         ----------
         other : BasePose
@@ -223,6 +259,18 @@ class BasePose(np.ndarray):
 
     def jacobian_self_oplus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+
+        Let
+
+        .. code::
+
+           # The dimensionality of `other`
+           n_other = len(other.to_array())
+
+           # The compact dimensionality of `self + other`
+           n_compact = (self + other).COMPACT_DIMENSIONALITY
+
+        Then the shape of the Jacobian will be ``n_compact x n_other``.
 
         Parameters
         ----------
@@ -240,6 +288,18 @@ class BasePose(np.ndarray):
     def jacobian_self_ominus_other_wrt_self(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
 
+        Let
+
+        .. code::
+
+           # The dimensionality of `self`
+           n_self = len(self.to_array())
+
+           # The dimensionality of `self - other`
+           n_ominus = len((self - other).to_array())
+
+        Then the shape of the Jacobian will be ``n_ominus x n_self``.
+
         Parameters
         ----------
         other : BasePose
@@ -255,6 +315,18 @@ class BasePose(np.ndarray):
 
     def jacobian_self_ominus_other_wrt_self_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+
+        Let
+
+        .. code::
+
+           # The dimensionality of `self`
+           n_self = len(self.to_array())
+
+           # The compact dimensionality of `self - other`
+           n_compact = (self - other).COMPACT_DIMENSIONALITY
+
+        Then the shape of the Jacobian will be ``n_compact x n_self``.
 
         Parameters
         ----------
@@ -272,6 +344,18 @@ class BasePose(np.ndarray):
     def jacobian_self_ominus_other_wrt_other(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
 
+        Let
+
+        .. code::
+
+           # The dimensionality of `other`
+           n_other = len(other.to_array())
+
+           # The compact dimensionality of `self - other`
+           n_ominus = len((self - other).to_array())
+
+        Then the shape of the Jacobian will be ``n_ominus x n_other``.
+
         Parameters
         ----------
         other : BasePose
@@ -287,6 +371,18 @@ class BasePose(np.ndarray):
 
     def jacobian_self_ominus_other_wrt_other_compact(self, other):
         r"""Compute the Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+
+        Let
+
+        .. code::
+
+           # The dimensionality of `other`
+           n_other = len(other.to_array())
+
+           # The compact dimensionality of `self - other`
+           n_compact = (self - other).COMPACT_DIMENSIONALITY
+
+        Then the shape of the Jacobian will be ``n_compact x n_other``.
 
         Parameters
         ----------
@@ -304,6 +400,20 @@ class BasePose(np.ndarray):
     def jacobian_boxplus(self):
         r"""Compute the Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`.
 
+        Let
+
+        .. code::
+
+           # The dimensionality of :math:`\Delta \mathbf{x}`, which should be the same as
+           # the compact dimensionality of `self`
+           n_dx = self.COMPACT_DIMENSIONALITY
+
+           # The dimensionality of :math:`p_1 \boxplus \Delta \mathbf{x}`, which should be
+           # the same as the dimensionality of `self`
+           n_boxplus = len(self.to_array())
+
+        Then the shape of the Jacobian will be ``n_boxplus x n_dx``.
+
         Returns
         -------
         np.ndarray
@@ -314,6 +424,18 @@ class BasePose(np.ndarray):
 
     def jacobian_self_oplus_point_wrt_self(self, point):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`, where `:math:p_2` is a point.
+
+        Let
+
+        .. code::
+
+           # The dimensionality of `self`
+           n_self = len(self.to_array())
+
+           # The dimensionality of `self + point`
+           n_oplus = len((self + point).to_array())
+
+        Then the shape of the Jacobian will be ``n_oplus x n_self``.
 
         Parameters
         ----------
@@ -331,6 +453,18 @@ class BasePose(np.ndarray):
     def jacobian_self_oplus_point_wrt_point(self, point):
         r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`, where `:math:p_2` is a point.
 
+        Let
+
+        .. code::
+
+           # The dimensionality of `point`
+           n_point = len(point.to_array())
+
+           # The dimensionality of `self + point`
+           n_oplus = len((self + point).to_array())
+
+        Then the shape of the Jacobian will be ``n_oplus x n_point``.
+
         Parameters
         ----------
         point : BasePose
@@ -347,10 +481,19 @@ class BasePose(np.ndarray):
     def jacobian_inverse(self):
         r"""Compute the Jacobian of :math:`p^{-1}`.
 
+        Let
+
+        .. code::
+
+           # The dimensionality of `self`
+           n_self = len(self.to_array())
+
+        Then the shape of the Jacobian will be ``n_self x n_self``.
+
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p^{-1}
+            The Jacobian of :math:`p^{-1}`
 
         """
         raise NotImplementedError
