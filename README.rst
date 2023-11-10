@@ -1,8 +1,8 @@
 graphslam
 =========
 
-.. image:: https://travis-ci.com/JeffLIrion/python-graphslam.svg?branch=master
-   :target: https://travis-ci.com/JeffLIrion/python-graphslam
+.. image:: https://github.com/JeffLIrion/python-graphslam/actions/workflows/python-package.yml/badge.svg?branch=master
+   :target: https://github.com/JeffLIrion/python-graphslam/actions/workflows/python-package.yml
 
 .. image:: https://coveralls.io/repos/github/JeffLIrion/python-graphslam/badge.svg?branch=master
    :target: https://coveralls.io/github/JeffLIrion/python-graphslam?branch=master
@@ -19,6 +19,7 @@ Features
 - Optimize :math:`\mathbb{R}^2`, :math:`\mathbb{R}^3`, :math:`SE(2)`, and :math:`SE(3)` datasets
 - Analytic Jacobians
 - Supports odometry edges
+- Supports custom edge types (see `tests/test_custom_edge.py <tests/test_custom_edge.py>`_ for an example)
 - Import and export .g2o files for :math:`SE(2)` and :math:`SE(3)` datasets
 
 

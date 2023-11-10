@@ -227,7 +227,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -247,7 +247,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -267,7 +267,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -287,7 +287,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -307,7 +307,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -327,7 +327,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1`.
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_1` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -347,7 +347,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -367,7 +367,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2`.
+            The Jacobian of :math:`p_1 \ominus p_2` w.r.t. :math:`p_2` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -382,7 +382,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}`
+            The Jacobian of :math:`p_1 \boxplus \Delta \mathbf{x}` w.r.t. :math:`\Delta \mathbf{x}` evaluated at :math:`\Delta \mathbf{x} = \mathbf{0}` (shape: ``3 x 3``)
 
         """
         # fmt: off
@@ -402,7 +402,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`.
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1` (shape: ``2 x 3``)
 
         """
         # fmt: off
@@ -421,7 +421,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`.
+            The Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2` (shape: ``2 x 2``)
 
         """
         # fmt: off
@@ -435,7 +435,7 @@ class PoseSE2(BasePose):
         Returns
         -------
         np.ndarray
-            The Jacobian of :math:`p^{-1}
+            The Jacobian of :math:`p^{-1}` (shape: ``3 x 3``)
 
         """
         # fmt: off

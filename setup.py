@@ -16,11 +16,15 @@ with open("README.rst") as f:
             ".. image::                                                                                  ",
             ".. image:: https://raw.githubusercontent.com/JeffLIrion/python-graphslam/master/docs/source/",
         )
+        .replace(
+            "<tests/test_custom_edge.py>",
+            "<https://github.com/JeffLIrion/python-graphslam/blob/master/tests/test_custom_edge.py>",
+        )
     )
 
 setup(
     name="graphslam",
-    version="0.0.11",
+    version="0.0.13",
     description="Graph SLAM solver in Python",
     long_description=readme,
     keywords=["graphslam", "slam", "graph", "optimization", "mapping"],
