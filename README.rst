@@ -1,8 +1,8 @@
 graphslam
 =========
 
-.. image:: https://travis-ci.com/JeffLIrion/python-graphslam.svg?branch=master
-   :target: https://travis-ci.com/JeffLIrion/python-graphslam
+.. image:: https://github.com/JeffLIrion/python-graphslam/actions/workflows/python-package.yml/badge.svg?branch=master
+   :target: https://github.com/JeffLIrion/python-graphslam/actions/workflows/python-package.yml
 
 .. image:: https://coveralls.io/repos/github/JeffLIrion/python-graphslam/badge.svg?branch=master
    :target: https://coveralls.io/github/JeffLIrion/python-graphslam?branch=master
