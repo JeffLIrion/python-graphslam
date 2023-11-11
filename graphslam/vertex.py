@@ -66,7 +66,7 @@ class Vertex:
             Whether the two vertices are equal
 
         """
-        return self.id == other.id and type(self.pose) is type(other.pose) and self.pose.equals(other.pose, tol)
+        return self.id == other.id and (type(self.pose) is type(other.pose)) and self.pose.equals(other.pose, tol)
 
     def to_g2o(self):
         """Export the vertex to the .g2o format.
