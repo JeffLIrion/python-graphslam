@@ -128,7 +128,7 @@ class BaseEdge(ABC):
         Parameters
         ----------
         err : np.ndarray
-            The current error for the edge (see :meth:`BaseEdge.calc_error`)
+            The current error for the edge (see :math:`BaseEdge.calc_error`)
         dim : int
             The dimensionality of the compact pose representation
         vertex_index : int
