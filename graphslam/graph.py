@@ -508,7 +508,9 @@ class Graph(object):
                 f.write(v.to_g2o())
 
             for e in self._edges:
-                f.write(e.to_g2o())
+                edge_str_or_none = e.to_g2o()
+                if edge_str_or_none:
+                    f.write(edge_str_or_none)
 
     def plot(self, vertex_color="r", vertex_marker="o", vertex_markersize=3, edge_color="b", title=None):
         """Plot the graph.

@@ -212,6 +212,9 @@ class BaseEdge(ABC):
             Whether the two edges are equal
 
         """
+        if not type(self) is type(other):
+            return False
+
         if len(self.vertex_ids) != len(other.vertex_ids):
             return False
 
