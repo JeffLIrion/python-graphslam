@@ -94,8 +94,11 @@ class TestBaseEdge(unittest.TestCase):
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
 
+        e_simple = SimpleEdge(0, 1, 0)
         e1 = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
         e2 = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
+
+        self.assertFalse(e_simple.equals(e1))
 
         self.assertTrue(e1.equals(e2))
 
