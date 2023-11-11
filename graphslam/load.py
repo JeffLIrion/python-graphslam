@@ -15,7 +15,6 @@ from .pose.r2 import PoseR2
 from .pose.r3 import PoseR3
 from .pose.se2 import PoseSE2
 from .pose.se3 import PoseSE3
-from .util import upper_triangular_matrix_to_full_matrix
 from .vertex import Vertex
 
 
@@ -68,16 +67,6 @@ def load_g2o(infile):
                 vertices.append(v)
                 continue
 
-            if line.startswith("EDGE_SE2 "):
-                numbers = line[len("EDGE_SE2 "):].split()  # fmt: skip
-                arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
-                vertex_ids = [int(numbers[0]), int(numbers[1])]
-                estimate = PoseSE2(arr[:2], arr[2])
-                information = upper_triangular_matrix_to_full_matrix(arr[3:], 3)
-                e = EdgeOdometry(vertex_ids, information, estimate)
-                edges.append(e)
-                continue
-
             # SE(3)
             if line.startswith("VERTEX_SE3:QUAT "):
                 numbers = line[len("VERTEX_SE3:QUAT "):].split()  # fmt: skip
@@ -87,15 +76,10 @@ def load_g2o(infile):
                 vertices.append(v)
                 continue
 
-            if line.startswith("EDGE_SE3:QUAT "):
-                numbers = line[len("EDGE_SE3:QUAT "):].split()  # fmt: skip
-                arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
-                vertex_ids = [int(numbers[0]), int(numbers[1])]
-                estimate = PoseSE3(arr[:3], arr[3:7])
-                estimate.normalize()
-                information = upper_triangular_matrix_to_full_matrix(arr[7:], 6)
-                e = EdgeOdometry(vertex_ids, information, estimate)
-                edges.append(e)
+            # Odometry Edge
+            edge_or_none = EdgeOdometry.from_g2o(line)
+            if edge_or_none:
+                edges.append(edge_or_none)
                 continue
 
             if line.strip():
