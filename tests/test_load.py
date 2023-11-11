@@ -32,6 +32,13 @@ class TestLoad(unittest.TestCase):
         """Clear ``FAKE_FILE``."""
         FAKE_FILE.clear()
 
+    def test_load_g2o(self):
+        """Test the ``load_g2o()`` function."""
+        infile = os.path.join(os.path.dirname(__file__), "test_r2.g2o")
+        g = load_g2o(infile)
+        g2 = load_g2o_r2(infile)
+        self.assertTrue(g.equals(g2))
+
     def test_load_g2o_r2(self):
         """Test the ``load_g2o_r2()`` function."""
         infile = os.path.join(os.path.dirname(__file__), "test_r2.g2o")
@@ -107,7 +114,7 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = load_g2o("test.g2o")
+            g2 = Graph.load_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
             self.assertFalse(g.equals(g2))
 
     def test_load_custom_edge_with_to_g2o_without_from_g2o(self):
@@ -123,7 +130,7 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = load_g2o("test.g2o", [EdgeWithToG2OWithoutFromG2O])
+            g2 = Graph.load_g2o("test.g2o", [EdgeWithToG2OWithoutFromG2O])
             self.assertFalse(g.equals(g2))
 
     def test_load_custom_edge_without_to_g2o_with_from_g2o(self):
@@ -139,7 +146,7 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = load_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
+            g2 = Graph.load_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
             self.assertFalse(g.equals(g2))
 
     def test_load_custom_edge_with_to_g2o_with_from_g2o(self):
@@ -155,5 +162,5 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = load_g2o("test.g2o", [EdgeWithToG2OWithFromG2O])
+            g2 = Graph.load_g2o("test.g2o", [EdgeWithToG2OWithFromG2O])
             self.assertTrue(g.equals(g2))

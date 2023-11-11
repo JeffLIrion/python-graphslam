@@ -13,15 +13,13 @@ from .graph import Graph
 _LOGGER = logging.getLogger(__name__)
 
 
-def load_g2o(infile, custom_edge_types=None):
+def load_g2o(infile):
     r"""Load a graph from a .g2o file.
 
     Parameters
     ----------
     infile : str
         The path to the .g2o file
-    custom_edge_types : list[type], None
-        A list of custom edge types, which must be subclasses of ``BaseEdge``
 
     Returns
     -------
@@ -30,7 +28,7 @@ def load_g2o(infile, custom_edge_types=None):
 
     """
     _LOGGER.warning("load_g2o is deprecated; use Graph.load_g2o instead")
-    return Graph.load_g2o(infile, custom_edge_types)
+    return Graph.load_g2o(infile)
 
 
 def load_g2o_r2(infile):
