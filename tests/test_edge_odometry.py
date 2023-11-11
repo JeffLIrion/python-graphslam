@@ -142,7 +142,7 @@ class TestEdgeOdometry(unittest.TestCase):
         estimate_se3 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
         estimate_se3.normalize()
 
-        e_none = EdgeOdometry([1, 2], np.random.random_sample() * np.eye(3), np.random.random_sample(3), [v_none, v_none])
+        e_none = EdgeOdometry([1, 2], np.random.random_sample() * np.eye(3), np.random.random_sample(3), [v_none, v_none])  # fmt: skip
         e_se2 = EdgeOdometry([1, 2], np.random.random_sample() * np.eye(3), estimate_se2, [v_se2, v_se2])
         e_se3 = EdgeOdometry([1, 2], np.random.random_sample() * np.eye(6), estimate_se3, [v_se3, v_se3])
 
