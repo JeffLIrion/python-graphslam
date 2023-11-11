@@ -83,7 +83,7 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o_r2("test.g2o")
             self.assertAlmostEqual(chi2, g2.calc_chi2())
 
@@ -99,7 +99,7 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o_r3("test.g2o")
             self.assertAlmostEqual(chi2, g2.calc_chi2())
 
@@ -114,7 +114,7 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o_se2("test.g2o")
             self.assertAlmostEqual(chi2, g2.calc_chi2())
 
@@ -129,7 +129,7 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o_se3("test.g2o")
             self.assertAlmostEqual(chi2, g2.calc_chi2())
 
@@ -145,7 +145,7 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o("test.g2o")
             self.assertFalse(g.equals(g2))
 
@@ -161,7 +161,7 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o("test.g2o", [EdgeWithToG2OWithoutFromG2O])
             self.assertFalse(g.equals(g2))
 
@@ -177,7 +177,7 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
             self.assertFalse(g.equals(g2))
 
@@ -193,6 +193,6 @@ class TestLoad(unittest.TestCase):
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
-        with mock.patch("graphslam.load.open", open_fake_file):
+        with mock.patch("graphslam.graph.open", open_fake_file):
             g2 = load_g2o("test.g2o", [EdgeWithToG2OWithFromG2O])
             self.assertTrue(g.equals(g2))

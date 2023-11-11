@@ -163,8 +163,8 @@ class BaseEdge(ABC):
 
         Returns
         -------
-        str
-            The edge in .g2o format
+        str, None
+            The edge in .g2o format, or ``None`` if writing to g2o format is not supported
 
         """
 
@@ -182,6 +182,7 @@ class BaseEdge(ABC):
         -------
         BaseEdge, None
             The instantiated edge object, or ``None`` if ``line`` does not correspond to this edge type
+            (or if this edge type does not support loading from g2o)
 
         """
 

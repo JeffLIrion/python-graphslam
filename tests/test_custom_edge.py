@@ -25,7 +25,8 @@ class DistanceEdgeNumericalJacobians(BaseEdge):
     """
 
     def to_g2o(self):
-        """Not supported, so don't do anything."""
+        """Not supported, so return ``None``."""
+        return None
 
     @classmethod
     def from_g2o(cls, line):
