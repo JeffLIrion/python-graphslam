@@ -6,15 +6,19 @@
 
 
 import unittest
+from unittest import mock
 
 import numpy as np
 
-from graphslam.vertex import Vertex
 from graphslam.edge.base_edge import BaseEdge
+from graphslam.graph import Graph
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se2 import PoseSE2
 from graphslam.pose.se3 import PoseSE3
+from graphslam.vertex import Vertex
+
+from .patchers import FAKE_FILE, open_fake_file
 
 
 class DistanceEdgeNumericalJacobians(BaseEdge):
@@ -42,7 +46,7 @@ class DistanceEdgeNumericalJacobians(BaseEdge):
 
 
 class DistanceEdgeAnalyticalJacobians(DistanceEdgeNumericalJacobians):
-    """A custom edge type with analytical Jacobians."""
+    """A custom edge type with analytical Jacobians, as well as `to_g2o` and `from_g2o` methods."""
 
     def calc_jacobians(self):
         """Calculate the Jacobian of the edge's error with respect to each constrained pose.
@@ -84,6 +88,30 @@ class DistanceEdgeAnalyticalJacobians(DistanceEdgeNumericalJacobians):
         return [np.dot(np.dot(jacobian_norm(t), p0.jacobian_self_ominus_other_wrt_self(p1)[:dim_point, :]), p0.jacobian_boxplus()),
                 np.dot(np.dot(jacobian_norm(t), p0.jacobian_self_ominus_other_wrt_other(p1)[:dim_point, :]), p1.jacobian_boxplus())]
         # fmt: on
+
+    def to_g2o(self):
+        """Write to a .g2o format."""
+        # Only implemented for SE(3) poses
+        if isinstance(self.vertices[0].pose, PoseSE3):
+            return "EDGE_DISTANCE_SE3 {} {} {} {}\n".format(
+                self.vertex_ids[0], self.vertex_ids[1], self.estimate, self.information[0][0]
+            )
+
+        return None
+
+    @classmethod
+    def from_g2o(cls, line):
+        """Load from a line in a .g2o file."""
+        # Only implemented for SE(3) poses
+        if line.startswith("EDGE_DISTANCE_SE3 "):
+            numbers = line[len("EDGE_DISTANCE_SE3 "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
+            vertex_ids = [int(numbers[0]), int(numbers[1])]
+            estimate = arr[0]
+            information = np.array([[arr[1]]])
+            return DistanceEdgeAnalyticalJacobians(vertex_ids, information, estimate)
+
+        return None
 
 
 class TestDistanceEdgeR2(unittest.TestCase):
@@ -150,6 +178,31 @@ class TestDistanceEdgeSE3(TestDistanceEdgeR2):
         for idx in range(10):
             self.p0_list[idx].normalize()
             self.p1_list[idx].normalize()
+
+    def test_to_g2o_and_from_g2o(self):
+        """Test that the `to_g2o` and `from_g2o` allow reading and writing this edge in .g2o files."""
+        FAKE_FILE.clear()
+
+        # Build a graph with one edge
+        v0 = Vertex(0, self.p0_list[0])
+        v1 = Vertex(1, self.p1_list[0])
+        estimate = self.estimate_list[0]
+
+        vertices = [v0, v1]
+        edges = [DistanceEdgeAnalyticalJacobians([0, 1], np.eye(1), estimate, [v0, v1])]
+        g = Graph(edges, vertices)
+
+        with mock.patch("graphslam.graph.open", open_fake_file):
+            g.to_g2o("test.g2o")
+
+        with mock.patch("graphslam.graph.open", open_fake_file):
+            # Without providing the custom edge type, the graphs will not be the same
+            g2 = Graph.load_g2o("test.g2o")
+            self.assertFalse(g.equals(g2))
+
+            # When provided with the custom edge type, the graphs will be the same
+            g3 = Graph.load_g2o("test.g2o", [DistanceEdgeAnalyticalJacobians])
+            self.assertTrue(g.equals(g3))
 
 
 if __name__ == "__main__":
