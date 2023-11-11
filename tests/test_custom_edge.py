@@ -46,7 +46,15 @@ class DistanceEdgeNumericalJacobians(BaseEdge):
 
 
 class DistanceEdgeAnalyticalJacobians(DistanceEdgeNumericalJacobians):
-    """A custom edge type with analytical Jacobians, as well as `to_g2o` and `from_g2o` methods."""
+    """A custom edge type with analytical Jacobians, as well as `to_g2o` and `from_g2o` methods.
+
+    - Analytical Jacobians make the optimization faster and more accurate
+      - See the test `test_analytical_jacobians` below for an example of how to validate that the
+        analytical Jacobians are correct by comparing them to their numerical counterparts
+    - `to_g2o` and `from_g2o` methods allow reading and writing the edge in .g2o files
+      - See the test `TestDistanceEdgeSE3::test_to_g2o_and_from_g2o` below for an example
+
+    """
 
     def calc_jacobians(self):
         """Calculate the Jacobian of the edge's error with respect to each constrained pose.
