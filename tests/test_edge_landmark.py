@@ -67,6 +67,42 @@ class TestEdgeLandmark(unittest.TestCase):
             for n, a in zip(numerical_jacobians, analytical_jacobians):
                 self.assertAlmostEqual(np.linalg.norm(n - a), 0.0, places=5)
 
+    def test_to_g2o_and_from_g2o_2d(self):
+        """Test that the `to_g2o` and `from_g2o` methods work correctly for 2D landmark edges."""
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+            p2 = PoseR2(np.random.random_sample(2))
+            offset = PoseR2(np.random.random_sample(2))
+            estimate = PoseR2(np.random.random_sample(2))
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeLandmark([1, 2], np.eye(2), estimate, [v1, v2], offset)
+
+            self.assertTrue(e.equals(EdgeLandmark.from_g2o(e.to_g2o())))
+
+    def test_to_g2o_and_from_g2o_3d(self):
+        """Test that the `to_g2o` and `from_g2o` methods work correctly for 3D landmark edges."""
+        np.random.seed(0)
+
+        for _ in range(10):
+            p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+            p2 = PoseR3(np.random.random_sample(3))
+            offset = PoseR3(np.random.random_sample(3))
+            estimate = PoseR3(np.random.random_sample(3))
+
+            p1.normalize()
+
+            v1 = Vertex(1, p1)
+            v2 = Vertex(2, p2)
+
+            e = EdgeLandmark([1, 2], np.eye(3), estimate, [v1, v2], offset)
+
+            self.assertTrue(e.equals(EdgeLandmark.from_g2o(e.to_g2o())))
+
 
 if __name__ == "__main__":
     unittest.main()
