@@ -16,7 +16,12 @@ from graphslam.load import load_g2o, load_g2o_r2, load_g2o_r3, load_g2o_se2, loa
 from graphslam.pose.r2 import PoseR2
 from graphslam.vertex import Vertex
 
-from .edge_types import EdgeWithoutToG2OWithoutFromG2O, EdgeWithToG2OWithoutFromG2O, EdgeWithoutToG2OWithFromG2O, EdgeWithToG2OWithFromG2O
+from .edge_types import (
+    EdgeWithoutToG2OWithoutFromG2O,
+    EdgeWithToG2OWithoutFromG2O,
+    EdgeWithoutToG2OWithFromG2O,
+    EdgeWithToG2OWithFromG2O,
+)
 from .patchers import FAKE_FILE, open_fake_file
 
 
