@@ -647,5 +647,5 @@ class Graph(object):
             return False
 
         # fmt: off
-        return all(e1.equals(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.pose.equals(v2.pose, tol) for v1, v2 in zip(self._vertices, other._vertices))
+        return all(e1.equals(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.equals(v2, tol) for v1, v2 in zip(self._vertices, other._vertices))
         # fmt: on

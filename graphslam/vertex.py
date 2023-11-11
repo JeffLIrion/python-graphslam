@@ -50,6 +50,24 @@ class Vertex:
         self.fixed = fixed
         self.gradient_index = None
 
+    def equals(self, other, tol=1e-6):
+        """Check whether two vertices are equal.
+
+        Parameters
+        ----------
+        other : Vertex
+            The vertex to which we are comparing
+        tol : float
+            The tolerance
+
+        Returns
+        -------
+        bool
+            Whether the two vertices are equal
+
+        """
+        return self.id == other.id and type(self.pose) is type(other.pose) and self.pose.equals(other.pose, tol)
+
     def to_g2o(self):
         """Export the vertex to the .g2o format.
 
