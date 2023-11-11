@@ -18,6 +18,7 @@ from ..pose.r2 import PoseR2
 from ..pose.se2 import PoseSE2
 from ..pose.r3 import PoseR3
 from ..pose.se3 import PoseSE3
+from ..util import upper_triangular_matrix_to_full_matrix
 
 
 class EdgeOdometry(BaseEdge):
@@ -96,6 +97,40 @@ class EdgeOdometry(BaseEdge):
         # fmt: on
 
         raise NotImplementedError
+
+    @classmethod
+    def from_g2o(cls, line):
+        """Load an edge from a line in a .g2o file.
+
+        Parameters
+        ----------
+        line : str
+            The line from the .g2o file
+
+        Returns
+        -------
+        EdgeOdometry, None
+            The instantiated edge object, or ``None`` if ``line`` does not correspond to an odometry edge
+
+        """
+        if line.startswith("EDGE_SE2 "):
+            numbers = line[len("EDGE_SE2 "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
+            vertex_ids = [int(numbers[0]), int(numbers[1])]
+            estimate = PoseSE2(arr[:2], arr[2])
+            information = upper_triangular_matrix_to_full_matrix(arr[3:], 3)
+            return EdgeOdometry(vertex_ids, information, estimate)
+
+        if line.startswith("EDGE_SE3:QUAT "):
+            numbers = line[len("EDGE_SE3:QUAT "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
+            vertex_ids = [int(numbers[0]), int(numbers[1])]
+            estimate = PoseSE3(arr[:3], arr[3:7])
+            estimate.normalize()
+            information = upper_triangular_matrix_to_full_matrix(arr[7:], 6)
+            return EdgeOdometry(vertex_ids, information, estimate)
+
+        return None
 
     def plot(self, color="b"):
         """Plot the edge.

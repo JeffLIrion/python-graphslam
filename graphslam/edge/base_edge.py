@@ -168,6 +168,23 @@ class BaseEdge(ABC):
 
         """
 
+    @classmethod
+    @abstractmethod
+    def from_g2o(cls, line):
+        """Load an edge from a line in a .g2o file.
+
+        Parameters
+        ----------
+        line : str
+            The line from the .g2o file
+
+        Returns
+        -------
+        BaseEdge, None
+            The instantiated edge object, or ``None`` if ``line`` does not correspond to this edge type
+
+        """
+
     @abstractmethod
     def plot(self, color=""):
         """Plot the edge.
