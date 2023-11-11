@@ -7,7 +7,13 @@
 
 import unittest
 
+import numpy as np
+
 from graphslam.pose.base_pose import BasePose
+from graphslam.pose.r2 import PoseR2
+from graphslam.pose.r3 import PoseR3
+from graphslam.pose.se2 import PoseSE2
+from graphslam.pose.se3 import PoseSE3
 
 
 class TestBasePose(unittest.TestCase):
@@ -179,6 +185,37 @@ class TestBasePose(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             _ = p1.jacobian_inverse()
+
+    def test_equals(self):
+        """Test that the ``equals`` method works correctly."""
+        np.random.seed(0)
+
+        for _ in range(10):
+            # R^2
+            p_r2_a = PoseR2(np.random.random_sample(2))
+            p_r2_b = PoseR2(np.random.random_sample(2))
+            self.assertTrue(p_r2_a.equals(p_r2_a.copy()))
+            self.assertFalse(p_r2_a.equals(p_r2_b))
+
+            # R^3
+            p_r3_a = PoseR3(np.random.random_sample(3))
+            p_r3_b = PoseR3(np.random.random_sample(3))
+            self.assertTrue(p_r3_a.equals(p_r3_a.copy()))
+            self.assertFalse(p_r3_a.equals(p_r3_b))
+
+            # SE(2)
+            p_se2_a = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+            p_se2_b = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+            self.assertTrue(p_se2_a.equals(p_se2_a.copy()))
+            self.assertFalse(p_se2_a.equals(p_se2_b))
+
+            # SE(3)
+            p_se3_a = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+            p_se3_b = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+            p_se3_a.normalize()
+            p_se3_b.normalize()
+            self.assertTrue(p_se3_a.equals(p_se3_a.copy()))
+            self.assertFalse(p_se3_a.equals(p_se3_b))
 
 
 if __name__ == "__main__":

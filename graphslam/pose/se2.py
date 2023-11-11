@@ -392,7 +392,7 @@ class PoseSE2(BasePose):
         # fmt: on
 
     def jacobian_self_oplus_point_wrt_self(self, point):
-        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`, where `:math:p_2` is a point.
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_1`, where :math:`p_2` is a point.
 
         Parameters
         ----------
@@ -411,7 +411,7 @@ class PoseSE2(BasePose):
         # fmt: on
 
     def jacobian_self_oplus_point_wrt_point(self, point):
-        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`, where `:math:p_2` is a point.
+        r"""Compute the Jacobian of :math:`p_1 \oplus p_2` w.r.t. :math:`p_2`, where :math:`p_2` is a point.
 
         Parameters
         ----------

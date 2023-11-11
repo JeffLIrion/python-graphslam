@@ -163,8 +163,26 @@ class BaseEdge(ABC):
 
         Returns
         -------
-        str
-            The edge in .g2o format
+        str, None
+            The edge in .g2o format, or ``None`` if writing to g2o format is not supported
+
+        """
+
+    @classmethod
+    @abstractmethod
+    def from_g2o(cls, line):
+        """Load an edge from a line in a .g2o file.
+
+        Parameters
+        ----------
+        line : str
+            The line from the .g2o file
+
+        Returns
+        -------
+        BaseEdge, None
+            The instantiated edge object, or ``None`` if ``line`` does not correspond to this edge type
+            (or if this edge type does not support loading from g2o)
 
         """
 
@@ -195,6 +213,9 @@ class BaseEdge(ABC):
             Whether the two edges are equal
 
         """
+        if not type(self) is type(other):
+            return False
+
         if len(self.vertex_ids) != len(other.vertex_ids):
             return False
 

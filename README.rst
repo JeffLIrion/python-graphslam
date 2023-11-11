@@ -39,9 +39,9 @@ SE(3) Dataset
 
 .. code-block:: python
 
-   >>> from graphslam.load import load_g2o
+   >>> from graphslam.graph import Graph
 
-   >>> g = load_g2o("data/parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = Graph.load_g2o("data/parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot(vertex_markersize=1)
 
@@ -79,9 +79,9 @@ SE(2) Dataset
 
 .. code-block:: python
 
-   >>> from graphslam.load import load_g2o
+   >>> from graphslam.graph import Graph
 
-   >>> g = load_g2o("data/input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = Graph.load_g2o("data/input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot()
 

@@ -77,6 +77,7 @@ We apply this update to the poses and repeat until convergence.
 
 from collections import defaultdict
 from functools import reduce
+import logging
 import time
 import warnings
 
@@ -90,6 +91,12 @@ try:
 except ImportError:  # pragma: no cover
     plt = None
 
+from .edge.base_edge import BaseEdge
+from .edge.edge_odometry import EdgeOdometry
+from .vertex import Vertex
+
+
+_LOGGER = logging.getLogger(__name__)
 
 warnings.simplefilter("ignore", SparseEfficiencyWarning)
 warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
@@ -508,7 +515,81 @@ class Graph(object):
                 f.write(v.to_g2o())
 
             for e in self._edges:
-                f.write(e.to_g2o())
+                edge_str_or_none = e.to_g2o()
+                if edge_str_or_none:
+                    f.write(edge_str_or_none)
+
+    @classmethod
+    def load_g2o(cls, infile, custom_edge_types=None):
+        r"""Load a graph from a .g2o file.
+
+        Parameters
+        ----------
+        infile : str
+            The path to the .g2o file
+        custom_edge_types : list[type], None
+            A list of custom edge types, which must be subclasses of ``BaseEdge``
+
+        Returns
+        -------
+        Graph
+            The loaded graph
+
+        """
+        edges = []
+        vertices = []
+
+        custom_edge_types = custom_edge_types or []
+        for edge_type in custom_edge_types:
+            assert issubclass(edge_type, BaseEdge)
+
+        def custom_edge_from_g2o(line, custom_edge_types):
+            """Load a custom edge from a .g2o line.
+
+            Parameters
+            ----------
+            line : str
+                A line from a .g2o file
+            custom_edge_types : list[type]
+                A list of custom edge types, which must be subclasses of ``BaseEdge``
+
+            Returns
+            -------
+            BaseEdge, None
+                The instantiated edge object, or ``None`` if the line does not correspond to any of the custom edge types
+
+            """
+            for custom_edge_type in custom_edge_types:
+                edge_or_none = custom_edge_type.from_g2o(line)
+                if edge_or_none:
+                    return edge_or_none
+
+            return None
+
+        with open(infile) as f:
+            for line in f.readlines():
+                if line.strip():
+                    # Vertex
+                    vertex_or_none = Vertex.from_g2o(line)
+                    if vertex_or_none:
+                        vertices.append(vertex_or_none)
+                        continue
+
+                    # Custom edge types
+                    custom_edge_or_none = custom_edge_from_g2o(line, custom_edge_types)
+                    if custom_edge_or_none:
+                        edges.append(custom_edge_or_none)
+                        continue
+
+                    # Odometry Edge
+                    edge_or_none = EdgeOdometry.from_g2o(line)
+                    if edge_or_none:
+                        edges.append(edge_or_none)
+                        continue
+
+                    _LOGGER.warning("Line not supported -- '%s'", line.rstrip())
+
+        return cls(edges, vertices)
 
     def plot(self, vertex_color="r", vertex_marker="o", vertex_markersize=3, edge_color="b", title=None):
         """Plot the graph.
@@ -566,5 +647,5 @@ class Graph(object):
             return False
 
         # fmt: off
-        return all(e1.equals(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.pose.equals(v2.pose, tol) for v1, v2 in zip(self._vertices, other._vertices))
+        return all(e1.equals(e2, tol) for e1, e2 in zip(self._edges, other._edges)) and all(v1.equals(v2, tol) for v1, v2 in zip(self._vertices, other._vertices))
         # fmt: on

@@ -4,6 +4,8 @@
 
 """
 
+import numpy as np
+
 try:
     import matplotlib.pyplot as plt
 except ImportError:  # pragma: no cover
@@ -48,6 +50,26 @@ class Vertex:
         self.fixed = fixed
         self.gradient_index = None
 
+    def equals(self, other, tol=1e-6):
+        """Check whether two vertices are equal.
+
+        Parameters
+        ----------
+        other : Vertex
+            The vertex to which we are comparing
+        tol : float
+            The tolerance
+
+        Returns
+        -------
+        bool
+            Whether the two vertices are equal
+
+        """
+        # fmt: off
+        return self.id == other.id and (type(self.pose) is type(other.pose)) and self.pose.equals(other.pose, tol)  # noqa
+        # fmt: on
+
     def to_g2o(self):
         """Export the vertex to the .g2o format.
 
@@ -79,6 +101,52 @@ class Vertex:
             return "VERTEX_TRACKXYZ {} {} {} {}\n".format(self.id, self.pose[0], self.pose[1], self.pose[2])
 
         raise NotImplementedError
+
+    @classmethod
+    def from_g2o(cls, line):
+        """Load a vertex from a line in a .g2o file.
+
+        Parameters
+        ----------
+        line : str
+            The line from the .g2o file
+
+        Returns
+        -------
+        Vertex, None
+            The instantiated vertex object, or ``None`` if ``line`` does not correspond to a vertex
+
+        """
+        # R^2
+        if line.startswith("VERTEX_XY "):
+            numbers = line[len("VERTEX_XY "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[1:]], dtype=np.float64)
+            p = PoseR2(arr)
+            return cls(int(numbers[0]), p)
+
+        # R^3
+        if line.startswith("VERTEX_TRACKXYZ "):
+            numbers = line[len("VERTEX_TRACKXYZ "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[1:]], dtype=np.float64)
+            p = PoseR3(arr)
+            return cls(int(numbers[0]), p)
+
+        # SE(2)
+        if line.startswith("VERTEX_SE2 "):
+            numbers = line[len("VERTEX_SE2 "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[1:]], dtype=np.float64)
+            p = PoseSE2(arr[:2], arr[2])
+            return cls(int(numbers[0]), p)
+
+        # SE(3)
+        if line.startswith("VERTEX_SE3:QUAT "):
+            numbers = line[len("VERTEX_SE3:QUAT "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[1:]], dtype=np.float64)
+            p = PoseSE3(arr[:3], arr[3:])
+            return cls(int(numbers[0]), p)
+
+        # This line does not correspond to a known pose type
+        return None
 
     def plot(self, color="r", marker="o", markersize=3):
         """Plot the vertex.
