@@ -129,6 +129,29 @@ class TestEdgeOdometry(unittest.TestCase):
             for n, a in zip(numerical_jacobians, analytical_jacobians):
                 self.assertAlmostEqual(np.linalg.norm(n - a), 0.0, places=5)
 
+    def test_to_g2o_and_from_g2o(self):
+        """Test that the ``to_g2o`` and ``from_g2o`` methods work correctly."""
+        np.random.seed(0)
+
+        v_none = Vertex(0, None)
+        v_se2 = Vertex(2, PoseSE2(np.random.random_sample(2), np.random.random_sample()))
+        v_se3 = Vertex(4, PoseSE3(np.random.random_sample(3), np.random.random_sample(4)))
+        v_se3.pose.normalize()
+
+        estimate_se2 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+        estimate_se3 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
+        estimate_se3.normalize()
+
+        e_none = EdgeOdometry([1, 2], np.random.random_sample() * np.eye(3), np.random.random_sample(3), [v_none, v_none])  # fmt: skip
+        e_se2 = EdgeOdometry([1, 2], np.random.random_sample() * np.eye(3), estimate_se2, [v_se2, v_se2])
+        e_se3 = EdgeOdometry([1, 2], np.random.random_sample() * np.eye(6), estimate_se3, [v_se3, v_se3])
+
+        with self.assertRaises(NotImplementedError):
+            e_none.to_g2o()
+
+        self.assertTrue(e_se2.equals(EdgeOdometry.from_g2o(e_se2.to_g2o())))
+        self.assertTrue(e_se3.equals(EdgeOdometry.from_g2o(e_se3.to_g2o())))
+
 
 if __name__ == "__main__":
     unittest.main()
