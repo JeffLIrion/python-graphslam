@@ -30,23 +30,29 @@ class EdgeLandmark(BaseEdge):
         The IDs of all vertices constrained by this edge
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
-    estimate : BasePose
-        The expected measurement :math:`\mathbf{z}_j`
+    estimate : BasePose, np.array
+        The expected measurement :math:`\mathbf{z}_j`; this should be the same type as ``self.vertices[1].pose``
+        or a numpy array that is the same length and behaves in the same way (e.g., an array of length 2 instead
+        of a `PoseSE2` object)
     vertices : list[graphslam.vertex.Vertex], None
         A list of the vertices constrained by the edge
-    offset : BasePose
+    offset : BasePose, None
         The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
 
     Attributes
     ----------
-    vertices : list[graphslam.vertex.Vertex]
-        A list of the vertices constrained by the edge
+    estimate : BasePose, np.array
+        The expected measurement :math:`\mathbf{z}_j`; this should be the same type as ``self.vertices[1].pose``
+        or a numpy array that is the same length and behaves in the same way (e.g., an array of length 2 instead
+        of a `PoseSE2` object)
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
-    estimate : BasePose
-        The expected measurement :math:`\mathbf{z}_j`
     offset : BasePose, None
-        The offset
+        The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
+    vertex_ids : list[int]
+        The IDs of all vertices constrained by this edge
+    vertices : list[graphslam.vertex.Vertex], None
+        A list of the vertices constrained by the edge
 
     """
 

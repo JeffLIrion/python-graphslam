@@ -37,12 +37,14 @@ class EdgeOdometry(BaseEdge):
 
     Attributes
     ----------
-    vertices : list[graphslam.vertex.Vertex]
-        A list of the vertices constrained by the edge
-    information : np.ndarray
-        The information matrix :math:`\Omega_j` associated with the edge
     estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`
+    information : np.ndarray
+        The information matrix :math:`\Omega_j` associated with the edge
+    vertex_ids : list[int]
+        The IDs of all vertices constrained by this edge
+    vertices : list[graphslam.vertex.Vertex], None
+        A list of the vertices constrained by the edge
 
     """
 
