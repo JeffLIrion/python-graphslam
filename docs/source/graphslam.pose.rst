@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    graphslam.pose.base_pose
    graphslam.pose.r2
