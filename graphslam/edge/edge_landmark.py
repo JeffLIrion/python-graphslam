@@ -154,7 +154,7 @@ class EdgeLandmark(BaseEdge):
             Whether the two edges are equal
 
         """
-        if not type(self.offset) is type(other.offset):
+        if not type(self.offset) is type(other.offset):  # noqa
             return False
 
         if not self.offset.equals(other.offset, tol):
