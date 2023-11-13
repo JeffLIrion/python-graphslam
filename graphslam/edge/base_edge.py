@@ -232,4 +232,4 @@ class BaseEdge(ABC):
 
         # fmt: off
         return not isinstance(other.estimate, BasePose) and np.linalg.norm(self.estimate - other.estimate) / max(np.linalg.norm(self.estimate), tol) < tol
-        # fmt: onn
+        # fmt: on
