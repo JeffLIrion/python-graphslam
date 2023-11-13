@@ -7,7 +7,18 @@ r"""A class for landmark edges.
 
 import numpy as np
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError:  # pragma: no cover
+    plt = None
+
 from .base_edge import BaseEdge
+
+from ..pose.r2 import PoseR2
+from ..pose.se2 import PoseSE2
+from ..pose.r3 import PoseR3
+from ..pose.se3 import PoseSE3
+from ..util import upper_triangular_matrix_to_full_matrix
 
 
 class EdgeLandmark(BaseEdge):
@@ -108,7 +119,18 @@ class EdgeLandmark(BaseEdge):
             The edge in .g2o format
 
         """
-        # Not yet implemented
+        # https://docs.ros.org/en/kinetic/api/rtabmap/html/OptimizerG2O_8cpp_source.html
+        # fmt: off
+        if isinstance(self.vertices[0].pose, PoseSE2):
+            return "EDGE_SE2_XY {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1]) + " ".join([str(x) for x in self.information[np.triu_indices(2, 0)]]) + "\n"
+
+        if isinstance(self.vertices[0].pose, PoseSE3):
+            # TODO: handle the offset
+            offset_parameter = 0
+            return "EDGE_SE3_TRACKXYZ {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], offset_parameter, self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
+        # fmt: on
+
+        raise NotImplementedError
 
     @classmethod
     def from_g2o(cls, line):
@@ -125,7 +147,24 @@ class EdgeLandmark(BaseEdge):
             The instantiated edge object, or ``None`` if ``line`` does not correspond to a landmark edge
 
         """
-        # Not yet implemented
+        if line.startswith("EDGE_SE2_XY "):
+            numbers = line[len("EDGE_SE2_XY "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
+            vertex_ids = [int(numbers[0]), int(numbers[1])]
+            estimate = PoseR2(arr[:2])
+            information = upper_triangular_matrix_to_full_matrix(arr[2:], 2)
+            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE2.identity())
+
+        if line.startswith("EDGE_SE3_TRACKXYZ "):
+            # TODO: handle the offset
+            numbers = line[len("EDGE_SE3_TRACKXYZ "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[3:]], dtype=np.float64)
+            vertex_ids = [int(numbers[0]), int(numbers[1])]
+            estimate = PoseR3(arr[:3])
+            information = upper_triangular_matrix_to_full_matrix(arr[3:], 3)
+            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE3.identity())
+
+        return None
 
     def plot(self, color="b"):
         """Plot the edge.
@@ -136,7 +175,19 @@ class EdgeLandmark(BaseEdge):
             The color that will be used to plot the edge
 
         """
-        # Not yet implemented
+        if plt is None:  # pragma: no cover
+            raise NotImplementedError
+
+        if isinstance(self.vertices[0].pose, (PoseR2, PoseSE2)):
+            xy = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xy[:, 0], xy[:, 1], color=color)
+
+        elif isinstance(self.vertices[0].pose, (PoseR3, PoseSE3)):
+            xyz = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xyz[:, 0], xyz[:, 1], xyz[:, 2], color=color)
+
+        else:
+            raise NotImplementedError
 
     def equals(self, other, tol=1e-6):
         """Check whether two edges are equal.
