@@ -137,7 +137,7 @@ class TestEdgeLandmark(unittest.TestCase):
         edge_or_none = EdgeLandmark.from_g2o("bologna")
         self.assertIsNone(edge_or_none)
 
-    def test_quals(self):
+    def test_equals(self):
         """Test that the `equals` method works correctly."""
         np.random.seed(0)
 
