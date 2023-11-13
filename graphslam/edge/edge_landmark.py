@@ -43,7 +43,7 @@ class EdgeLandmark(BaseEdge):
         The information matrix :math:`\Omega_j` associated with the edge
     estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`
-    offset : BasePose
+    offset : BasePose, None
         The offset
 
     """
@@ -117,6 +117,7 @@ class EdgeLandmark(BaseEdge):
             return "EDGE_SE2_XY {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1]) + " ".join([str(x) for x in self.information[np.triu_indices(2, 0)]]) + "\n"
 
         if isinstance(self.vertices[0].pose, PoseSE3):
+            # TODO: handle the offset
             offset_parameter = 0
             return "EDGE_SE3_TRACKXYZ {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], offset_parameter, self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
         # fmt: on
@@ -142,18 +143,18 @@ class EdgeLandmark(BaseEdge):
             numbers = line[len("EDGE_SE2_XY "):].split()  # fmt: skip
             arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
             vertex_ids = [int(numbers[0]), int(numbers[1])]
-            estimate = PoseSE2(arr[:2], 0.0)
+            estimate = PoseR2(arr[:2])
             information = upper_triangular_matrix_to_full_matrix(arr[2:], 2)
-            return EdgeLandmark(vertex_ids, information, estimate)
+            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE2.identity())
 
         if line.startswith("EDGE_SE3_TRACKXYZ "):
             # TODO: handle the offset
             numbers = line[len("EDGE_SE3_TRACKXYZ "):].split()  # fmt: skip
             arr = np.array([float(number) for number in numbers[3:]], dtype=np.float64)
             vertex_ids = [int(numbers[0]), int(numbers[1])]
-            estimate = PoseSE3(arr[:3], [0.0, 0.0, 0.0, 1.0])
+            estimate = PoseR3(arr[:3])
             information = upper_triangular_matrix_to_full_matrix(arr[3:], 3)
-            return EdgeLandmark(vertex_ids, information, estimate)
+            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE3.identity())
 
         return None
 
@@ -179,3 +180,27 @@ class EdgeLandmark(BaseEdge):
 
         else:
             raise NotImplementedError
+
+    def equals(self, other, tol=1e-6):
+        """Check whether two edges are equal.
+
+        Parameters
+        ----------
+        other : BaseEdge
+            The edge to which we are comparing
+        tol : float
+            The tolerance
+
+        Returns
+        -------
+        bool
+            Whether the two edges are equal
+
+        """
+        if not type(self.offset) is type(other.offset):
+            return False
+
+        if not self.offset.equals(other.offset, tol):
+            return False
+
+        return BaseEdge.equals(self, other, tol)

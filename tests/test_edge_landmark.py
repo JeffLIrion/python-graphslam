@@ -29,13 +29,15 @@ class TestEdgeLandmark(unittest.TestCase):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
             p2 = PoseR3(np.random.random_sample(3))
             offset = PoseSE3(np.random.random_sample(3), [0.0, 0.0, 0.0, 1.0])
+            information = np.eye(3)
+            estimate = np.zeros(3)
 
             p1.normalize()
 
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], np.eye(3), np.zeros(3), [v1, v2], offset)
+            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
@@ -53,11 +55,13 @@ class TestEdgeLandmark(unittest.TestCase):
             p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
             p2 = PoseR2(np.random.random_sample(2))
             offset = PoseSE2(np.random.random_sample(2), 0.0)
+            information = np.eye(2)
+            estimate = np.zeros(2)
 
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], np.eye(2), np.zeros(2), [v1, v2], offset)
+            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
@@ -74,15 +78,23 @@ class TestEdgeLandmark(unittest.TestCase):
         for _ in range(10):
             p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
             p2 = PoseR2(np.random.random_sample(2))
-            offset = PoseR2(np.random.random_sample(2))
-            estimate = PoseSE2(np.random.random_sample(2), 0.0)
+            offset = PoseSE2(np.random.random_sample(2), 0.0)
+            information = np.eye(2)
+            estimate = PoseR2(np.random.random_sample(2))
 
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], np.eye(2), estimate, [v1, v2], offset)
+            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
+            e2 = EdgeLandmark.from_g2o(e.to_g2o())
 
-            self.assertTrue(e.equals(EdgeLandmark.from_g2o(e.to_g2o())))
+            # Set the `offset`, since that's currently not written to / read from .g2o
+            self.assertFalse(e.equals(e2))
+            e2.offset = None
+            self.assertFalse(e.equals(e2))
+            e2.offset = offset
+
+            self.assertTrue(e.equals(e2))
 
     def test_to_g2o_and_from_g2o_3d(self):
         """Test that the `to_g2o` and `from_g2o` methods work correctly for 3D landmark edges."""
@@ -91,17 +103,66 @@ class TestEdgeLandmark(unittest.TestCase):
         for _ in range(10):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
             p2 = PoseR3(np.random.random_sample(3))
-            offset = PoseR3(np.random.random_sample(3))
-            estimate = PoseSE3(np.random.random_sample(3), [0.0, 0.0, 0.0, 1.0])
+            offset = PoseSE3(np.random.random_sample(3), [0.0, 0.0, 0.0, 1.0])
+            information = np.eye(3)
+            estimate = PoseR3(np.random.random_sample(3))
 
             p1.normalize()
 
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], np.eye(3), estimate, [v1, v2], offset)
+            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
+            e2 = EdgeLandmark.from_g2o(e.to_g2o())
 
-            self.assertTrue(e.equals(EdgeLandmark.from_g2o(e.to_g2o())))
+            # Set the `offset`, since that's currently not written to / read from .g2o
+            self.assertFalse(e.equals(e2))
+            e2.offset = None
+            self.assertFalse(e.equals(e2))
+            e2.offset = offset
+            self.assertTrue(e.equals(e2))
+
+    def test_to_g2o_and_from_g2o_edge_cases(self):
+        """Test edge cases for the `to_g2o` and `from_g2o` methods."""
+        offset = PoseSE3.identity()
+        information = np.eye(3)
+        estimate = PoseR3.identity()
+
+        v = Vertex(0, None)
+        e = EdgeLandmark([1, 2], information, estimate, [v, v], offset)
+
+        with self.assertRaises(NotImplementedError):
+            e.to_g2o()
+
+        edge_or_none = EdgeLandmark.from_g2o("bologna")
+        self.assertIsNone(edge_or_none)
+
+    def test_quals(self):
+        """Test that the `equals` method works correctly."""
+        np.random.seed(0)
+
+        p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
+        p2 = PoseR2(np.random.random_sample(2))
+        offset = PoseSE2.identity()
+        information = np.eye(2)
+        estimate = np.zeros(2)
+
+        v1 = Vertex(1, p1)
+        v2 = Vertex(2, p2)
+
+        e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
+        e2 = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset=None)
+
+        # Different offset pose types
+        self.assertFalse(e.equals(e2))
+
+        # Different offsets
+        e2.offset = PoseSE2([1.0, 2.0], 3.0)
+        self.assertFalse(e.equals(e2))
+
+        # Same offset = they are equal
+        e2.offset = e.offset
+        self.assertTrue(e.equals(e2))
 
 
 if __name__ == "__main__":
