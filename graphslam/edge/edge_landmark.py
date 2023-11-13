@@ -57,7 +57,21 @@ class EdgeLandmark(BaseEdge):
 
         .. math::
 
-           \mathbf{e}_j = \mathbf{z}_j - ((p_1 \oplus p_{\text{offset}})^{-1} \oplus p_2)
+           \mathbf{e}_j =((p_1 \oplus p_{\text{offset}})^{-1} \oplus p_2) - \mathbf{z}_j
+
+
+        :math:`SE(2)` landmark edges in g2o
+        -----------------------------------
+
+        - https://github.com/RainerKuemmerle/g2o/blob/c422dcc0a92941a0dfedd8531cb423138c5181bd/g2o/types/slam2d/edge_se2_pointxy.h#L44-L48
+
+
+        :math:`SE(3)` landmark edges in g2o
+        -----------------------------------
+
+        - https://github.com/RainerKuemmerle/g2o/blob/c422dcc0a92941a0dfedd8531cb423138c5181bd/g2o/types/slam3d/edge_se3_pointxyz.cpp#L81-L92
+           - https://github.com/RainerKuemmerle/g2o/blob/c422dcc0a92941a0dfedd8531cb423138c5181bd/g2o/types/slam3d/parameter_se3_offset.h#L76-L82
+           - https://github.com/RainerKuemmerle/g2o/blob/c422dcc0a92941a0dfedd8531cb423138c5181bd/g2o/types/slam3d/parameter_se3_offset.cpp#L70
 
 
         Returns
@@ -66,7 +80,7 @@ class EdgeLandmark(BaseEdge):
             The error for the edge
 
         """
-        return (self.estimate - ((self.vertices[0].pose + self.offset).inverse + self.vertices[1].pose)).to_compact()
+        return (((self.vertices[0].pose + self.offset).inverse + self.vertices[1].pose) - self.estimate).to_compact()
 
     def calc_jacobians(self):
         r"""Calculate the Jacobian of the edge's error with respect to each constrained pose.
@@ -84,8 +98,8 @@ class EdgeLandmark(BaseEdge):
         """
         pose_oplus_offset = self.vertices[0].pose + self.offset
         # fmt: off
-        return [-np.dot(np.dot(np.dot(pose_oplus_offset.inverse.jacobian_self_oplus_point_wrt_self(self.vertices[1].pose), pose_oplus_offset.jacobian_inverse()), self.vertices[0].pose.jacobian_self_oplus_other_wrt_self(self.offset)), self.vertices[0].pose.jacobian_boxplus()),
-                -np.dot(pose_oplus_offset.inverse.jacobian_self_oplus_point_wrt_point(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
+        return [np.dot(np.dot(np.dot(pose_oplus_offset.inverse.jacobian_self_oplus_point_wrt_self(self.vertices[1].pose), pose_oplus_offset.jacobian_inverse()), self.vertices[0].pose.jacobian_self_oplus_other_wrt_self(self.offset)), self.vertices[0].pose.jacobian_boxplus()),
+                np.dot(pose_oplus_offset.inverse.jacobian_self_oplus_point_wrt_point(self.vertices[1].pose), self.vertices[1].pose.jacobian_boxplus())]
         # fmt: on
 
     def to_g2o(self):
