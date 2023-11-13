@@ -28,7 +28,7 @@ class TestEdgeLandmark(unittest.TestCase):
         for a in range(10):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
             p2 = PoseR3(np.random.random_sample(3))
-            offset = PoseR3(np.random.random_sample(3))
+            offset = PoseSE3(np.random.random_sample(3), [0.0, 0.0, 0.0, 1.0])
 
             p1.normalize()
 
@@ -52,7 +52,7 @@ class TestEdgeLandmark(unittest.TestCase):
         for a in range(10):
             p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
             p2 = PoseR2(np.random.random_sample(2))
-            offset = PoseR2(np.random.random_sample(2))
+            offset = PoseSE2(np.random.random_sample(2), 0.0)
 
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
@@ -75,7 +75,7 @@ class TestEdgeLandmark(unittest.TestCase):
             p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
             p2 = PoseR2(np.random.random_sample(2))
             offset = PoseR2(np.random.random_sample(2))
-            estimate = PoseR2(np.random.random_sample(2))
+            estimate = PoseSE2(np.random.random_sample(2), 0.0)
 
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
@@ -92,7 +92,7 @@ class TestEdgeLandmark(unittest.TestCase):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
             p2 = PoseR3(np.random.random_sample(3))
             offset = PoseR3(np.random.random_sample(3))
-            estimate = PoseR3(np.random.random_sample(3))
+            estimate = PoseSE3(np.random.random_sample(3), [0.0, 0.0, 0.0, 1.0])
 
             p1.normalize()
 
