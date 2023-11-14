@@ -43,11 +43,11 @@ def add_landmark_edges(g, g_opt):
     offset_id = 0
     vertex_id = max(vertex.id for vertex in vertices) + 1
     for i in range(0, len(g_opt._vertices), 5):
-        t = PoseR3(np.random.random_sample(3)) if pose_type.COMPACT_DIMENSIONALITY == 6 else PoseR2(np.random.random_sample(2))
+        t = PoseR3(np.random.random_sample(3)) if pose_type.COMPACT_DIMENSIONALITY == 6 else PoseR2(np.random.random_sample(2))  # fmt: skip
         p = g_opt._vertices[i].pose + t
         estimate = ((g_opt._vertices[i].pose + offsets[offset_id]).inverse + p).position
         vertices.append(Vertex(vertex_id, p))
-        edges.append(EdgeLandmark([g_opt._vertices[i].id, vertex_id], np.eye(n), estimate, offset=offsets[offset_id], offset_id=offset_id))
+        edges.append(EdgeLandmark([g_opt._vertices[i].id, vertex_id], np.eye(n), estimate, offset=offsets[offset_id], offset_id=offset_id))  # fmt: skip
         offset_id = (offset_id + 1) % 5
         vertex_id += 1
 
