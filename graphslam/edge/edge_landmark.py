@@ -30,10 +30,8 @@ class EdgeLandmark(BaseEdge):
         The IDs of all vertices constrained by this edge
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
-    estimate : BasePose, np.array
+    estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`; this should be the same type as ``self.vertices[1].pose``
-        or a numpy array that is the same length and behaves in the same way (e.g., an array of length 2 instead
-        of a `PoseSE2` object)
     vertices : list[graphslam.vertex.Vertex], None
         A list of the vertices constrained by the edge
     offset : BasePose, None
@@ -168,7 +166,7 @@ class EdgeLandmark(BaseEdge):
             arr = np.array([float(number) for number in numbers[3:]], dtype=np.float64)
             vertex_ids = [int(numbers[0]), int(numbers[1])]
             offset_id = int(numbers[2])
-            offset = g2o_params_or_none[("EDGE_SE3_TRACKXYZ", offset_id)].value
+            offset = g2o_params_or_none[("PARAMS_SE3OFFSET", offset_id)].value
             estimate = PoseR3(arr[:3])
             information = upper_triangular_matrix_to_full_matrix(arr[3:], 3)
             return EdgeLandmark(vertex_ids, information, estimate, offset=offset, offset_id=offset_id)

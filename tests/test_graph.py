@@ -13,6 +13,7 @@ import numpy as np
 
 from graphslam.edge.edge_landmark import EdgeLandmark
 from graphslam.edge.edge_odometry import EdgeOdometry
+from graphslam.g2o_parameters import G2OParameterSE2Offset, G2OParameterSE3Offset
 from graphslam.graph import Graph
 from graphslam.load import load_g2o
 from graphslam.pose.r2 import PoseR2
@@ -20,6 +21,8 @@ from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se2 import PoseSE2
 from graphslam.pose.se3 import PoseSE3
 from graphslam.vertex import Vertex
+
+from .patchers import FAKE_FILE, open_fake_file
 
 
 # pylint: disable=protected-access
@@ -40,19 +43,21 @@ def add_landmark_edges(g, g_opt):
     vertices = g._vertices[:]
     edges = g._edges[:]
 
+    # Use the optimized graph to add new (landmark) vertices and landmark edges to the graph that contribute no error in the optimized graph
     offset_id = 0
     vertex_id = max(vertex.id for vertex in vertices) + 1
     for i in range(0, len(g_opt._vertices), 5):
         t = PoseR3(np.random.random_sample(3)) if pose_type.COMPACT_DIMENSIONALITY == 6 else PoseR2(np.random.random_sample(2))  # fmt: skip
         p = g_opt._vertices[i].pose + t
-        estimate = ((g_opt._vertices[i].pose + offsets[offset_id]).inverse + p).position
+        estimate = (g_opt._vertices[i].pose + offsets[offset_id]).inverse + p
         vertices.append(Vertex(vertex_id, p))
         edges.append(EdgeLandmark([g_opt._vertices[i].id, vertex_id], np.eye(n), estimate, offset=offsets[offset_id], offset_id=offset_id))  # fmt: skip
         offset_id = (offset_id + 1) % 5
         vertex_id += 1
 
     param_name = "PARAMS_SE2OFFSET" if n == 2 else "PARAMS_SE3OFFSET"
-    g2o_params = {(param_name, i): offset for i, offset in enumerate(offsets)}
+    param_type = G2OParameterSE2Offset if n == 2 else G2OParameterSE3Offset
+    g2o_params = {(param_name, i): param_type((param_name, i), offset) for i, offset in enumerate(offsets)}
 
     ret = Graph(edges, vertices)
     ret._g2o_params = g2o_params
@@ -405,6 +410,9 @@ class TestGraphOptimization(unittest.TestCase):
         self.assertTrue(result.converged)
         self.assertAlmostEqual(result.final_chi2, g_opt.calc_chi2())
 
+        with patch("graphslam.graph.plt.show"):
+            g_landmark.plot()
+
     def test_parking_garage_landmark_edges(self):
         """Test for optimizing the parking garage dataset with landmark edges."""
         intel = os.path.join(os.path.dirname(__file__), "..", "data", "parking-garage.g2o")
@@ -414,10 +422,22 @@ class TestGraphOptimization(unittest.TestCase):
         g_opt = Graph.load_g2o(optimized)
 
         g_landmark = add_landmark_edges(g, g_opt)
+
+        FAKE_FILE.clear()
+        with patch("graphslam.graph.open", open_fake_file):
+            g_landmark.to_g2o("test.g2o")
+
+        with patch("graphslam.graph.open", open_fake_file):
+            g_landmark2 = Graph.load_g2o("test.g2o")
+            self.assertTrue(g_landmark.equals(g_landmark2))
+
         result = g_landmark.optimize()
         print(result)
         self.assertTrue(result.converged)
         self.assertAlmostEqual(result.final_chi2, g_opt.calc_chi2())
+
+        with patch("graphslam.graph.plt.show"):
+            g_landmark.plot()
 
 
 if __name__ == "__main__":

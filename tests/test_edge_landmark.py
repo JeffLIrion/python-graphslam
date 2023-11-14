@@ -179,6 +179,13 @@ class TestEdgeLandmark(unittest.TestCase):
         e2.offset = e.offset
         self.assertTrue(e.equals(e2))
 
+    def test_plot_failure(self):
+        """Test what happens when trying to plot an unsupported pose type."""
+        with self.assertRaises(NotImplementedError):
+            v = Vertex(0, None)
+            e = EdgeLandmark([1, 2], np.eye(2), np.zeros(2), [v, v])
+            e.plot()
+
 
 if __name__ == "__main__":
     unittest.main()
