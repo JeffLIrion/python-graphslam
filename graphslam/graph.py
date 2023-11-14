@@ -93,6 +93,7 @@ except ImportError:  # pragma: no cover
 
 from .edge.base_edge import BaseEdge
 from .edge.edge_odometry import EdgeOdometry
+from .g2o_parameters import G2OParameterSE2Offset, G2OParameterSE3Offset
 from .vertex import Vertex
 
 
@@ -300,6 +301,8 @@ class Graph(object):
         A list of the edges (i.e., constraints) in the graph
     _fixed_gradient_indices : set[int]
         The set of gradient indices (i.e., `Vertex.gradient_index`) for vertices that are fixed
+    _g2o_params : dict, None
+        A dictionary where the values are `BaseG2OParameter` objects
     _gradient : numpy.ndarray, None
         The gradient :math:`\mathbf{b}` of the :math:`\chi^2` error, or ``None`` if it has not yet been computed
     _hessian : scipy.sparse.lil_matrix, None
@@ -323,6 +326,8 @@ class Graph(object):
         self._hessian = None
 
         self._len_gradient = None
+
+        self._g2o_params = None
 
         self._initialize()
 
@@ -511,6 +516,10 @@ class Graph(object):
 
         """
         with open(outfile, "w") as f:
+            if self._g2o_params:
+                for g2o_param in self._g2o_params.values():
+                    f.write(g2o_param.to_g2o())
+
             for v in self._vertices:
                 f.write(v.to_g2o())
 
@@ -538,10 +547,36 @@ class Graph(object):
         """
         edges = []
         vertices = []
+        g2o_params = {}
 
         custom_edge_types = custom_edge_types or []
         for edge_type in custom_edge_types:
             assert issubclass(edge_type, BaseEdge)
+
+        param_types = [G2OParameterSE2Offset, G2OParameterSE3Offset]
+
+        def param_from_g2o(line, param_types):
+            """Load a parameter from a .g2o line.
+
+            Parameters
+            ----------
+            line : str
+                A line from a .g2o file
+            param_types : list[type]
+                A list of parameter types, which must be subclasses of ``BaseG2OParameter``
+
+            Returns
+            -------
+            BaseG2OParameter, None
+                The instantiated parameter object, or ``None`` if the line does not correspond to any of the parameter types
+
+            """
+            for param_type in param_types:
+                param_or_none = param_type.from_g2o(line)
+                if param_or_none:
+                    return param_or_none
+
+            return None
 
         def custom_edge_from_g2o(line, custom_edge_types):
             """Load a custom edge from a .g2o line.
@@ -587,9 +622,17 @@ class Graph(object):
                         edges.append(edge_or_none)
                         continue
 
+                    # Parameters
+                    param_or_none = param_from_g2o(line, param_types)
+                    if param_or_none:
+                        g2o_params[param_or_none.key] = param_or_none
+                        continue
+
                     _LOGGER.warning("Line not supported -- '%s'", line.rstrip())
 
-        return cls(edges, vertices)
+        ret = cls(edges, vertices)
+        ret._g2o_params = g2o_params
+        return ret
 
     def plot(self, vertex_color="r", vertex_marker="o", vertex_markersize=3, edge_color="b", title=None):
         """Plot the graph.
