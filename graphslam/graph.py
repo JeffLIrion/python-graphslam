@@ -92,6 +92,7 @@ except ImportError:  # pragma: no cover
     plt = None
 
 from .edge.base_edge import BaseEdge
+from .edge.edge_landmark import EdgeLandmark
 from .edge.edge_odometry import EdgeOdometry
 from .g2o_parameters import G2OParameterSE2Offset, G2OParameterSE3Offset
 from .vertex import Vertex
@@ -620,6 +621,12 @@ class Graph(object):
 
                     # Odometry Edge
                     edge_or_none = EdgeOdometry.from_g2o(line, g2o_params)
+                    if edge_or_none:
+                        edges.append(edge_or_none)
+                        continue
+
+                    # Landmark Edge
+                    edge_or_none = EdgeLandmark.from_g2o(line, g2o_params)
                     if edge_or_none:
                         edges.append(edge_or_none)
                         continue
