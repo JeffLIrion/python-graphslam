@@ -19,7 +19,7 @@ class BaseEdgeForTests(BaseEdge):
         return None
 
     @classmethod
-    def from_g2o(cls, line, g2o_params_or_none=None):
+    def from_g2o(cls, line):
         """Not supported, so return ``None``."""
         return None
 
@@ -53,7 +53,7 @@ class EdgeWithoutToG2OWithFromG2O(EdgeWithoutToG2OWithoutFromG2O):
     """An edge class with a ``from_g2o`` method but not a ``to_g2o`` method."""
 
     @classmethod
-    def from_g2o(cls, line, g2o_params_or_none=None):
+    def from_g2o(cls, line):
         """Write to g2o format."""
         if line.startswith("TestEdge "):
             numbers = line[len("TestEdge "):].split()  # fmt: skip
