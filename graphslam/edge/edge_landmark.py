@@ -41,10 +41,8 @@ class EdgeLandmark(BaseEdge):
 
     Attributes
     ----------
-    estimate : BasePose, np.array
+    estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`; this should be the same type as ``self.vertices[1].pose``
-        or a numpy array that is the same length and behaves in the same way (e.g., an array of length 2 instead
-        of a `PoseSE2` object)
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
     offset : BasePose, None
