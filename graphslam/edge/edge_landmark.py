@@ -216,7 +216,7 @@ class EdgeLandmark(BaseEdge):
         if not type(self.offset) is type(other.offset):  # noqa
             return False
 
-        if not self.offset.equals(other.offset, tol):
+        if self.offset_id != other.offset_id or not self.offset.equals(other.offset, tol):
             return False
 
         return BaseEdge.equals(self, other, tol)
