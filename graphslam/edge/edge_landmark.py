@@ -38,6 +38,8 @@ class EdgeLandmark(BaseEdge):
         A list of the vertices constrained by the edge
     offset : BasePose, None
         The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
+    offset_id : int, None
+        The ID of the offset
 
     Attributes
     ----------
@@ -49,6 +51,8 @@ class EdgeLandmark(BaseEdge):
         The information matrix :math:`\Omega_j` associated with the edge
     offset : BasePose, None
         The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
+    offset_id : int, None
+        The ID of the offset
     vertex_ids : list[int]
         The IDs of all vertices constrained by this edge
     vertices : list[graphslam.vertex.Vertex], None
@@ -56,9 +60,10 @@ class EdgeLandmark(BaseEdge):
 
     """
 
-    def __init__(self, vertex_ids, information, estimate, vertices=None, offset=None):
+    def __init__(self, vertex_ids, information, estimate, vertices=None, offset=None, offset_id=None):
         super().__init__(vertex_ids, information, estimate, vertices)
         self.offset = offset
+        self.offset_id = offset_id
 
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.
