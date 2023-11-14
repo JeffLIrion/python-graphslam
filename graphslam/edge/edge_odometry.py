@@ -103,13 +103,16 @@ class EdgeOdometry(BaseEdge):
         raise NotImplementedError
 
     @classmethod
-    def from_g2o(cls, line):
+    def from_g2o(cls, line, g2o_params_or_none=None):
         """Load an edge from a line in a .g2o file.
 
         Parameters
         ----------
         line : str
             The line from the .g2o file
+        g2o_params_or_none : dict, None
+            A dictionary where the values are `graphslam.g2o_parameters.BaseG2OParameters` objects, or
+            ``None`` if there are no such parameters
 
         Returns
         -------
