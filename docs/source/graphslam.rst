@@ -16,6 +16,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   graphslam.g2o_parameters
    graphslam.graph
    graphslam.load
    graphslam.util
