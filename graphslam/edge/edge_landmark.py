@@ -130,9 +130,7 @@ class EdgeLandmark(BaseEdge):
             return "EDGE_SE2_XY {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1]) + " ".join([str(x) for x in self.information[np.triu_indices(2, 0)]]) + "\n"
 
         if isinstance(self.vertices[0].pose, PoseSE3):
-            # TODO: handle the offset
-            offset_parameter = 0
-            return "EDGE_SE3_TRACKXYZ {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], offset_parameter, self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
+            return "EDGE_SE3_TRACKXYZ {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.offset_id, self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
         # fmt: on
 
         raise NotImplementedError
@@ -161,16 +159,19 @@ class EdgeLandmark(BaseEdge):
             vertex_ids = [int(numbers[0]), int(numbers[1])]
             estimate = PoseR2(arr[:2])
             information = upper_triangular_matrix_to_full_matrix(arr[2:], 2)
-            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE2.identity())
+            # 2-D landmark edges in g2o don't support an offset, so just use the identity
+            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE2.identity(), offset_id=0)
 
         if line.startswith("EDGE_SE3_TRACKXYZ "):
-            # TODO: handle the offset
+            assert g2o_params_or_none is not None
             numbers = line[len("EDGE_SE3_TRACKXYZ "):].split()  # fmt: skip
             arr = np.array([float(number) for number in numbers[3:]], dtype=np.float64)
             vertex_ids = [int(numbers[0]), int(numbers[1])]
+            offset_id = int(numbers[2])
+            offset = g2o_params_or_none[("EDGE_SE3_TRACKXYZ", offset_id)].value
             estimate = PoseR3(arr[:3])
             information = upper_triangular_matrix_to_full_matrix(arr[3:], 3)
-            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE3.identity())
+            return EdgeLandmark(vertex_ids, information, estimate, offset=offset, offset_id=offset_id)
 
         return None
 

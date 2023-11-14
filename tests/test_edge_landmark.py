@@ -12,6 +12,7 @@ import numpy as np
 from graphslam.vertex import Vertex
 from graphslam.edge.base_edge import BaseEdge
 from graphslam.edge.edge_landmark import EdgeLandmark
+from graphslam.g2o_parameters import G2OParameterSE3Offset
 from graphslam.pose.r2 import PoseR2
 from graphslam.pose.r3 import PoseR3
 from graphslam.pose.se2 import PoseSE2
@@ -78,23 +79,29 @@ class TestEdgeLandmark(unittest.TestCase):
         for _ in range(10):
             p1 = PoseSE2(np.random.random_sample(2), np.random.random_sample())
             p2 = PoseR2(np.random.random_sample(2))
-            offset = PoseSE2(np.random.random_sample(2), 0.0)
             information = np.eye(2)
             estimate = PoseR2(np.random.random_sample(2))
+
+            # 2-D landmark edges in .g2o format don't support an offset, so use the default
+            offset = PoseSE2.identity()
+            offset_id = 0
 
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
+            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset, offset_id)
             e2 = EdgeLandmark.from_g2o(e.to_g2o())
 
             # Set the `offset`, since that's currently not written to / read from .g2o
-            self.assertFalse(e.equals(e2))
+            self.assertTrue(e.equals(e2))
             e2.offset = None
             self.assertFalse(e.equals(e2))
             e2.offset = offset
 
             self.assertTrue(e.equals(e2))
+
+            e2.offset_id += 1
+            self.assertFalse(e.equals(e2))
 
     def test_to_g2o_and_from_g2o_3d(self):
         """Test that the `to_g2o` and `from_g2o` methods work correctly for 3D landmark edges."""
@@ -104,6 +111,7 @@ class TestEdgeLandmark(unittest.TestCase):
             p1 = PoseSE3(np.random.random_sample(3), np.random.random_sample(4))
             p2 = PoseR3(np.random.random_sample(3))
             offset = PoseSE3(np.random.random_sample(3), [0.0, 0.0, 0.0, 1.0])
+            offset_id = 0
             information = np.eye(3)
             estimate = PoseR3(np.random.random_sample(3))
 
@@ -112,15 +120,22 @@ class TestEdgeLandmark(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
-            e2 = EdgeLandmark.from_g2o(e.to_g2o())
+            g2o_params_or_none = {
+                ("EDGE_SE3_TRACKXYZ", offset_id): G2OParameterSE3Offset(("EDGE_SE3_TRACKXYZ", offset_id), offset)
+            }
+
+            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset, offset_id)
+            e2 = EdgeLandmark.from_g2o(e.to_g2o(), g2o_params_or_none)
 
             # Set the `offset`, since that's currently not written to / read from .g2o
-            self.assertFalse(e.equals(e2))
+            self.assertTrue(e.equals(e2))
             e2.offset = None
             self.assertFalse(e.equals(e2))
             e2.offset = offset
             self.assertTrue(e.equals(e2))
+
+            e2.offset_id += 1
+            self.assertFalse(e.equals(e2))
 
     def test_to_g2o_and_from_g2o_edge_cases(self):
         """Test edge cases for the `to_g2o` and `from_g2o` methods."""
