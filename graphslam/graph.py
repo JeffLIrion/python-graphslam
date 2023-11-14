@@ -381,22 +381,22 @@ class Graph(object):
         # Fill in the Hessian matrix
         self._hessian = lil_matrix((self._len_gradient, self._len_gradient), dtype=np.float64)
         for (hessian_row_idx, hessian_col_idx), contrib in chi2_gradient_hessian.hessian.items():
-            dim = contrib.shape[0]
+            rows, cols = contrib.shape
             if hessian_row_idx in self._fixed_gradient_indices or hessian_col_idx in self._fixed_gradient_indices:
                 # For fixed vertices, the diagonal block is the identity matrix and the off-diagonal blocks are zero
                 if hessian_row_idx == hessian_col_idx:
                     # fmt: off
-                    self._hessian[hessian_row_idx: hessian_row_idx + dim, hessian_col_idx: hessian_col_idx + dim] = np.eye(dim)
+                    self._hessian[hessian_row_idx: hessian_row_idx + rows, hessian_col_idx: hessian_col_idx + cols] = np.eye(rows, cols)
                     # fmt: on
                 continue
 
             # fmt: off
-            self._hessian[hessian_row_idx: hessian_row_idx + dim, hessian_col_idx: hessian_col_idx + dim] = contrib
+            self._hessian[hessian_row_idx: hessian_row_idx + rows, hessian_col_idx: hessian_col_idx + cols] = contrib
             # fmt: on
 
             if hessian_row_idx != hessian_col_idx:
                 # fmt: off
-                self._hessian[hessian_col_idx: hessian_col_idx + dim, hessian_row_idx: hessian_row_idx + dim] = np.transpose(contrib)
+                self._hessian[hessian_col_idx: hessian_col_idx + cols, hessian_row_idx: hessian_row_idx + rows] = np.transpose(contrib)
                 # fmt: on
 
     def optimize(self, tol=1e-4, max_iter=20, fix_first_pose=True, verbose=True):
