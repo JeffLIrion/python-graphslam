@@ -33,7 +33,7 @@ class DistanceEdgeNumericalJacobians(BaseEdge):
         return None
 
     @classmethod
-    def from_g2o(cls, line):
+    def from_g2o(cls, line, g2o_params_or_none=None):
         """Not supported, so return ``None``."""
         return None
 
@@ -108,7 +108,7 @@ class DistanceEdgeAnalyticalJacobians(DistanceEdgeNumericalJacobians):
         return None
 
     @classmethod
-    def from_g2o(cls, line):
+    def from_g2o(cls, line, g2o_params_or_none=None):
         """Load from a line in a .g2o file."""
         # Only implemented for SE(3) poses
         if line.startswith("EDGE_DISTANCE_SE3 "):

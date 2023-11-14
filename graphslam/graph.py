@@ -578,7 +578,7 @@ class Graph(object):
 
             return None
 
-        def custom_edge_from_g2o(line, custom_edge_types):
+        def custom_edge_from_g2o(line, custom_edge_types, g2o_params):
             """Load a custom edge from a .g2o line.
 
             Parameters
@@ -587,6 +587,8 @@ class Graph(object):
                 A line from a .g2o file
             custom_edge_types : list[type]
                 A list of custom edge types, which must be subclasses of ``BaseEdge``
+            g2o_params : dict, None
+                A dictionary of g2o parameters that have already been loaded
 
             Returns
             -------
@@ -595,7 +597,7 @@ class Graph(object):
 
             """
             for custom_edge_type in custom_edge_types:
-                edge_or_none = custom_edge_type.from_g2o(line)
+                edge_or_none = custom_edge_type.from_g2o(line, g2o_params)
                 if edge_or_none:
                     return edge_or_none
 
@@ -611,13 +613,13 @@ class Graph(object):
                         continue
 
                     # Custom edge types
-                    custom_edge_or_none = custom_edge_from_g2o(line, custom_edge_types)
+                    custom_edge_or_none = custom_edge_from_g2o(line, custom_edge_types, g2o_params)
                     if custom_edge_or_none:
                         edges.append(custom_edge_or_none)
                         continue
 
                     # Odometry Edge
-                    edge_or_none = EdgeOdometry.from_g2o(line)
+                    edge_or_none = EdgeOdometry.from_g2o(line, g2o_params)
                     if edge_or_none:
                         edges.append(edge_or_none)
                         continue
