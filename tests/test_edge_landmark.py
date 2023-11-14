@@ -121,7 +121,7 @@ class TestEdgeLandmark(unittest.TestCase):
             v2 = Vertex(2, p2)
 
             g2o_params_or_none = {
-                ("EDGE_SE3_TRACKXYZ", offset_id): G2OParameterSE3Offset(("EDGE_SE3_TRACKXYZ", offset_id), offset)
+                ("PARAMS_SE3OFFSET", offset_id): G2OParameterSE3Offset(("PARAMS_SE3OFFSET", offset_id), offset)
             }
 
             e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset, offset_id)
