@@ -32,12 +32,12 @@ class EdgeLandmark(BaseEdge):
         The information matrix :math:`\Omega_j` associated with the edge
     estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`; this should be the same type as ``self.vertices[1].pose``
-    vertices : list[graphslam.vertex.Vertex], None
-        A list of the vertices constrained by the edge
     offset : BasePose, None
         The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
     offset_id : int, None
-        The ID of the offset
+        The ID of the offset; this is only used for writing to .g2o format
+    vertices : list[graphslam.vertex.Vertex], None
+        A list of the vertices constrained by the edge
 
     Attributes
     ----------
@@ -48,7 +48,7 @@ class EdgeLandmark(BaseEdge):
     offset : BasePose, None
         The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
     offset_id : int, None
-        The ID of the offset
+        The ID of the offset; this is only used for writing to .g2o format
     vertex_ids : list[int]
         The IDs of all vertices constrained by this edge
     vertices : list[graphslam.vertex.Vertex], None
@@ -56,7 +56,7 @@ class EdgeLandmark(BaseEdge):
 
     """
 
-    def __init__(self, vertex_ids, information, estimate, vertices=None, offset=None, offset_id=None):
+    def __init__(self, vertex_ids, information, estimate, offset, offset_id=None, vertices=None):
         super().__init__(vertex_ids, information, estimate, vertices)
         self.offset = offset
         self.offset_id = offset_id
@@ -213,7 +213,12 @@ class EdgeLandmark(BaseEdge):
         if not type(self.offset) is type(other.offset):  # noqa
             return False
 
-        if self.offset_id != other.offset_id or not self.offset.equals(other.offset, tol):
+        if not self.offset.equals(other.offset, tol):
+            return False
+
+        if ((self.offset_id is None) ^ (other.offset_id is None)) or (
+            self.offset_id is not None and self.offset_id != other.offset_id
+        ):
             return False
 
         return BaseEdge.equals(self, other, tol)

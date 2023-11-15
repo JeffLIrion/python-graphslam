@@ -38,7 +38,7 @@ class TestEdgeLandmark(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
+            e = EdgeLandmark([1, 2], information, estimate, offset, offset_id=0, vertices=[v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
@@ -62,7 +62,7 @@ class TestEdgeLandmark(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
+            e = EdgeLandmark([1, 2], information, estimate, offset, offset_id=0, vertices=[v1, v2])
 
             numerical_jacobians = BaseEdge.calc_jacobians(e)
 
@@ -89,11 +89,12 @@ class TestEdgeLandmark(unittest.TestCase):
             v1 = Vertex(1, p1)
             v2 = Vertex(2, p2)
 
-            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset, offset_id)
+            e = EdgeLandmark([1, 2], information, estimate, offset, offset_id, [v1, v2])
             e2 = EdgeLandmark.from_g2o(e.to_g2o())
 
-            # Set the `offset`, since that's currently not written to / read from .g2o
             self.assertTrue(e.equals(e2))
+
+            # Set the `offset` to something different (then restore it)
             e2.offset = None
             self.assertFalse(e.equals(e2))
             e2.offset = offset
@@ -124,11 +125,12 @@ class TestEdgeLandmark(unittest.TestCase):
                 ("PARAMS_SE3OFFSET", offset_id): G2OParameterSE3Offset(("PARAMS_SE3OFFSET", offset_id), offset)
             }
 
-            e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset, offset_id)
+            e = EdgeLandmark([1, 2], information, estimate, offset, offset_id, [v1, v2])
             e2 = EdgeLandmark.from_g2o(e.to_g2o(), g2o_params_or_none)
 
-            # Set the `offset`, since that's currently not written to / read from .g2o
             self.assertTrue(e.equals(e2))
+
+            # Set the `offset` to something different (then restore it)
             e2.offset = None
             self.assertFalse(e.equals(e2))
             e2.offset = offset
@@ -144,8 +146,9 @@ class TestEdgeLandmark(unittest.TestCase):
         estimate = PoseR3.identity()
 
         v = Vertex(0, None)
-        e = EdgeLandmark([1, 2], information, estimate, [v, v], offset)
+        e = EdgeLandmark([1, 2], information, estimate, offset, offset_id=0, vertices=[v, v])
 
+        # v.pose = None is not supported
         with self.assertRaises(NotImplementedError):
             e.to_g2o()
 
@@ -160,13 +163,13 @@ class TestEdgeLandmark(unittest.TestCase):
         p2 = PoseR2(np.random.random_sample(2))
         offset = PoseSE2.identity()
         information = np.eye(2)
-        estimate = np.zeros(2)
+        estimate = PoseR2([0.0, 0.0])
 
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
 
-        e = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset)
-        e2 = EdgeLandmark([1, 2], information, estimate, [v1, v2], offset=None)
+        e = EdgeLandmark([1, 2], information, estimate, offset, vertices=[v1, v2])
+        e2 = EdgeLandmark([1, 2], information, estimate, offset=None, vertices=[v1, v2])
 
         # Different offset pose types
         self.assertFalse(e.equals(e2))
@@ -179,11 +182,15 @@ class TestEdgeLandmark(unittest.TestCase):
         e2.offset = e.offset
         self.assertTrue(e.equals(e2))
 
+        # Different offset IDs
+        e.offset_id = 5
+        self.assertFalse(e.equals(e2))
+
     def test_plot_failure(self):
         """Test what happens when trying to plot an unsupported pose type."""
         with self.assertRaises(NotImplementedError):
             v = Vertex(0, None)
-            e = EdgeLandmark([1, 2], np.eye(2), np.zeros(2), [v, v])
+            e = EdgeLandmark([1, 2], np.eye(2), PoseR2([0.0, 0.0]), offset=PoseR2.identity(), vertices=[v, v])
             e.plot()
 
 
