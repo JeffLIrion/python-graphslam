@@ -6,6 +6,7 @@
 
 
 import os
+import random
 import unittest
 from unittest.mock import mock_open, patch
 
@@ -26,7 +27,7 @@ from .patchers import FAKE_FILE, open_fake_file
 
 
 # pylint: disable=protected-access
-def add_landmark_edges(g, g_opt):
+def add_landmark_edges(g, g_opt, num_offsets=5, step=5):
     """Create a new `Graph` by adding landmark edges to `g`."""
     np.random.seed(0)
 
@@ -34,11 +35,11 @@ def add_landmark_edges(g, g_opt):
     n = len(g._vertices[0].pose.position)
 
     if pose_type.COMPACT_DIMENSIONALITY == 6:
-        offsets = [PoseSE3(np.random.random_sample(3), np.random.random_sample(4)) for _ in range(5)]
-        for i in range(5):
+        offsets = [PoseSE3(np.random.random_sample(3), np.random.random_sample(4)) for _ in range(num_offsets)]
+        for i in range(num_offsets):
             offsets[i].normalize()
     else:
-        offsets = [PoseSE2(np.random.random_sample(2), np.random.random_sample()) for _ in range(5)]
+        offsets = [PoseSE2(np.random.random_sample(2), np.random.random_sample()) for _ in range(num_offsets)]
 
     vertices = g._vertices[:]
     edges = g._edges[:]
@@ -46,13 +47,13 @@ def add_landmark_edges(g, g_opt):
     # Use the optimized graph to add new (landmark) vertices and landmark edges to the graph that contribute no error in the optimized graph
     offset_id = 0
     vertex_id = max(vertex.id for vertex in vertices) + 1
-    for i in range(0, len(g_opt._vertices), 5):
+    for i in range(0, len(g_opt._vertices), step):
         t = PoseR3(np.random.random_sample(3)) if pose_type.COMPACT_DIMENSIONALITY == 6 else PoseR2(np.random.random_sample(2))  # fmt: skip
         p = g_opt._vertices[i].pose + t
         estimate = (g_opt._vertices[i].pose + offsets[offset_id]).inverse + p
         vertices.append(Vertex(vertex_id, p))
         edges.append(EdgeLandmark([g_opt._vertices[i].id, vertex_id], np.eye(n), estimate, offset=offsets[offset_id], offset_id=offset_id))  # fmt: skip
-        offset_id = (offset_id + 1) % 5
+        offset_id = (offset_id + 1) % num_offsets
         vertex_id += 1
 
     param_name = "PARAMS_SE2OFFSET" if n == 2 else "PARAMS_SE3OFFSET"
@@ -61,6 +62,47 @@ def add_landmark_edges(g, g_opt):
 
     ret = Graph(edges, vertices)
     ret._g2o_params = g2o_params
+    return ret
+
+
+# pylint: disable=protected-access
+def shuffle_graph(g, tol=1e-6, seed=0):
+    """Shuffle the edges, vertices, and vertex IDs for a graph."""
+    if seed is not None:
+        random.seed(seed)
+
+    vertices = g._vertices[:]
+    edges = g._edges[:]
+
+    original_chi2 = g.calc_chi2()
+
+    # Fill in the edges' `vertices` attribute
+    id_index_dict = {v.id: i for i, v in enumerate(vertices)}
+    for e in edges:
+        e.vertices = [vertices[id_index_dict[v_id]] for v_id in e.vertex_ids]
+
+    # Shuffle the vertex IDs
+    vertex_ids = [v.id for v in vertices]
+    random.shuffle(vertex_ids)
+
+    # Update the vertices' `id` attribute
+    for v, vertex_id in zip(vertices, vertex_ids):
+        v.id = vertex_id
+
+    # Update the edges' `vertex_ids` attribute
+    for e in edges:
+        e.vertex_ids = [v.id for v in e.vertices]
+
+    # Shuffle the vertices and edges
+    random.shuffle(vertices)
+    random.shuffle(edges)
+
+    ret = Graph(edges, vertices)
+    ret._g2o_params = g._g2o_params
+
+    # Make sure the chi^2 error is unchanged
+    assert abs(original_chi2 - ret.calc_chi2()) < tol
+
     return ret
 
 
@@ -404,8 +446,9 @@ class TestGraphOptimization(unittest.TestCase):
         g = Graph.load_g2o(intel)
         g_opt = Graph.load_g2o(optimized)
 
-        g_landmark = add_landmark_edges(g, g_opt)
-        result = g_landmark.optimize()
+        g._vertices[0].fixed = True
+        g_landmark = shuffle_graph(add_landmark_edges(g, g_opt))
+        result = g_landmark.optimize(fix_first_pose=False)
         print(result)
         self.assertTrue(result.converged)
         self.assertAlmostEqual(result.final_chi2, g_opt.calc_chi2())
@@ -421,7 +464,8 @@ class TestGraphOptimization(unittest.TestCase):
         g = Graph.load_g2o(intel)
         g_opt = Graph.load_g2o(optimized)
 
-        g_landmark = add_landmark_edges(g, g_opt)
+        g._vertices[0].fixed = True
+        g_landmark = shuffle_graph(add_landmark_edges(g, g_opt))
 
         FAKE_FILE.clear()
         with patch("graphslam.graph.open", open_fake_file):
@@ -431,7 +475,7 @@ class TestGraphOptimization(unittest.TestCase):
             g_landmark2 = Graph.load_g2o("test.g2o")
             self.assertTrue(g_landmark.equals(g_landmark2))
 
-        result = g_landmark.optimize()
+        result = g_landmark.optimize(fix_first_pose=False)
         print(result)
         self.assertTrue(result.converged)
         self.assertAlmostEqual(result.final_chi2, g_opt.calc_chi2())
