@@ -7,7 +7,18 @@ r"""A class for landmark edges.
 
 import numpy as np
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError:  # pragma: no cover
+    plt = None
+
 from .base_edge import BaseEdge
+
+from ..pose.r2 import PoseR2
+from ..pose.se2 import PoseSE2
+from ..pose.r3 import PoseR3
+from ..pose.se3 import PoseSE3
+from ..util import upper_triangular_matrix_to_full_matrix
 
 
 class EdgeLandmark(BaseEdge):
@@ -19,25 +30,25 @@ class EdgeLandmark(BaseEdge):
         The IDs of all vertices constrained by this edge
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
-    estimate : BasePose, np.array
+    estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`; this should be the same type as ``self.vertices[1].pose``
-        or a numpy array that is the same length and behaves in the same way (e.g., an array of length 2 instead
-        of a `PoseSE2` object)
-    vertices : list[graphslam.vertex.Vertex], None
-        A list of the vertices constrained by the edge
     offset : BasePose, None
         The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
+    offset_id : int, None
+        The ID of the offset; this is only used for writing to .g2o format
+    vertices : list[graphslam.vertex.Vertex], None
+        A list of the vertices constrained by the edge
 
     Attributes
     ----------
-    estimate : BasePose, np.array
+    estimate : BasePose
         The expected measurement :math:`\mathbf{z}_j`; this should be the same type as ``self.vertices[1].pose``
-        or a numpy array that is the same length and behaves in the same way (e.g., an array of length 2 instead
-        of a `PoseSE2` object)
     information : np.ndarray
         The information matrix :math:`\Omega_j` associated with the edge
     offset : BasePose, None
         The offset that is applied to the first pose; this should be the same type as ``self.vertices[0].pose``
+    offset_id : int, None
+        The ID of the offset; this is only used for writing to .g2o format
     vertex_ids : list[int]
         The IDs of all vertices constrained by this edge
     vertices : list[graphslam.vertex.Vertex], None
@@ -45,9 +56,10 @@ class EdgeLandmark(BaseEdge):
 
     """
 
-    def __init__(self, vertex_ids, information, estimate, vertices=None, offset=None):
+    def __init__(self, vertex_ids, information, estimate, offset, offset_id=None, vertices=None):
         super().__init__(vertex_ids, information, estimate, vertices)
         self.offset = offset
+        self.offset_id = offset_id
 
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.
@@ -108,7 +120,16 @@ class EdgeLandmark(BaseEdge):
             The edge in .g2o format
 
         """
-        # Not yet implemented
+        # https://docs.ros.org/en/kinetic/api/rtabmap/html/OptimizerG2O_8cpp_source.html
+        # fmt: off
+        if isinstance(self.vertices[0].pose, PoseSE2):
+            return "EDGE_SE2_XY {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.estimate[0], self.estimate[1]) + " ".join([str(x) for x in self.information[np.triu_indices(2, 0)]]) + "\n"
+
+        if isinstance(self.vertices[0].pose, PoseSE3):
+            return "EDGE_SE3_TRACKXYZ {} {} {} {} {} {} ".format(self.vertex_ids[0], self.vertex_ids[1], self.offset_id, self.estimate[0], self.estimate[1], self.estimate[2]) + " ".join([str(x) for x in self.information[np.triu_indices(3, 0)]]) + "\n"
+        # fmt: on
+
+        raise NotImplementedError
 
     @classmethod
     def from_g2o(cls, line, g2o_params_or_none=None):
@@ -128,7 +149,27 @@ class EdgeLandmark(BaseEdge):
             The instantiated edge object, or ``None`` if ``line`` does not correspond to a landmark edge
 
         """
-        # Not yet implemented
+        if line.startswith("EDGE_SE2_XY "):
+            numbers = line[len("EDGE_SE2_XY "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[2:]], dtype=np.float64)
+            vertex_ids = [int(numbers[0]), int(numbers[1])]
+            estimate = PoseR2(arr[:2])
+            information = upper_triangular_matrix_to_full_matrix(arr[2:], 2)
+            # 2-D landmark edges in g2o don't support an offset, so just use the identity
+            return EdgeLandmark(vertex_ids, information, estimate, offset=PoseSE2.identity(), offset_id=0)
+
+        if line.startswith("EDGE_SE3_TRACKXYZ "):
+            assert g2o_params_or_none is not None
+            numbers = line[len("EDGE_SE3_TRACKXYZ "):].split()  # fmt: skip
+            arr = np.array([float(number) for number in numbers[3:]], dtype=np.float64)
+            vertex_ids = [int(numbers[0]), int(numbers[1])]
+            offset_id = int(numbers[2])
+            offset = g2o_params_or_none[("PARAMS_SE3OFFSET", offset_id)].value
+            estimate = PoseR3(arr[:3])
+            information = upper_triangular_matrix_to_full_matrix(arr[3:], 3)
+            return EdgeLandmark(vertex_ids, information, estimate, offset=offset, offset_id=offset_id)
+
+        return None
 
     def plot(self, color="g"):
         """Plot the edge.
@@ -139,7 +180,19 @@ class EdgeLandmark(BaseEdge):
             The color that will be used to plot the edge
 
         """
-        # Not yet implemented
+        if plt is None:  # pragma: no cover
+            raise NotImplementedError
+
+        if isinstance(self.vertices[0].pose, (PoseR2, PoseSE2)):
+            xy = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xy[:, 0], xy[:, 1], color=color)
+
+        elif isinstance(self.vertices[0].pose, (PoseR3, PoseSE3)):
+            xyz = np.array([v.pose.position for v in self.vertices])
+            plt.plot(xyz[:, 0], xyz[:, 1], xyz[:, 2], color=color)
+
+        else:
+            raise NotImplementedError
 
     def equals(self, other, tol=1e-6):
         """Check whether two edges are equal.
@@ -161,6 +214,11 @@ class EdgeLandmark(BaseEdge):
             return False
 
         if not self.offset.equals(other.offset, tol):
+            return False
+
+        if ((self.offset_id is None) ^ (other.offset_id is None)) or (
+            self.offset_id is not None and self.offset_id != other.offset_id
+        ):
             return False
 
         return BaseEdge.equals(self, other, tol)

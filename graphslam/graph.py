@@ -92,6 +92,7 @@ except ImportError:  # pragma: no cover
     plt = None
 
 from .edge.base_edge import BaseEdge
+from .edge.edge_landmark import EdgeLandmark
 from .edge.edge_odometry import EdgeOdometry
 from .g2o_parameters import G2OParameterSE2Offset, G2OParameterSE3Offset
 from .vertex import Vertex
@@ -275,6 +276,7 @@ class _Chi2GradientHessian:
             chi2_grad_hess.gradient[idx] += contrib
 
         for (idx1, idx2), contrib in incoming[2]:
+            # The Hessian is symmetric, so only fill in the upper triangular portion
             if idx1 <= idx2:
                 chi2_grad_hess.hessian[idx1, idx2] += contrib
             else:
@@ -342,10 +344,8 @@ class Graph(object):
         # The length of the gradient vector (and the shape of the Hessian matrix)
         self._len_gradient = gradient_index
 
-        index_id_dict = {i: v.id for i, v in enumerate(self._vertices)}
-        id_index_dict = {v_id: v_index for v_index, v_id in index_id_dict.items()}
-
         # Fill in the `vertices` attributes for the edges
+        id_index_dict = {v.id: i for i, v in enumerate(self._vertices)}
         for e in self._edges:
             e.vertices = [self._vertices[id_index_dict[v_id]] for v_id in e.vertex_ids]
 
@@ -620,6 +620,12 @@ class Graph(object):
 
                     # Odometry Edge
                     edge_or_none = EdgeOdometry.from_g2o(line, g2o_params)
+                    if edge_or_none:
+                        edges.append(edge_or_none)
+                        continue
+
+                    # Landmark Edge
+                    edge_or_none = EdgeLandmark.from_g2o(line, g2o_params)
                     if edge_or_none:
                         edges.append(edge_or_none)
                         continue
