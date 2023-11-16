@@ -152,6 +152,24 @@ class TestEdgeOdometry(unittest.TestCase):
         self.assertTrue(e_se2.equals(EdgeOdometry.from_g2o(e_se2.to_g2o())))
         self.assertTrue(e_se3.equals(EdgeOdometry.from_g2o(e_se3.to_g2o())))
 
+    def test_is_valid(self):
+        """Test the ``is_valid`` method."""
+        p = PoseSE2([0, 0], 0)
+        v1 = Vertex(1, p)
+        v2 = Vertex(2, p)
+        estimate = PoseSE2.identity()
+        e = EdgeOdometry([1, 2], np.eye(3), estimate, [v1, v2])
+
+        self.assertTrue(e.is_valid())
+
+        # Wrong type
+        e.estimate = np.zeros(3)
+        self.assertFalse(e.is_valid())
+
+        # `vertices` can't be `None`
+        e.vertices = None
+        self.assertFalse(e.is_valid())
+
 
 if __name__ == "__main__":
     unittest.main()

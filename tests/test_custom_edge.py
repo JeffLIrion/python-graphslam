@@ -32,6 +32,16 @@ class DistanceEdgeNumericalJacobians(BaseEdge):
         """Calculate the error, which is the distance between the two poses minus the estimate."""
         return np.array([np.linalg.norm((self.vertices[0].pose - self.vertices[1].pose).position) - self.estimate])
 
+    def is_valid(self):
+        """Check that the edge is valid."""
+        # Basic checks from the `BaseEdge` class
+        if not self._is_valid():
+            return False
+
+        # This should be implemented for custom edge types, but
+        # I'll skip it here since this is just for testing purposes
+        return True
+
 
 class DistanceEdgeAnalyticalJacobians(DistanceEdgeNumericalJacobians):
     """A custom edge type with analytical Jacobians, as well as `to_g2o` and `from_g2o` methods.

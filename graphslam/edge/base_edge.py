@@ -48,6 +48,41 @@ class BaseEdge(ABC):
         self.estimate = estimate
         self.vertices = vertices
 
+    def _is_valid(self):
+        """Check some basic criteria for the edge.
+
+        Returns
+        -------
+        bool
+            Whether the basic validity criteria for the edge are satisfied
+
+        """
+        # Make sure the `self.vertices` list has been populated and that it is the same length as `self.vertex_ids`
+        if self.vertices is None or len(self.vertices) != len(self.vertex_ids):
+            return False
+
+        for vertex, v_id in zip(self.vertices, self.vertex_ids):
+            if vertex.id != v_id:
+                return False
+
+        return True
+
+    @abstractmethod
+    def is_valid(self):
+        """Check that the edge is valid.
+
+        - The `vertices` attribute is populated, it is the correct length, and the poses are the correct types
+        - The `estimate` attribute is the correct type and length
+        - The `information` attribute is the right shape
+        - Any other checks
+
+        Returns
+        -------
+        bool
+            Whether the edge is valid
+
+        """
+
     @abstractmethod
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.

@@ -193,6 +193,24 @@ class TestEdgeLandmark(unittest.TestCase):
             e = EdgeLandmark([1, 2], np.eye(2), PoseR2([0.0, 0.0]), offset=PoseR2.identity(), vertices=[v, v])
             e.plot()
 
+    def test_is_valid(self):
+        """Test the ``is_valid`` method."""
+        v1 = Vertex(1, PoseSE2.identity())
+        v2 = Vertex(2, PoseR2.identity())
+        offset = PoseSE2.identity()
+        estimate = PoseR2.identity()
+        e = EdgeLandmark([1, 2], np.eye(2), estimate, offset, offset_id=0, vertices=[v1, v2])
+
+        self.assertTrue(e.is_valid())
+
+        # Wrong type
+        e.offset = np.zeros(3)
+        self.assertFalse(e.is_valid())
+
+        # `vertices` can't be `None`
+        e.vertices = None
+        self.assertFalse(e.is_valid())
+
 
 if __name__ == "__main__":
     unittest.main()

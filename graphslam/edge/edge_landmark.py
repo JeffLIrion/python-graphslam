@@ -61,6 +61,30 @@ class EdgeLandmark(BaseEdge):
         self.offset = offset
         self.offset_id = offset_id
 
+    def is_valid(self):
+        """Check that the edge is valid.
+
+        Returns
+        -------
+        bool
+            Whether the edge is valid
+
+        """
+        # This will make sure that `len(self.vertices) == len(self.vertex_ids)`
+        if not self._is_valid() or len(self.vertices) != 2:
+            return False
+
+        pose_type = type(self.vertices[0].pose)
+        point_type = type(self.vertices[1].pose)
+
+        # The offset must be the same type as the first pose, and the estimate must be the same type as the second pose
+        if not isinstance(self.offset, pose_type) or not isinstance(self.estimate, point_type):
+            return False
+
+        # The information matrix must be the correct size
+        n = point_type.COMPACT_DIMENSIONALITY
+        return self.information.shape == (n, n)
+
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.
 

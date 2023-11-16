@@ -48,6 +48,28 @@ class EdgeOdometry(BaseEdge):
 
     """
 
+    def is_valid(self):
+        """Check that the edge is valid.
+
+        Returns
+        -------
+        bool
+            Whether the edge is valid
+
+        """
+        # This will make sure that `len(self.vertices) == len(self.vertex_ids)`
+        if not self._is_valid() or len(self.vertices) != 2:
+            return False
+
+        # The poses and the estimate must all be the same type
+        pose_type = type(self.vertices[0].pose)
+        if not isinstance(self.vertices[1].pose, pose_type) or not isinstance(self.estimate, pose_type):
+            return False
+
+        # The information matrix must be the correct size
+        n = pose_type.COMPACT_DIMENSIONALITY
+        return self.information.shape == (n, n)
+
     def calc_error(self):
         r"""Calculate the error for the edge: :math:`\mathbf{e}_j \in \mathbb{R}^\bullet`.
 
