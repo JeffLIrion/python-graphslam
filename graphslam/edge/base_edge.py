@@ -157,9 +157,10 @@ class BaseEdge(ABC):
 
         return jacobian
 
-    @abstractmethod
     def to_g2o(self):
         """Export the edge to the .g2o format.
+
+        .. note:: Overload this method to support writing to .g2o files.
 
         Returns
         -------
@@ -167,11 +168,13 @@ class BaseEdge(ABC):
             The edge in .g2o format, or ``None`` if writing to g2o format is not supported
 
         """
+        return None
 
     @classmethod
-    @abstractmethod
-    def from_g2o(cls, line, g2o_params_or_none=None):
+    def from_g2o(cls, line, g2o_params_or_none=None):  # pylint: disable=unused-argument
         """Load an edge from a line in a .g2o file.
+
+        .. note:: Overload this method to support loading from .g2o files.
 
         Parameters
         ----------
@@ -188,10 +191,12 @@ class BaseEdge(ABC):
             (or if this edge type does not support loading from g2o)
 
         """
+        return None
 
-    @abstractmethod
     def plot(self, color=""):
         """Plot the edge.
+
+        .. note:: Overload this method to support plotting the edge.
 
         Parameters
         ----------

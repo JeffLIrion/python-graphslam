@@ -114,6 +114,23 @@ class TestBaseEdge(unittest.TestCase):
         e2.vertex_ids = [5]
         self.assertFalse(e1.equals(e2))
 
+    def test_to_g2o_and_from_g2o(self):
+        """Test that the ``to_g2o`` and ``from_g2o`` methods don't do anything."""
+        p = PoseSE2([0, 0], 0)
+        v = Vertex(0, p)
+        e = SimpleEdge(0, 1, 0, [v])
+
+        self.assertIsNone(e.to_g2o())
+        self.assertIsNone(SimpleEdge.from_g2o("line", g2o_params_or_none=None))
+
+    def test_plot(self):
+        """Test that the ``plot`` method doesn't do anything."""
+        p = PoseSE2([0, 0], 0)
+        v = Vertex(0, p)
+        e = SimpleEdge(0, 1, 0, [v])
+
+        e.plot()
+
 
 if __name__ == "__main__":
     unittest.main()
