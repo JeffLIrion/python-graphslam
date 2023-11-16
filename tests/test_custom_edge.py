@@ -28,18 +28,6 @@ class DistanceEdgeNumericalJacobians(BaseEdge):
 
     """
 
-    def to_g2o(self):
-        """Not supported, so return ``None``."""
-        return None
-
-    @classmethod
-    def from_g2o(cls, line, g2o_params_or_none=None):
-        """Not supported, so return ``None``."""
-        return None
-
-    def plot(self, color=""):
-        """Not supported, so don't do anything."""
-
     def calc_error(self):
         """Calculate the error, which is the distance between the two poses minus the estimate."""
         return np.array([np.linalg.norm((self.vertices[0].pose - self.vertices[1].pose).position) - self.estimate])

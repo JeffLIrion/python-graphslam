@@ -14,18 +14,6 @@ from graphslam.util import upper_triangular_matrix_to_full_matrix
 class BaseEdgeForTests(BaseEdge):
     """A base edge class for tests."""
 
-    def to_g2o(self):
-        """Not supported, so return ``None``."""
-        return None
-
-    @classmethod
-    def from_g2o(cls, line, g2o_params_or_none=None):
-        """Not supported, so return ``None``."""
-        return None
-
-    def plot(self, color=""):
-        """Not supported, so don't do anything."""
-
 
 class EdgeWithoutToG2OWithoutFromG2O(BaseEdgeForTests):
     """An edge class without ``to_g2o`` and ``from_g2o`` support.
