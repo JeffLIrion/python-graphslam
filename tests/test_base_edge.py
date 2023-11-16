@@ -31,7 +31,7 @@ class TestBaseEdge(unittest.TestCase):
         """Test that a ``BaseEdge`` object can be created."""
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = SimpleEdge(0, 1, 0, [v])
+        e = SimpleEdge([0], 1, 0, [v])
 
         self.assertEqual(e.vertices[0].id, 0)
         self.assertEqual(e.information, 1)
@@ -40,7 +40,7 @@ class TestBaseEdge(unittest.TestCase):
         """Test that the ``calc_chi2`` method works as expected."""
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = SimpleEdge(0, 1, 0, [v])
+        e = SimpleEdge([0], 1, 0, [v])
 
         self.assertEqual(e.calc_chi2(), 1)
 
@@ -94,7 +94,7 @@ class TestBaseEdge(unittest.TestCase):
         v1 = Vertex(1, p1)
         v2 = Vertex(2, p2)
 
-        e_simple = SimpleEdge(0, 1, 0)
+        e_simple = SimpleEdge([0], 1, 0)
         e1 = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
         e2 = EdgeOdometry([1, 2], np.eye(2), estimate, [v1, v2])
 
@@ -118,7 +118,7 @@ class TestBaseEdge(unittest.TestCase):
         """Test that the ``to_g2o`` and ``from_g2o`` methods don't do anything."""
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = SimpleEdge(0, 1, 0, [v])
+        e = SimpleEdge([0], 1, 0, [v])
 
         self.assertIsNone(e.to_g2o())
         self.assertIsNone(SimpleEdge.from_g2o("line", g2o_params_or_none=None))
@@ -127,9 +127,25 @@ class TestBaseEdge(unittest.TestCase):
         """Test that the ``plot`` method doesn't do anything."""
         p = PoseSE2([0, 0], 0)
         v = Vertex(0, p)
-        e = SimpleEdge(0, 1, 0, [v])
+        e = SimpleEdge([0], 1, 0, [v])
 
         e.plot()
+
+    def test_is_valid(self):
+        """Test the ``is_valid`` method."""
+        p = PoseSE2([0, 0], 0)
+        v = Vertex(0, p)
+        e = SimpleEdge([0], 1, 0, [v])
+
+        self.assertTrue(e.is_valid())
+
+        # Different vertex IDs
+        e.vertex_ids = [1]
+        self.assertFalse(e.is_valid())
+
+        # No `vertices` attribute
+        e.vertices = None
+        self.assertFalse(e.is_valid())
 
 
 if __name__ == "__main__":

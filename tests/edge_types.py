@@ -14,6 +14,16 @@ from graphslam.util import upper_triangular_matrix_to_full_matrix
 class BaseEdgeForTests(BaseEdge):
     """A base edge class for tests."""
 
+    def is_valid(self):
+        """Check that the edge is valid."""
+        # Basic checks from the `BaseEdge` class
+        if not self._is_valid():
+            return False
+
+        # This should be implemented for custom edge types, but
+        # I'll skip it here since this is just for testing purposes
+        return True
+
 
 class EdgeWithoutToG2OWithoutFromG2O(BaseEdgeForTests):
     """An edge class without ``to_g2o`` and ``from_g2o`` support.

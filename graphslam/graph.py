@@ -349,6 +349,9 @@ class Graph(object):
         for e in self._edges:
             e.vertices = [self._vertices[id_index_dict[v_id]] for v_id in e.vertex_ids]
 
+        # Make sure all the edges are valid
+        assert all(e.is_valid() for e in self._edges), "Not all edges are valid"
+
     def calc_chi2(self):
         r"""Calculate the :math:`\chi^2` error for the ``Graph``.
 
