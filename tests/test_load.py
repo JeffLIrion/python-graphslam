@@ -114,7 +114,7 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = Graph.load_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
+            g2 = Graph.from_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
             self.assertFalse(g.equals(g2))
 
     def test_load_custom_edge_with_to_g2o_without_from_g2o(self):
@@ -130,7 +130,7 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = Graph.load_g2o("test.g2o", [EdgeWithToG2OWithoutFromG2O])
+            g2 = Graph.from_g2o("test.g2o", [EdgeWithToG2OWithoutFromG2O])
             self.assertFalse(g.equals(g2))
 
     def test_load_custom_edge_without_to_g2o_with_from_g2o(self):
@@ -146,7 +146,7 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = Graph.load_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
+            g2 = Graph.from_g2o("test.g2o", [EdgeWithoutToG2OWithFromG2O])
             self.assertFalse(g.equals(g2))
 
     def test_load_custom_edge_with_to_g2o_with_from_g2o(self):
@@ -162,7 +162,7 @@ class TestLoad(unittest.TestCase):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = Graph.load_g2o("test.g2o", [EdgeWithToG2OWithFromG2O])
+            g2 = Graph.from_g2o("test.g2o", [EdgeWithToG2OWithFromG2O])
             self.assertTrue(g.equals(g2))
 
     # pylint: disable=protected-access
@@ -170,13 +170,13 @@ class TestLoad(unittest.TestCase):
         """Test that writing and loading parameters works."""
         infile = os.path.join(os.path.dirname(__file__), "test_se2.g2o")
 
-        g = Graph.load_g2o(infile)
+        g = Graph.from_g2o(infile)
 
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = Graph.load_g2o("test.g2o")
+            g2 = Graph.from_g2o("test.g2o")
 
             for g_ in [g, g2]:
                 self.assertIsNotNone(g_._g2o_params)
@@ -193,13 +193,13 @@ class TestLoad(unittest.TestCase):
         """Test that writing and loading parameters works."""
         infile = os.path.join(os.path.dirname(__file__), "test_se3.g2o")
 
-        g = Graph.load_g2o(infile)
+        g = Graph.from_g2o(infile)
 
         with mock.patch("graphslam.graph.open", open_fake_file):
             g.to_g2o("test.g2o")
 
         with mock.patch("graphslam.graph.open", open_fake_file):
-            g2 = Graph.load_g2o("test.g2o")
+            g2 = Graph.from_g2o("test.g2o")
 
             for g_ in [g, g2]:
                 self.assertIsNotNone(g_._g2o_params)

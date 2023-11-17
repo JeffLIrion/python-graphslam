@@ -532,7 +532,7 @@ class Graph(object):
                     f.write(edge_str_or_none)
 
     @classmethod
-    def load_g2o(cls, infile, custom_edge_types=None):
+    def from_g2o(cls, infile, custom_edge_types=None):
         r"""Load a graph from a .g2o file.
 
         Parameters

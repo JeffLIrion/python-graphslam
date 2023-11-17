@@ -41,7 +41,7 @@ SE(3) Dataset
 
    >>> from graphslam.graph import Graph
 
-   >>> g = Graph.load_g2o("data/parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = Graph.from_g2o("data/parking-garage.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot(vertex_markersize=1)
 
@@ -81,7 +81,7 @@ SE(2) Dataset
 
    >>> from graphslam.graph import Graph
 
-   >>> g = Graph.load_g2o("data/input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
+   >>> g = Graph.from_g2o("data/input_INTEL.g2o")  # https://lucacarlone.mit.edu/datasets/
 
    >>> g.plot()
 
