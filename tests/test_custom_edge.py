@@ -203,11 +203,11 @@ class TestDistanceEdgeSE3(TestDistanceEdgeR2):
 
         with mock.patch("graphslam.graph.open", open_fake_file):
             # Without providing the custom edge type, the graphs will not be the same
-            g2 = Graph.load_g2o("test.g2o")
+            g2 = Graph.from_g2o("test.g2o")
             self.assertFalse(g.equals(g2))
 
             # When provided with the custom edge type, the graphs will be the same
-            g3 = Graph.load_g2o("test.g2o", [DistanceEdgeAnalyticalJacobians])
+            g3 = Graph.from_g2o("test.g2o", [DistanceEdgeAnalyticalJacobians])
             self.assertTrue(g.equals(g3))
 
 

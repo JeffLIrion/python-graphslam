@@ -28,7 +28,7 @@ def load_g2o(infile):
 
     """
     _LOGGER.warning("load_g2o is deprecated; use Graph.load_g2o instead")
-    return Graph.load_g2o(infile)
+    return Graph.from_g2o(infile)
 
 
 def load_g2o_r2(infile):
@@ -46,7 +46,7 @@ def load_g2o_r2(infile):
 
     """
     _LOGGER.warning("load_g2o_r2 is deprecated; use Graphload_g2o instead")
-    return Graph.load_g2o(infile)
+    return Graph.from_g2o(infile)
 
 
 def load_g2o_r3(infile):
@@ -64,7 +64,7 @@ def load_g2o_r3(infile):
 
     """
     _LOGGER.warning("load_g2o_r3 is deprecated; use Graph.load_g2o instead")
-    return Graph.load_g2o(infile)
+    return Graph.from_g2o(infile)
 
 
 def load_g2o_se2(infile):
@@ -82,7 +82,7 @@ def load_g2o_se2(infile):
 
     """
     _LOGGER.warning("load_g2o_se2 is deprecated; use Graph.load_g2o instead")
-    return Graph.load_g2o(infile)
+    return Graph.from_g2o(infile)
 
 
 def load_g2o_se3(infile):
@@ -100,4 +100,4 @@ def load_g2o_se3(infile):
 
     """
     _LOGGER.warning("load_g2o_se3 is deprecated; use Graph.load_g2o instead")
-    return Graph.load_g2o(infile)
+    return Graph.from_g2o(infile)

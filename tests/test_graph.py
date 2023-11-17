@@ -443,8 +443,8 @@ class TestGraphOptimization(unittest.TestCase):
         intel = os.path.join(os.path.dirname(__file__), "..", "data", "input_INTEL.g2o")
         optimized = os.path.join(os.path.dirname(__file__), "input_INTEL_optimized.g2o")
 
-        g = Graph.load_g2o(intel)
-        g_opt = Graph.load_g2o(optimized)
+        g = Graph.from_g2o(intel)
+        g_opt = Graph.from_g2o(optimized)
 
         g._vertices[0].fixed = True
         g_landmark = shuffle_graph(add_landmark_edges(g, g_opt))
@@ -461,8 +461,8 @@ class TestGraphOptimization(unittest.TestCase):
         intel = os.path.join(os.path.dirname(__file__), "..", "data", "parking-garage.g2o")
         optimized = os.path.join(os.path.dirname(__file__), "parking-garage_optimized.g2o")
 
-        g = Graph.load_g2o(intel)
-        g_opt = Graph.load_g2o(optimized)
+        g = Graph.from_g2o(intel)
+        g_opt = Graph.from_g2o(optimized)
 
         g._vertices[0].fixed = True
         g_landmark = shuffle_graph(add_landmark_edges(g, g_opt))
@@ -472,7 +472,7 @@ class TestGraphOptimization(unittest.TestCase):
             g_landmark.to_g2o("test.g2o")
 
         with patch("graphslam.graph.open", open_fake_file):
-            g_landmark2 = Graph.load_g2o("test.g2o")
+            g_landmark2 = Graph.from_g2o("test.g2o")
             self.assertTrue(g_landmark.equals(g_landmark2))
 
         result = g_landmark.optimize(fix_first_pose=False)
