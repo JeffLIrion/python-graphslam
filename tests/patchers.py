@@ -20,8 +20,7 @@ class FileReadWrite(object):
 
     def readlines(self):
         """Mock reading line by line from a file."""
-        for line in self._content.splitlines():
-            yield line
+        yield from self._content.splitlines()
 
     def write(self, content):
         """Mock writing to a file."""
